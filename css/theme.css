@@ -1,0 +1,127 @@
+:root {
+    /* HSL Color System - Deep & Modern */
+    --h: 220; /* Base Hue */
+    
+    /* Dark Mode Defaults (Elevated High Contrast) */
+    --bg-main: hsl(var(--h), 20%, 4%);
+    --bg-surface: hsl(var(--h), 18%, 8%);
+    --bg-elevated: hsl(var(--h), 15%, 12%);
+    --bg-input: hsl(var(--h), 12%, 14%);
+    
+    --text-primary: hsl(0, 0%, 98%);
+    --text-secondary: hsl(var(--h), 10%, 75%);
+    --text-dim: hsl(var(--h), 8%, 55%);
+    
+    --primary: hsl(var(--h), 100%, 65%);
+    --primary-hover: hsl(var(--h), 100%, 70%);
+    
+    --accent: hsl(var(--h), 12%, 20%);
+    --accent-hover: hsl(var(--h), 12%, 25%);
+    
+    --inverse-bg: hsl(0, 0%, 100%);
+    --inverse-text: hsl(0, 0%, 0%);
+    
+    --border: hsla(0, 0%, 100%, 0.12);
+    --border-bright: hsla(0, 0%, 100%, 0.22);
+    
+    --success: hsl(145, 63%, 49%);
+    --error: hsl(0, 72%, 51%);
+    
+    /* Glassmorphism */
+    --glass-bg: hsla(var(--h), 15%, 8%, 0.85);
+    --glass-border: hsla(0, 0%, 100%, 0.15);
+    --glass-blur: 16px;
+
+    /* Spacing & Sizing */
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 24px;
+    
+    --font-ui: 'Inter', system-ui, -apple-system, sans-serif;
+    --font-heading: 'Outfit', sans-serif;
+
+    /* BJJ Belt Colors - Refined */
+    --bjj-white: #FFFFFF;
+    --bjj-blue: #2E5BFF;
+    --bjj-purple: #9D4EDD;
+    --bjj-brown: #7B4B3A;
+    --bjj-black: #1A1A1B;
+    
+    --shadow-sm: 0 2px 4px rgba(0,0,0,0.1);
+    --shadow-md: 0 12px 24px -8px rgba(0,0,0,0.3);
+    --shadow-lg: 0 32px 64px -16px rgba(0,0,0,0.5);
+}
+
+[data-theme="light"] {
+    --bg-main: hsl(var(--h), 20%, 98%);
+    --bg-surface: hsl(var(--h), 20%, 100%);
+    --bg-elevated: hsl(var(--h), 20%, 95%);
+    --bg-input: hsl(var(--h), 20%, 100%);
+    
+    --text-primary: hsl(var(--h), 20%, 10%);
+    --text-secondary: hsl(var(--h), 15%, 40%);
+    --text-dim: hsl(var(--h), 10%, 60%);
+    
+    --accent: hsl(var(--h), 10%, 90%);
+    --accent-hover: hsl(var(--h), 10%, 85%);
+    
+    --inverse-bg: hsl(0, 0%, 0%);    /* Solid Black */
+    --inverse-text: hsl(0, 0%, 100%);  /* Solid White */
+    
+    --border: hsla(var(--h), 20%, 10%, 0.05);
+    --border-bright: hsla(var(--h), 20%, 10%, 0.1);
+    
+    --glass-bg: hsla(0, 0%, 100%, 0.8);
+    --glass-border: hsla(var(--h), 20%, 10%, 0.08);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: var(--bg-main);
+    color: var(--text-primary);
+    font-family: var(--font-ui);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+}
+
+h1, h2, h3, h4, .font-heading {
+    font-family: var(--font-heading);
+    font-weight: 700;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+button {
+    font-family: var(--font-ui);
+    cursor: pointer;
+    border: none;
+    outline: none;
+}
+
+input, textarea, select {
+    font-family: var(--font-ui);
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+    width: 10px;
+}
+::-webkit-scrollbar-track {
+    background: var(--bg-main);
+}
+::-webkit-scrollbar-thumb {
+    background: var(--border);
+    border-radius: 5px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: var(--border-bright);
+}

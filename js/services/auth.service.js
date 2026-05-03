@@ -1,0 +1,202 @@
+import { SUPABASE_URL, SUPABASE_ANON_KEY } from '../config.js';
+
+export class AuthService {
+    constructor() {
+        console.log("🛠️ AuthService: Inicializando Client...");
+        try {
+            this.client = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            this.currentUser = null;
+            this.onAuthStateChangeCallback = null;
+
+            // Listen for auth changes
+            this.client.auth.onAuthStateChange(async (event, session) => {
+                console.log("🔔 Auth Event:", event);
+                if (session) {
+                    try {
+                        console.log("🔄 Atualizando perfil para:", session.user.id);
+                        await this._refreshUserProfile(session.user.id);
+                    } catch (e) {
+                        console.error("⚠️ Erro ao atualizar perfil no evento auth:", e);
+                    }
+                } else {
+                    this.currentUser = null;
+                }
+                if (this.onAuthStateChangeCallback) this.onAuthStateChangeCallback(event, session);
+            });
+        } catch (e) {
+            console.error("❌ AuthService: Falha crítica ao criar client:", e);
+        }
+    }
+
+    async init() {
+        console.log("🔍 AuthService: Recuperando sessão...");
+        try {
+            // Aumentamos para 15 segundos para dar mais fôlego à conexão
+            const sessionPromise = this.client.auth.getSession();
+            const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error("Timeout ao buscar sessão")), 15000));
+            
+            const { data: { session }, error } = await Promise.race([sessionPromise, timeoutPromise]);
+            if (error) throw error;
+            
+            if (session) {
+                console.log("👤 AuthService: Sessão ativa encontrada para", session.user.email);
+                await this._refreshUserProfile(session.user.id);
+            } else {
+                console.log("🚪 AuthService: Nenhuma sessão ativa.");
+            }
+        } catch (e) {
+            console.error("❌ AuthService: Erro ou Timeout ao buscar sessão:", e);
+            // Fallback: Tentamos ver se o listener já capturou o usuário
+            if (this.currentUser) {
+                console.log("✅ Recuperação via fallback de evento bem sucedida.");
+            } else {
+                this.currentUser = null;
+            }
+        }
+        return this.currentUser;
+    }
+    async _refreshUserProfile(userId) {
+        try {
+            console.log("📡 Buscando dados da tabela profiles...");
+            
+            // Adicionamos um timeout de 5 segundos também na busca do perfil
+            const fetchPromise = this.client
+                .from('profiles')
+                .select('*')
+                .eq('id', userId)
+                .single();
+            
+            const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error("Timeout ao buscar perfil")), 5000));
+
+            const { data, error } = await Promise.race([fetchPromise, timeoutPromise]);
+                
+            if (error) {
+                console.warn("⚠️ Perfil não encontrado ou timeout:", error.message);
+                // Se falhar o perfil, mantemos o que temos ou um padrão para não travar o app
+                if (!this.currentUser) {
+                    this.currentUser = { id: userId, full_name: 'Usuário', role: 'student' };
+                }
+                return;
+            }
+
+            if (data) {
+                this.currentUser = { ...this.currentUser, ...data };
+                
+                // Tentativa segura de carregar dados da academia (priorizando a principal)
+                try {
+                    // Primeiro tenta buscar se existe uma academia marcada como principal
+                    const { data: academies } = await this.client
+                        .from('academies')
+                        .select('id, name, logo_url, is_primary')
+                        .eq('is_primary', true)
+                        .limit(1);
+                    
+                    if (academies && academies.length > 0) {
+                        this.currentUser.academy = academies[0];
+                    } else if (data.academy_id) {
+                        // Fallback para a academia vinculada ao perfil se não houver global primary
+                        const { data: academyData } = await this.client
+                            .from('academies')
+                            .select('id, name, logo_url')
+                            .eq('id', data.academy_id)
+                            .single();
+                        
+                        if (academyData) this.currentUser.academy = academyData;
+                    }
+                } catch (e) {
+                    console.warn("⚠️ Falha ao buscar identidade visual:", e.message);
+                }
+                
+                console.log("✅ Perfil carregado com sucesso.");
+            }
+        } catch (e) {
+            console.error("❌ Erro ou Timeout ao ler profiles:", e);
+            this.currentUser = { id: userId, full_name: 'Erro de Carregamento', role: 'student' };
+        }
+    }
+
+    async getUser() {
+        // Se já temos o usuário, retornamos imediatamente
+        if (this.currentUser) return this.currentUser;
+        
+        // Se não temos, tentamos uma última vez de forma rápida
+        try {
+            const { data: { session } } = await this.client.auth.getSession();
+            if (session && !this.currentUser) {
+                await this._refreshUserProfile(session.user.id);
+            }
+        } catch (e) {
+            console.warn("⚠️ Falha silenciosa ao obter usuário em getUser");
+        }
+        
+        return this.currentUser;
+    }
+
+    async login(email, password) {
+        const { data, error } = await this.client.auth.signInWithPassword({
+            email,
+            password
+        });
+
+        if (error) return { success: false, error: error.message };
+        
+        await this._refreshUserProfile(data.user.id);
+        return { success: true, user: this.currentUser };
+    }
+
+    async signUp(email, password, fullName, academyId) {
+        const { data, error } = await this.client.auth.signUp({
+            email,
+            password,
+            options: {
+                data: {
+                    full_name: fullName,
+                    academy_id: academyId
+                }
+            }
+        });
+
+        if (error) return { success: false, error: error.message };
+        return { success: true, data };
+    }
+
+    async logout() {
+        await this.client.auth.signOut();
+        this.currentUser = null;
+        window.location.hash = '#login';
+    }
+
+    async updateProfile(updates) {
+        try {
+            const user = await this.getUser();
+            if (!user) throw new Error("Usuário não identificado.");
+
+            // 1. Se o e-mail mudou, atualizamos no Auth do Supabase
+            if (updates.email && updates.email !== this.currentUser.email) {
+                const { error: authError } = await this.client.auth.updateUser({ email: updates.email });
+                if (authError) throw authError;
+                console.log("📧 E-mail de autenticação atualizado (pendente confirmação).");
+            }
+
+            // 2. Atualizamos os dados na tabela profiles
+            // Removemos o e-mail do objeto de update se ele for o e-mail de login (opcional, dependendo do schema)
+            const { error: profileError } = await this.client
+                .from('profiles')
+                .update(updates)
+                .eq('id', user.id);
+
+            if (profileError) throw profileError;
+
+            // 3. Atualizamos o estado local
+            await this._refreshUserProfile(user.id);
+            return { success: true };
+        } catch (e) {
+            console.error("❌ Erro ao atualizar perfil:", e);
+            return { success: false, error: e.message };
+        }
+    }
+
+    onAuthStateChange(callback) {
+        this.onAuthStateChangeCallback = callback;
+    }
+}

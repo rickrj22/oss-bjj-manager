@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Oss Manager | Gestão BJJ</title>
+    
+    <!-- Meta tags for SEO & PWA -->
+    <meta name="description" content="Sistema premium de gestão para academias de Brazilian Jiu-Jitsu.">
+    <meta name="theme-color" content="#0a0a0a">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@700;800&display=swap" rel="stylesheet">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="css/theme.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/components.css">
+    
+    <!-- Supabase Client (CDN) -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+    <div id="app">
+        <!-- SPA content will be injected here -->
+        <div class="loader-container">
+            <div class="loader"></div>
+            <p class="font-heading" style="color: var(--text-primary); margin-top: 2rem; letter-spacing: 0.1em; font-size: 0.8rem; text-transform: uppercase; opacity: 0.8;">Sincronizando Tatame...</p>
+        </div>
+    </div>
+
+    <!-- Application Scripts -->
+    <script type="module" src="js/app.js"></script>
+    
+    <style>
+        .loader-container {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--bg-main);
+            color: var(--text-primary);
+            animation: fadeIn 0.5s ease-out;
+        }
+        .loader {
+            width: 40px;
+            height: 40px;
+            border: 2px solid var(--border);
+            border-top-color: var(--inverse-bg);
+            border-radius: 50%;
+            animation: spin 0.8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+    </style>
+
+    <!-- Fail-safe Timeout -->
+    <script>
+        setTimeout(() => {
+            const appDiv = document.getElementById('app');
+            if (appDiv && appDiv.querySelector('.loader-container')) {
+                console.warn("⚠️ OSS Manager: O carregamento está demorando demais...");
+                const loaderText = appDiv.querySelector('p');
+                if (loaderText) {
+                    loaderText.innerHTML = `O carregamento está demorando mais que o esperado.<br>
+                    <span style="font-size: 0.8rem; font-weight: 400; opacity: 0.7;">Verifique o Console (F12) para erros de conexão.</span><br>
+                    <button onclick="location.reload()" class="btn btn-primary" style="margin-top: 20px;">Tentar Novamente</button>`;
+                }
+            }
+        }, 8000);
+    </script>
+</body>
+</html>

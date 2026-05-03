@@ -1,0 +1,32 @@
+[
+    {
+        "academy_id": "858c067e-128a-4933-9f17-8e68eabe5342",
+        "title": "Aula Fundamentos (Gi)",
+        "start_time": "18:00:00",
+        "end_time": "19:30:00",
+        "day_of_week": 5,
+        "coach_id": "869b2781-a600-47de-87d4-8df60613cb9e",
+        "active": true,
+        "type": "gi"
+    },
+    {
+        "academy_id": "858c067e-128a-4933-9f17-8e68eabe5342",
+        "title": "Treino Livre / Sparring",
+        "start_time": "19:30:00",
+        "end_time": "21:00:00",
+        "day_of_week": 5,
+        "coach_id": "869b2781-a600-47de-87d4-8df60613cb9e",
+        "active": true,
+        "type": "nogi"
+    },
+    {
+        "academy_id": "858c067e-128a-4933-9f17-8e68eabe5342",
+        "title": "Aula Kids",
+        "start_time": "17:00:00",
+        "end_time": "18:00:00",
+        "day_of_week": 5,
+        "coach_id": "869b2781-a600-47de-87d4-8df60613cb9e",
+        "active": true,
+        "type": "gi"
+    }
+]
