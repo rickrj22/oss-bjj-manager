@@ -4,9 +4,6 @@ export class RegisterPage {
     }
 
     async render() {
-        const { data: academies } = await this.app.academy.getAcademies();
-        const academiesOptions = (academies || []).map(a => `<option value="${a.id}">${a.name}</option>`).join('');
-
         return `
             <div class="auth-container">
                 <div class="auth-card">
@@ -16,13 +13,6 @@ export class RegisterPage {
                     </div>
 
                     <form id="register-form">
-                        <div class="mb-4">
-                            <label class="font-heading" style="font-size: 0.7rem; text-transform: uppercase; color: var(--text-dim); letter-spacing: 0.05em;">Academia</label>
-                            <select id="academy-id" class="input" required>
-                                <option value="" disabled selected>Selecione sua academia</option>
-                                ${academiesOptions}
-                            </select>
-                        </div>
                         <div class="mb-4">
                             <label class="font-heading" style="font-size: 0.7rem; text-transform: uppercase; color: var(--text-dim); letter-spacing: 0.05em;">Nome Completo</label>
                             <input type="text" id="full-name" class="input" placeholder="Seu nome" required>
@@ -62,10 +52,20 @@ export class RegisterPage {
                 const fullName = document.getElementById('full-name').value;
                 const email = document.getElementById('email').value;
                 const password = document.getElementById('password').value;
-                const academyId = document.getElementById('academy-id').value;
 
                 registerBtn.disabled = true;
                 registerBtn.innerText = 'Processando...';
+
+                // Fetch the default academy (single academy architecture)
+                const { data: academies } = await this.app.academy.getAcademies();
+                const academyId = (academies && academies.length > 0) ? academies[0].id : null;
+
+                if (!academyId) {
+                    alert('Erro: Nenhuma academia configurada no sistema.');
+                    registerBtn.disabled = false;
+                    registerBtn.innerText = 'Cadastrar';
+                    return;
+                }
 
                 const result = await this.app.auth.signUp(email, password, fullName, academyId);
 
