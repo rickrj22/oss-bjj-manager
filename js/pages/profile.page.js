@@ -129,9 +129,8 @@ export class ProfilePage {
                         cursor: not-allowed !important;
                         border-radius: 6px !important;
                     }
-                </style>
-                <main class="main-content" style="padding: 2rem;">
-                    <div class="grid" style="grid-template-columns: 1.8fr 1fr; gap: 4rem; max-width: 1200px; margin: 0 auto;">
+                </styl                <main class="main-content" style="padding: 2rem;">
+                    <div class="grid" style="grid-template-columns: var(--grid-main, 1.8fr 1fr); gap: 2rem; max-width: 1200px; margin: 0 auto;">
                         
                         <!-- Coluna Esquerda: Formulários e Timeline -->
                         <div style="display: flex; flex-direction: column; gap: 1.5rem;">
@@ -145,23 +144,23 @@ export class ProfilePage {
                                             <label style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700; color: var(--text-dim); margin-bottom: 0.25rem; display: block;">Nome Completo</label>
                                             <input type="text" class="input editable-field" id="prof-name" value="${user.full_name || ''}" style="height: 42px; font-size: 0.85rem;">
                                         </div>
-                                        <div class="form-group">
+                                        <div class="form-group" style="grid-column: span var(--span-all, 1);">
                                             <label style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700; color: var(--text-dim); margin-bottom: 0.25rem; display: block;">E-mail (Login Oficial)</label>
                                             <input type="email" class="input editable-field" id="prof-email" value="${user.email || ''}" style="height: 42px; font-size: 0.85rem;">
                                         </div>
-                                        <div class="form-group">
+                                        <div class="form-group" style="grid-column: span var(--span-all, 1);">
                                             <label style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700; color: var(--text-dim); margin-bottom: 0.25rem; display: block;">Telefone</label>
                                             <input type="tel" class="input editable-field" id="prof-phone" value="${user.phone || ''}" style="height: 42px; font-size: 0.85rem;">
                                         </div>
-                                        <div class="form-group">
+                                        <div class="form-group" style="grid-column: span var(--span-all, 1);">
                                             <label style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700; color: var(--text-dim); margin-bottom: 0.25rem; display: block;">Data de Nascimento</label>
                                             <input type="date" class="input editable-field" id="prof-birth" value="${user.birth_date || ''}" style="height: 42px; font-size: 0.85rem;">
                                         </div>
-                                        <div class="form-group">
+                                        <div class="form-group" style="grid-column: span var(--span-all, 1);">
                                             <label style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700; color: var(--text-dim); margin-bottom: 0.25rem; display: block;">URL da Foto de Perfil</label>
                                             <input type="text" class="input editable-field" id="prof-avatar" value="${user.avatar_url || ''}" style="height: 42px; font-size: 0.85rem;">
                                         </div>
-                                        <div class="form-group">
+                                        <div class="form-group" style="grid-column: span var(--span-all, 1);">
                                             <label style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700; color: var(--text-dim); margin-bottom: 0.25rem; display: block;">Dia de Vencimento</label>
                                             <input type="text" class="input readonly-field" value="${user.payment_due_date ? 'Dia ' + user.payment_due_date : 'Não definido'}" readonly style="height: 42px; font-size: 0.85rem;">
                                         </div>
@@ -242,9 +241,46 @@ export class ProfilePage {
                         </div>
                     </div>
                 </main>
-                <div style="position: fixed; bottom: 1rem; right: 1.5rem; font-size: 0.65rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.1em; font-weight: 700; pointer-events: none; opacity: 0.5;">
+
+                <!-- Bottom Navigation (Mobile Only) -->
+                <nav class="bottom-nav">
+                    ${user.is_admin ? `
+                        <a href="#dashboard" class="bottom-nav-item">
+                            <i data-lucide="layout-dashboard"></i>
+                            <span>Início</span>
+                        </a>
+                        <a href="#membros" class="bottom-nav-item">
+                            <i data-lucide="users"></i>
+                            <span>Membros</span>
+                        </a>
+                    ` : ''}
+                    <a href="#aulas" class="bottom-nav-item">
+                        <i data-lucide="calendar"></i>
+                        <span>Aulas</span>
+                    </a>
+                    <a href="#perfil" class="bottom-nav-item active">
+                        <i data-lucide="user"></i>
+                        <span>Perfil</span>
+                    </a>
+                    ${user.is_admin ? `
+                        <a href="#configuracoes" class="bottom-nav-item">
+                            <i data-lucide="settings"></i>
+                            <span>Ajustes</span>
+                        </a>
+                    ` : ''}
+                </nav>
+
+                <div class="hide-mobile" style="position: fixed; bottom: 1rem; right: 1.5rem; font-size: 0.65rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.1em; font-weight: 700; pointer-events: none; opacity: 0.5;">
                     OSS BJJ Manager • v1.0
                 </div>
+            </div>
+            
+            <style>
+                @media (max-width: 1024px) {
+                    .layout-container { --grid-main: 1fr; }
+                    .layout-container { --span-all: 2; }
+                }
+            </style>/div>
             </div>
             <div id="status-message" style="position: fixed; bottom: 20px; right: 20px; z-index: 1000;"></div>
         `;

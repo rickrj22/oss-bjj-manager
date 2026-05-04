@@ -86,46 +86,44 @@ export class SettingsPage {
                             <span>Sair</span>
                         </button>
                     </div>
-                </aside>
-
-                <main class="main-content" style="max-width: 100%;">
+                </aside                <main class="main-content" style="max-width: 100%;">
                     <header class="flex-between mb-8 animate-in">
                         <div>
-                            <h1 class="font-heading font-xl">Configurações da Academia</h1>
-                            <p class="text-graphite">Gerencie as informações principais, planos e horários da sua unidade.</p>
+                            <h1 class="font-heading font-xl">Configurações</h1>
+                            <p class="text-graphite hide-mobile">Gerencie as informações principais da sua unidade.</p>
                         </div>
                     </header>
 
-                    <div class="grid" style="grid-template-columns: 1.2fr 1fr; gap: 2rem;">
+                    <div class="grid" style="grid-template-columns: var(--grid-main, 1.2fr 1fr); gap: 2rem;">
                         <!-- Academy Info Card -->
-                        <div class="card animate-in stagger-1" style="padding: 2.5rem; border-radius: 16px; background: var(--bg-surface); border: 1px solid var(--border); box-shadow: var(--shadow-sm);">
-                            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 2.5rem;">
+                        <div class="card animate-in stagger-1" style="padding: 2rem; border-radius: 16px; background: var(--bg-surface); border: 1px solid var(--border); box-shadow: var(--shadow-sm);">
+                            <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1.5rem; margin-bottom: 2.5rem;">
                                 <div>
                                     <h3 class="font-heading" style="font-size: 1rem; text-transform: uppercase; letter-spacing: 0.15em; font-weight: 800; color: var(--text-primary);">Informações Gerais</h3>
-                                    <p class="text-dim" style="font-size: 0.8125rem; margin-top: 0.25rem;">Dados cadastrais da unidade sede.</p>
+                                    <p class="text-dim" style="font-size: 0.8125rem; margin-top: 0.25rem;">Dados cadastrais da unidade.</p>
                                 </div>
-                                <button class="btn btn-primary btn-save-row" data-id="${academy.id}" style="opacity: 1; transform: none; pointer-events: auto; width: auto; height: 44px; padding: 0 1.75rem; background: var(--inverse-bg); color: var(--inverse-text); font-weight: 700; font-size: 0.8rem; letter-spacing: 0.05em; border: none; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); transition: all 0.2s;">
-                                    SALVAR ALTERAÇÕES
+                                <button class="btn btn-primary btn-save-row" data-id="${academy.id}" style="height: 44px; padding: 0 1.75rem; background: var(--inverse-bg); color: var(--inverse-text); font-weight: 700; font-size: 0.8rem; letter-spacing: 0.05em; border: none; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); transition: all 0.2s;">
+                                    SALVAR
                                 </button>
                             </div>
 
-                            <form id="academy-details-form" data-id="${academy.id}" style="display: flex; flex-direction: column; gap: 2rem;">
+                            <form id="academy-details-form" data-id="${academy.id}" style="display: flex; flex-direction: column; gap: 1.5rem;">
                                 <div class="form-group">
                                     <label style="font-size: 0.65rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.75rem; display: block; color: var(--text-dim);">Nome da Academia</label>
-                                    <input type="text" class="grid-input font-bold" value="${academy.name || 'Academia Edson França'}" data-field="name" style="height: 52px; font-size: 1rem; padding: 0 1.25rem; border-radius: 10px; border: 1px solid var(--border); background: var(--bg-elevated);">
+                                    <input type="text" class="grid-input font-bold" value="${academy.name || 'Academia Edson França'}" data-field="name" style="height: 52px; font-size: 1rem; padding: 0 1.25rem; border-radius: 10px;">
                                 </div>
                                 <div class="form-group">
                                     <label style="font-size: 0.65rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.75rem; display: block; color: var(--text-dim);">Endereço Completo</label>
-                                    <input type="text" class="grid-input" value="${academy.address || ''}" data-field="address" placeholder="Rua, Número, Bairro, Cidade..." style="height: 52px; padding: 0 1.25rem; border-radius: 10px; border: 1px solid var(--border); background: var(--bg-elevated);">
+                                    <input type="text" class="grid-input" value="${academy.address || ''}" data-field="address" placeholder="Rua, Número, Bairro, Cidade..." style="height: 52px; padding: 0 1.25rem; border-radius: 10px;">
                                 </div>
-                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                                <div class="grid" style="grid-template-columns: var(--grid-cols-mobile, 1fr 1fr); gap: 1.5rem;">
                                     <div class="form-group">
-                                        <label style="font-size: 0.65rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.75rem; display: block; color: var(--text-dim);">Telefone / Contato</label>
-                                        <input type="text" class="grid-input" value="${academy.phone || ''}" data-field="phone" placeholder="(00) 00000-0000" style="height: 52px; padding: 0 1.25rem; border-radius: 10px; border: 1px solid var(--border); background: var(--bg-elevated);">
+                                        <label style="font-size: 0.65rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.75rem; display: block; color: var(--text-dim);">Contato</label>
+                                        <input type="text" class="grid-input" value="${academy.phone || ''}" data-field="phone" placeholder="(00) 00000-0000" style="height: 52px; padding: 0 1.25rem; border-radius: 10px;">
                                     </div>
                                     <div class="form-group">
                                         <label style="font-size: 0.65rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.75rem; display: block; color: var(--text-dim);">Link da Logo (URL)</label>
-                                        <input type="text" class="grid-input" value="${academy.logo_url || ''}" data-field="logo_url" placeholder="https://link-da-logo.png" style="height: 52px; padding: 0 1.25rem; border-radius: 10px; border: 1px solid var(--border); background: var(--bg-elevated); font-size: 0.8rem;">
+                                        <input type="text" class="grid-input" value="${academy.logo_url || ''}" data-field="logo_url" placeholder="https://link-da-logo.png" style="height: 52px; padding: 0 1.25rem; border-radius: 10px; font-size: 0.8rem;">
                                     </div>
                                 </div>
                             </form>
@@ -133,33 +131,65 @@ export class SettingsPage {
 
                         <!-- Management Cards -->
                         <div style="display: flex; flex-direction: column; gap: 2rem;">
-                            <div class="card animate-in stagger-2" style="padding: 2.5rem; border-radius: 16px; border: 1px solid var(--border); background: var(--bg-surface); display: flex; flex-direction: column; gap: 1.25rem; position: relative; overflow: hidden;">
+                            <div class="card animate-in stagger-2" style="padding: 2rem; border-radius: 16px; border: 1px solid var(--border); background: var(--bg-surface); display: flex; flex-direction: column; gap: 1.25rem; position: relative; overflow: hidden;">
                                 <div style="position: absolute; right: -20px; top: -20px; opacity: 0.03;">
                                     <i data-lucide="calendar" size="120"></i>
                                 </div>
                                 <h3 class="font-heading" style="font-size: 1rem; text-transform: uppercase; letter-spacing: 0.15em; font-weight: 800; color: var(--text-primary);">Grade de Horários</h3>
-                                <p class="text-dim" style="font-size: 0.85rem; line-height: 1.6;">Configure os dias e horários das aulas semanais para controle automatizado de check-in e presença.</p>
-                                <button class="btn btn-outline btn-config-academy" data-id="${academy.id}" style="height: 52px; border-radius: 10px; font-weight: 700; margin-top: 1rem; border: 2px dashed var(--border); background: var(--bg-elevated); color: var(--text-primary); gap: 0.75rem; transition: all 0.2s;">
-                                    <i data-lucide="calendar" size="18"></i> GERENCIAR GRADE SEMANAL
+                                <p class="text-dim" style="font-size: 0.85rem; line-height: 1.6;">Configure os dias e horários das aulas semanais.</p>
+                                <button class="btn btn-outline btn-config-academy" data-id="${academy.id}" style="height: 52px; border-radius: 10px; font-weight: 700; margin-top: 1rem; border: 2px dashed var(--border); background: var(--bg-elevated); color: var(--text-primary); gap: 0.75rem;">
+                                    <i data-lucide="calendar" size="18"></i> GRADE SEMANAL
                                 </button>
                             </div>
 
-                            <div class="card animate-in stagger-3" style="padding: 2.5rem; border-radius: 16px; border: 1px solid var(--border); background: var(--bg-surface); display: flex; flex-direction: column; gap: 1.25rem; position: relative; overflow: hidden;">
+                            <div class="card animate-in stagger-3" style="padding: 2rem; border-radius: 16px; border: 1px solid var(--border); background: var(--bg-surface); display: flex; flex-direction: column; gap: 1.25rem; position: relative; overflow: hidden;">
                                 <div style="position: absolute; right: -20px; top: -20px; opacity: 0.03;">
                                     <i data-lucide="award" size="120"></i>
                                 </div>
                                 <h3 class="font-heading" style="font-size: 1rem; text-transform: uppercase; letter-spacing: 0.15em; font-weight: 800; color: var(--text-primary);">Planos de Membro</h3>
-                                <p class="text-dim" style="font-size: 0.85rem; line-height: 1.6;">Gerencie valores de mensalidades, taxas de inscrição e benefícios vinculados a cada graduação ou faixa etária.</p>
-                                <button class="btn btn-outline" id="btn-manage-plans" style="height: 52px; border-radius: 10px; font-weight: 700; margin-top: 1rem; border: 2px dashed var(--border); background: var(--bg-elevated); color: var(--text-primary); gap: 0.75rem; transition: all 0.2s;">
+                                <p class="text-dim" style="font-size: 0.85rem; line-height: 1.6;">Gerencie valores de mensalidades e benefícios.</p>
+                                <button class="btn btn-outline" id="btn-manage-plans" style="height: 52px; border-radius: 10px; font-weight: 700; margin-top: 1rem; border: 2px dashed var(--border); background: var(--bg-elevated); color: var(--text-primary); gap: 0.75rem;">
                                     <i data-lucide="award" size="18"></i> GERENCIAR PLANOS
                                 </button>
                             </div>
                         </div>
                     </div>
                 </main>
-                <div style="position: fixed; bottom: 1rem; right: 1.5rem; font-size: 0.65rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.1em; font-weight: 700; pointer-events: none; opacity: 0.5;">
+
+                <!-- Bottom Navigation (Mobile Only) -->
+                <nav class="bottom-nav">
+                    <a href="#dashboard" class="bottom-nav-item">
+                        <i data-lucide="layout-dashboard"></i>
+                        <span>Início</span>
+                    </a>
+                    <a href="#membros" class="bottom-nav-item">
+                        <i data-lucide="users"></i>
+                        <span>Membros</span>
+                    </a>
+                    <a href="#aulas" class="bottom-nav-item">
+                        <i data-lucide="calendar"></i>
+                        <span>Aulas</span>
+                    </a>
+                    <a href="#perfil" class="bottom-nav-item">
+                        <i data-lucide="user"></i>
+                        <span>Perfil</span>
+                    </a>
+                    <a href="#configuracoes" class="bottom-nav-item active">
+                        <i data-lucide="settings"></i>
+                        <span>Ajustes</span>
+                    </a>
+                </nav>
+
+                <div class="hide-mobile" style="position: fixed; bottom: 1rem; right: 1.5rem; font-size: 0.65rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.1em; font-weight: 700; pointer-events: none; opacity: 0.5;">
                     OSS BJJ Manager • v1.0
                 </div>
+            </div>
+            
+            <style>
+                @media (max-width: 1024px) {
+                    .layout-container { --grid-main: 1fr; --grid-cols-mobile: 1fr; }
+                }
+            </style> </div>
             </div>
 
             <style>

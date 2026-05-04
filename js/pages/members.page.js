@@ -86,21 +86,19 @@ export class MembersPage {
                             <i data-lucide="log-out" size="18"></i> <span>Sair</span>
                         </button>
                     </div>
-                </aside>
-
-                <main class="main-content" style="max-width: 100%;">
+                </aside                <main class="main-content" style="max-width: 100%;">
                     <header class="flex-between mb-8 animate-in">
                         <div>
-                            <h1 class="font-heading font-xl" style="font-weight: 800; font-size: 2.5rem; margin-bottom: 0.5rem;">Membros</h1>
-                            <p class="text-graphite" style="font-size: 1.1rem; opacity: 0.8;">Edição rápida estilo planilha para gestão de alta performance.</p>
+                            <h1 class="font-heading font-xl" style="font-weight: 800; font-size: 2.25rem; margin-bottom: 0.5rem;">Membros</h1>
+                            <p class="text-graphite hide-mobile" style="font-size: 1.1rem; opacity: 0.8;">Gestão de membros da sua academia.</p>
                         </div>
-                        <button class="btn btn-primary" id="btn-add-member" style="height: 48px; gap: 0.75rem; background: var(--inverse-bg); color: var(--inverse-text); border: none; font-weight: 700; border-radius: 8px; min-width: 180px;">
-                            <i data-lucide="user-plus" size="20"></i> NOVO MEMBRO
+                        <button class="btn btn-primary" id="btn-add-member" style="height: 48px; gap: 0.75rem; background: var(--inverse-bg); color: var(--inverse-text); border: none; font-weight: 700; border-radius: 8px; min-width: auto; padding: 0 1.5rem;">
+                            <i data-lucide="user-plus" size="20"></i> <span class="hide-mobile">NOVO MEMBRO</span>
                         </button>
                     </header>
 
-                    <div class="card animate-in stagger-2" style="padding: 0; overflow-x: auto; border-radius: 12px; border: 1px solid var(--border); background: var(--bg-surface); box-shadow: 0 4px 20px rgba(0,0,0,0.05);">
-                        <table class="grid-table" style="width: 100%; border-collapse: collapse; min-width: 1200px;">
+                    <div class="card animate-in stagger-2" style="padding: 0; overflow-x: auto; border-radius: 12px; border: 1px solid var(--border); background: var(--bg-surface); box-shadow: 0 4px 20px rgba(0,0,0,0.05); -webkit-overflow-scrolling: touch;">
+                        <table class="grid-table" style="width: 100%; border-collapse: collapse; min-width: 1000px;">
                             <thead>
                                 <tr style="background: var(--bg-elevated); border-bottom: 2px solid var(--border);">
                                     <th style="width: 280px; padding: 1.25rem 1rem;">
@@ -111,7 +109,7 @@ export class MembersPage {
                                         <div class="th-filter" data-col="email">EMAIL <i data-lucide="chevron-down" size="14"></i></div>
                                         <input type="text" class="column-filter-input" data-col="email" placeholder="Filtrar...">
                                     </th>
-                                    <th style="width: 150px;">
+                                    <th style="width: 150px;" class="hide-mobile">
                                         <div class="th-filter" data-col="telefone">TELEFONE <i data-lucide="chevron-down" size="14"></i></div>
                                         <input type="text" class="column-filter-input" data-col="telefone" placeholder="Filtrar...">
                                     </th>
@@ -144,10 +142,39 @@ export class MembersPage {
                         </table>
                     </div>
                 </main>
-                <div style="position: fixed; bottom: 1rem; right: 1.5rem; font-size: 0.65rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.1em; font-weight: 700; pointer-events: none; opacity: 0.5;">
+
+                <!-- Bottom Navigation (Mobile Only) -->
+                <nav class="bottom-nav">
+                    ${this.user.is_admin ? `
+                        <a href="#dashboard" class="bottom-nav-item">
+                            <i data-lucide="layout-dashboard"></i>
+                            <span>Início</span>
+                        </a>
+                        <a href="#membros" class="bottom-nav-item active">
+                            <i data-lucide="users"></i>
+                            <span>Membros</span>
+                        </a>
+                    ` : ''}
+                    <a href="#aulas" class="bottom-nav-item">
+                        <i data-lucide="calendar"></i>
+                        <span>Aulas</span>
+                    </a>
+                    <a href="#perfil" class="bottom-nav-item">
+                        <i data-lucide="user"></i>
+                        <span>Perfil</span>
+                    </a>
+                    ${this.user.is_admin ? `
+                        <a href="#configuracoes" class="bottom-nav-item">
+                            <i data-lucide="settings"></i>
+                            <span>Ajustes</span>
+                        </a>
+                    ` : ''}
+                </nav>
+
+                <div class="hide-mobile" style="position: fixed; bottom: 1rem; right: 1.5rem; font-size: 0.65rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.1em; font-weight: 700; pointer-events: none; opacity: 0.5;">
                     OSS BJJ Manager • v1.0
                 </div>
-            </div>
+            </div>   </div>
 
             <style>
                 .grid-table th {

@@ -103,7 +103,7 @@ export class ClassesPage {
                         <p class="text-graphite">Agenda aqui sua aula</p>
                     </header>
 
-                    <div class="grid" style="grid-template-columns: 2fr 1fr; gap: 2rem;">
+                    <div class="grid" style="grid-template-columns: var(--grid-main, 2fr 1fr); gap: 2rem;">
                         <div style="display: flex; flex-direction: column; gap: 2rem;">
                             <!-- Agenda Section -->
                             <div class="card animate-in stagger-1">
@@ -117,7 +117,7 @@ export class ClassesPage {
                                             Realizar Check-in
                                         </button>
                                         ${this.user.is_admin || this.user.role === 'professor' ? `
-                                            <button class="btn btn-primary" id="btn-add-technique">
+                                            <button class="btn btn-primary hide-mobile" id="btn-add-technique">
                                                 <i data-lucide="plus" size="16"></i> Definir Técnica
                                             </button>
                                         ` : ''}
@@ -138,17 +138,17 @@ export class ClassesPage {
                             <div class="card animate-in stagger-2">
                                 <h3 class="font-heading mb-6" style="font-size: 1rem;">Histórico de aulas na atual faixa:</h3>
                                 <div class="grid grid-cols-3" style="text-align: center; gap: 1rem;">
-                                    <div style="padding: 1.5rem; background: var(--bg-elevated); border-radius: 12px; border: 1px solid var(--border);">
-                                        <p class="text-dim mb-2" style="font-size: 0.7rem; font-weight: 700; text-transform: uppercase;">Horas concluídas</p>
-                                        <p class="font-heading" style="font-size: 2rem; color: var(--primary);">${stats.totalHours}</p>
+                                    <div style="padding: 1.5rem 1rem; background: var(--bg-elevated); border-radius: 12px; border: 1px solid var(--border);">
+                                        <p class="text-dim mb-2" style="font-size: 0.6rem; font-weight: 700; text-transform: uppercase;">Horas concluídas</p>
+                                        <p class="font-heading" style="font-size: 1.75rem; color: var(--primary);">${stats.totalHours}</p>
                                     </div>
-                                    <div style="padding: 1.5rem; background: var(--bg-elevated); border-radius: 12px; border: 1px solid var(--border);">
-                                        <p class="text-dim mb-2" style="font-size: 0.7rem; font-weight: 700; text-transform: uppercase;">Qtd de treinos</p>
-                                        <p class="font-heading" style="font-size: 2rem; color: var(--text-primary);">${stats.trainingsInCurrentBelt}</p>
+                                    <div style="padding: 1.5rem 1rem; background: var(--bg-elevated); border-radius: 12px; border: 1px solid var(--border);">
+                                        <p class="text-dim mb-2" style="font-size: 0.6rem; font-weight: 700; text-transform: uppercase;">Qtd de treinos</p>
+                                        <p class="font-heading" style="font-size: 1.75rem; color: var(--text-primary);">${stats.trainingsInCurrentBelt}</p>
                                     </div>
-                                    <div style="padding: 1.5rem; background: var(--bg-elevated); border-radius: 12px; border: 1px solid var(--border);">
-                                        <p class="text-dim mb-2" style="font-size: 0.7rem; font-weight: 700; text-transform: uppercase;">Aulas ministradas</p>
-                                        <p class="font-heading" style="font-size: 2rem; color: var(--text-primary);">${stats.classesTaught}</p>
+                                    <div style="padding: 1.5rem 1rem; background: var(--bg-elevated); border-radius: 12px; border: 1px solid var(--border);">
+                                        <p class="text-dim mb-2" style="font-size: 0.6rem; font-weight: 700; text-transform: uppercase;">Aulas ministradas</p>
+                                        <p class="font-heading" style="font-size: 1.75rem; color: var(--text-primary);">${stats.classesTaught}</p>
                                     </div>
                                 </div>
                             </div>
@@ -185,8 +185,8 @@ export class ClassesPage {
                                             <p class="font-heading" style="font-size: 2.5rem; color: var(--text-primary);">${stats.totalTrainings}</p>
                                         </div>
                                     ` : stats.historyByBelt.map(h => `
-                                        <div style="padding: 1.5rem; background: var(--bg-elevated); border-radius: 12px; border: 1px solid var(--border); display: flex; align-items: flex-end; justify-content: space-between;">
-                                            <div style="flex: 1;">
+                                        <div style="padding: 1.5rem; background: var(--bg-elevated); border-radius: 12px; border: 1px solid var(--border); display: flex; align-items: flex-end; justify-content: space-between; flex-wrap: wrap; gap: 1.5rem;">
+                                            <div style="flex: 1; min-width: 140px;">
                                                 <p style="font-weight: 800; font-size: 0.8125rem; text-transform: uppercase; margin-bottom: 0.75rem; color: var(--text-primary);">${h.belt}</p>
                                                 <!-- Belt Graphic -->
                                                 <div style="width: 140px; height: 18px; background: ${this.getBeltColor(h.belt)}; border-radius: 3px; position: relative; border: 1px solid rgba(0,0,0,0.1); overflow: hidden;">
@@ -194,14 +194,14 @@ export class ClassesPage {
                                                 </div>
                                             </div>
                                             
-                                            <div style="display: flex; gap: 2.5rem; text-align: center;">
+                                            <div style="display: flex; gap: 1.5rem; text-align: center; flex: 1; justify-content: flex-end;">
                                                 <div>
-                                                    <p class="text-dim mb-1" style="font-size: 0.55rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em;">Horas Concluídas</p>
-                                                    <p class="font-heading" style="font-size: 1.5rem; color: var(--primary); line-height: 1;">${h.hours}</p>
+                                                    <p class="text-dim mb-1" style="font-size: 0.55rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em;">Horas</p>
+                                                    <p class="font-heading" style="font-size: 1.25rem; color: var(--primary); line-height: 1;">${h.hours}</p>
                                                 </div>
                                                 <div>
-                                                    <p class="text-dim mb-1" style="font-size: 0.55rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em;">Qtd de Treinos</p>
-                                                    <p class="font-heading" style="font-size: 1.5rem; color: var(--text-primary); line-height: 1;">${h.count}</p>
+                                                    <p class="text-dim mb-1" style="font-size: 0.55rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em;">Treinos</p>
+                                                    <p class="font-heading" style="font-size: 1.25rem; color: var(--text-primary); line-height: 1;">${h.count}</p>
                                                 </div>
                                             </div>
                                         </div>
@@ -211,10 +211,44 @@ export class ClassesPage {
                         </div>
                     </div>
                 </main>
-                <div style="position: fixed; bottom: 1rem; right: 1.5rem; font-size: 0.65rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.1em; font-weight: 700; pointer-events: none; opacity: 0.5;">
+
+                <!-- Bottom Navigation (Mobile Only) -->
+                <nav class="bottom-nav">
+                    ${this.user.is_admin ? `
+                        <a href="#dashboard" class="bottom-nav-item">
+                            <i data-lucide="layout-dashboard"></i>
+                            <span>Início</span>
+                        </a>
+                        <a href="#membros" class="bottom-nav-item">
+                            <i data-lucide="users"></i>
+                            <span>Membros</span>
+                        </a>
+                    ` : ''}
+                    <a href="#aulas" class="bottom-nav-item active">
+                        <i data-lucide="calendar"></i>
+                        <span>Aulas</span>
+                    </a>
+                    <a href="#perfil" class="bottom-nav-item">
+                        <i data-lucide="user"></i>
+                        <span>Perfil</span>
+                    </a>
+                    ${this.user.is_admin ? `
+                        <a href="#configuracoes" class="bottom-nav-item">
+                            <i data-lucide="settings"></i>
+                            <span>Ajustes</span>
+                        </a>
+                    ` : ''}
+                </nav>
+
+                <div class="hide-mobile" style="position: fixed; bottom: 1rem; right: 1.5rem; font-size: 0.65rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.1em; font-weight: 700; pointer-events: none; opacity: 0.5;">
                     OSS BJJ Manager • v1.0
                 </div>
             </div>
+            <style>
+                @media (max-width: 1024px) {
+                    .layout-container { --grid-main: 1fr; }
+                }
+            </style>
             <div id="status-message" style="position: fixed; bottom: 20px; right: 20px; z-index: 1000;"></div>
         `;
     }

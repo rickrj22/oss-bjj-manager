@@ -113,13 +113,11 @@ export class DashboardPage {
                             <span>Sair</span>
                         </button>
                     </div>
-                </aside>
-
-                <main class="main-content">
+                      <main class="main-content">
                     <header class="flex-between mb-8">
                         <div>
                             <h1 class="font-heading font-xl">Dashboard</h1>
-                            <p class="text-graphite">Bem-vindo ao centro de comando da sua Academia.</p>
+                            <p class="text-graphite hide-mobile">Bem-vindo ao centro de comando da sua Academia.</p>
                         </div>
                     </header>
 
@@ -129,7 +127,7 @@ export class DashboardPage {
                         <div class="card animate-in stagger-1">
                             <p class="text-dim" style="font-size: 0.7rem; text-transform: uppercase; font-weight: 800; letter-spacing: 0.05em;">Alunos Ativos</p>
                             <div class="flex-between mt-3">
-                                <h2 class="font-heading font-xl" style="font-size: 2.5rem; line-height: 1;">${stats.students.active}</h2>
+                                <h2 class="font-heading font-xl" style="font-size: 2.25rem; line-height: 1;">${stats.students.active}</h2>
                                 <div style="display: flex; flex-direction: column; gap: 6px;">
                                     <button class="stat-btn active-list-btn">Ativos: ${stats.students.active}</button>
                                     <button class="stat-btn inactive-list-btn">Inativos: ${stats.students.inactive}</button>
@@ -139,12 +137,12 @@ export class DashboardPage {
 
                         <!-- Frequência -->
                         <div class="card animate-in stagger-2">
-                            <p class="text-dim" style="font-size: 0.7rem; text-transform: uppercase; font-weight: 800; letter-spacing: 0.05em;">Frequência Média (Mês)</p>
+                            <p class="text-dim" style="font-size: 0.7rem; text-transform: uppercase; font-weight: 800; letter-spacing: 0.05em;">Frequência Média</p>
                             <div class="avatar-stack" style="margin-top: 1.5rem;">
-                                 ${topStudents.map(s => this.renderAvatarWithStripes(s, 40, true)).join('')}
-                                ${topStudents.length === 0 ? '<span class="text-dim" style="font-size: 0.8rem;">Ainda sem dados...</span>' : ''}
+                                 ${topStudents.map(s => this.renderAvatarWithStripes(s, 36, true)).join('')}
+                                ${topStudents.length === 0 ? '<span class="text-dim" style="font-size: 0.8rem;">Sem dados...</span>' : ''}
                             </div>
-                            <p class="text-dim mt-4" style="font-size: 0.65rem; font-weight: 500;">Destaque para os 5 mais frequentes</p>
+                            <p class="text-dim mt-4" style="font-size: 0.6rem; font-weight: 500;">Top 5 frequentes</p>
                         </div>
 
                         <!-- Financeiro -->
@@ -152,18 +150,18 @@ export class DashboardPage {
                             <p class="text-dim" style="font-size: 0.7rem; text-transform: uppercase; font-weight: 800; letter-spacing: 0.05em;">Receita Mensal</p>
                             <div class="flex-between mt-3">
                                 <div>
-                                    <p style="font-size: 1.125rem; font-weight: 800; color: var(--success);">R$ ${stats.finance.paid.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</p>
-                                    <p style="font-size: 0.75rem; color: var(--error); font-weight: 600;">Pendente: R$ ${stats.finance.pending.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</p>
+                                    <p style="font-size: 1rem; font-weight: 800; color: var(--success);">R$ ${stats.finance.paid.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</p>
+                                    <p style="font-size: 0.65rem; color: var(--error); font-weight: 600;">Pendente: R$ ${stats.finance.pending.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</p>
                                 </div>
-                                <h2 class="font-heading" style="font-size: 1.75rem;">${stats.finance.percent}%</h2>
+                                <h2 class="font-heading" style="font-size: 1.5rem;">${stats.finance.percent}%</h2>
                             </div>
-                            <div class="progress-container" style="height: 4px; margin-top: 1.25rem;">
+                            <div class="progress-container" style="height: 4px; margin-top: 1rem;">
                                 <div class="progress-fill" style="width: ${stats.finance.percent}%"></div>
                             </div>
                         </div>
                     </div>
 
-                    <div class="grid" style="grid-template-columns: 2fr 1fr; gap: 2rem;">
+                    <div class="grid" style="grid-template-columns: var(--grid-main, 2fr 1fr); gap: 2rem;">
                         <!-- Agenda -->
                         <div class="card animate-in stagger-2">
                             <div class="flex-between mb-8" style="border-bottom: 1px solid var(--border); padding-bottom: 1.25rem;">
@@ -173,11 +171,11 @@ export class DashboardPage {
                                 </div>
                                 <div style="display: flex; gap: 0.75rem; align-items: center;">
                                     <button class="btn btn-outline" id="btn-global-checkin">
-                                        Realizar Check-in
+                                        Check-in
                                     </button>
                                     ${this.user.is_admin || this.user.role === 'professor' ? `
-                                        <button class="btn btn-primary" id="btn-add-technique">
-                                            <i data-lucide="plus" size="18"></i> Definir Técnica
+                                        <button class="btn btn-primary hide-mobile" id="btn-add-technique">
+                                            <i data-lucide="plus" size="18"></i> Técnica
                                         </button>
                                     ` : ''}
                                 </div>
@@ -190,8 +188,7 @@ export class DashboardPage {
                                             <div style="width: 64px; height: 64px; background: var(--bg-surface); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem; border: 1px solid var(--border);">
                                                 <i data-lucide="calendar-off" size="32" class="text-dim"></i>
                                             </div>
-                                            <h4 class="font-heading mb-2" style="font-size: 1.125rem;">Nenhuma Aula para Hoje</h4>
-                                            <p class="text-dim" style="font-size: 0.85rem; max-width: 250px; margin: 0 auto;">Não há treinos cadastrados na grade semanal para este dia nesta unidade.</p>
+                                            <h4 class="font-heading mb-2" style="font-size: 1.125rem;">Nenhuma Aula</h4>
                                         </div>
                                     `
                                 }
@@ -220,9 +217,45 @@ export class DashboardPage {
                         </div>
                     </div>
                 </main>
-                <div style="position: fixed; bottom: 1rem; right: 1.5rem; font-size: 0.65rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.1em; font-weight: 700; pointer-events: none; opacity: 0.5;">
+
+                <!-- Bottom Navigation (Mobile Only) -->
+                <nav class="bottom-nav">
+                    ${this.user.is_admin ? `
+                        <a href="#dashboard" class="bottom-nav-item active">
+                            <i data-lucide="layout-dashboard"></i>
+                            <span>Início</span>
+                        </a>
+                        <a href="#membros" class="bottom-nav-item">
+                            <i data-lucide="users"></i>
+                            <span>Membros</span>
+                        </a>
+                    ` : ''}
+                    <a href="#aulas" class="bottom-nav-item">
+                        <i data-lucide="calendar"></i>
+                        <span>Aulas</span>
+                    </a>
+                    <a href="#perfil" class="bottom-nav-item">
+                        <i data-lucide="user"></i>
+                        <span>Perfil</span>
+                    </a>
+                    ${this.user.is_admin ? `
+                        <a href="#configuracoes" class="bottom-nav-item">
+                            <i data-lucide="settings"></i>
+                            <span>Ajustes</span>
+                        </a>
+                    ` : ''}
+                </nav>
+
+                <div class="hide-mobile" style="position: fixed; bottom: 1rem; right: 1.5rem; font-size: 0.65rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.1em; font-weight: 700; pointer-events: none; opacity: 0.5;">
                     OSS BJJ Manager • v1.0
                 </div>
+            </div>
+            
+            <style>
+                @media (max-width: 1024px) {
+                    .layout-container { --grid-main: 1fr; }
+                }
+            </style>    </div>
             </div>
             
             <!-- Modals -->
