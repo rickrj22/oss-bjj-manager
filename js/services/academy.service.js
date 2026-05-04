@@ -204,69 +204,63 @@ export class AcademyService {
     }
 
     async getUserStats(userId) {
-        // 1. Total de check-ins (Total de treinos)
-        const { count: totalTrainings } = await this.client
-            .from('attendance')
-            .select('*', { count: 'exact', head: true })
-            .eq('user_id', userId);
+        try {
+            // 1. Fetch primary data in parallel
+            const [attendanceRes, historyRes, teachingRes] = await Promise.all([
+                this.client.from('attendance').select('*').eq('user_id', userId).order('check_in_date', { ascending: true }),
+                this.client.from('graduation_history').select('*').eq('profile_id', userId).order('promoted_at', { ascending: true }),
+                this.client.from('daily_techniques').select('*', { count: 'exact', head: true }).eq('professor_id', userId)
+            ]);
 
-        // 2. Aulas ministradas (como professor)
-        const { count: classesTaught } = await this.client
-            .from('daily_techniques')
-            .select('*', { count: 'exact', head: true })
-            .eq('professor_id', userId);
+            const allAttendance = attendanceRes.data || [];
+            const beltHistory = historyRes.data || [];
+            const totalTrainings = allAttendance.length;
+            const classesTaught = teachingRes.count || 0;
 
-        // 3. Treinos por faixa (Histórico total por faixa)
-        const { data: beltHistory } = await this.client
-            .from('graduation_history')
-            .select('*')
-            .eq('user_id', userId)
-            .order('promoted_at', { ascending: true });
-
-        const safeHistory = beltHistory || [];
-        const historyByBelt = [];
-        let totalCounted = 0;
-
-        for (let i = 0; i < safeHistory.length; i++) {
-            const current = beltHistory[i];
-            const next = beltHistory[i + 1];
+            const historyByBelt = [];
             
-            let query = this.client.from('attendance').select('*', { count: 'exact', head: true }).eq('user_id', userId).gte('check_in_date', current.promoted_at);
-            if (next) {
-                query = query.lt('check_in_date', next.promoted_at);
+            if (beltHistory.length > 0) {
+                for (let i = 0; i < beltHistory.length; i++) {
+                    const current = beltHistory[i];
+                    const next = beltHistory[i + 1];
+                    const startDate = new Date(current.promoted_at);
+                    const endDate = next ? new Date(next.promoted_at) : new Date();
+
+                    const count = allAttendance.filter(a => {
+                        const d = new Date(a.check_in_date);
+                        return d >= startDate && (!next || d < endDate);
+                    }).length;
+
+                    historyByBelt.push({
+                        belt: current.belt,
+                        count: count,
+                        hours: count * 1.5,
+                        date: current.promoted_at
+                    });
+                }
             }
-            
-            const { count } = await query;
-            historyByBelt.push({
-                belt: current.belt,
-                count: count || 0,
-                hours: (count || 0) * 1.5,
-                date: current.promoted_at
-            });
-            totalCounted += (count || 0);
-        }
 
-        // Se o histórico de graduação estiver vazio ou o último registro for o atual
-        let trainingsInCurrentBelt = totalTrainings;
-        if (beltHistory && beltHistory.length > 0) {
-            const last = beltHistory[beltHistory.length - 1];
-            const { count: currentCount } = await this.client
-                .from('attendance')
-                .select('*', { count: 'exact', head: true })
-                .eq('user_id', userId)
-                .gte('check_in_date', last.promoted_at);
-            trainingsInCurrentBelt = currentCount;
-        }
+            // Calculate current belt progress
+            let trainingsInCurrentBelt = totalTrainings;
+            if (beltHistory.length > 0) {
+                const last = beltHistory[beltHistory.length - 1];
+                const lastDate = new Date(last.promoted_at);
+                trainingsInCurrentBelt = allAttendance.filter(a => new Date(a.check_in_date) >= lastDate).length;
+            }
 
-        return {
-            totalTrainings: totalTrainings || 0,
-            totalHours: (totalTrainings || 0) * 1.5,
-            classesTaught: classesTaught || 0,
-            trainingsInCurrentBelt: trainingsInCurrentBelt || 0,
-            historyByBelt: historyByBelt.reverse(), // Mais recente primeiro
-            isReadyForStripe: (trainingsInCurrentBelt % 50) >= 40, 
-            isReadyForBelt: trainingsInCurrentBelt >= 200
-        };
+            return {
+                totalTrainings,
+                totalHours: totalTrainings * 1.5,
+                classesTaught,
+                trainingsInCurrentBelt,
+                historyByBelt: historyByBelt.reverse(),
+                isReadyForStripe: (trainingsInCurrentBelt % 50) >= 40,
+                isReadyForBelt: trainingsInCurrentBelt >= 200
+            };
+        } catch (e) {
+            console.error("❌ Error in getUserStats:", e);
+            return { totalTrainings: 0, totalHours: 0, classesTaught: 0, trainingsInCurrentBelt: 0, historyByBelt: [] };
+        }
     }
 
     async saveDailyTechnique(classId, technique) {
@@ -519,7 +513,7 @@ export class AcademyService {
             const { data: lastGrad } = await this.client
                 .from('graduation_history')
                 .select('promoted_at')
-                .eq('user_id', m.id)
+                .eq('profile_id', m.id)
                 .order('promoted_at', { ascending: false })
                 .limit(1);
             

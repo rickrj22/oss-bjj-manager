@@ -80,29 +80,17 @@ export class AuthService {
             }
 
             if (data) {
-                this.currentUser = { ...this.currentUser, ...data };
+                this.currentUser = { ...data };
                 
-                // Tentativa segura de carregar dados da academia (priorizando a principal)
+                // Tentativa segura de carregar dados da academia
                 try {
-                    // Primeiro tenta buscar se existe uma academia marcada como principal
-                    const { data: academies } = await this.client
+                    const { data: academyData } = await this.client
                         .from('academies')
-                        .select('id, name, logo_url, is_primary')
-                        .eq('is_primary', true)
-                        .limit(1);
+                        .select('id, name, logo_url')
+                        .eq('id', data.academy_id)
+                        .single();
                     
-                    if (academies && academies.length > 0) {
-                        this.currentUser.academy = academies[0];
-                    } else if (data.academy_id) {
-                        // Fallback para a academia vinculada ao perfil se não houver global primary
-                        const { data: academyData } = await this.client
-                            .from('academies')
-                            .select('id, name, logo_url')
-                            .eq('id', data.academy_id)
-                            .single();
-                        
-                        if (academyData) this.currentUser.academy = academyData;
-                    }
+                    if (academyData) this.currentUser.academy = academyData;
                 } catch (e) {
                     console.warn("⚠️ Falha ao buscar identidade visual:", e.message);
                 }
@@ -111,22 +99,24 @@ export class AuthService {
             }
         } catch (e) {
             console.error("❌ Erro ou Timeout ao ler profiles:", e);
-            this.currentUser = { id: userId, full_name: 'Erro de Carregamento', role: 'student' };
+            // NÃO setamos this.currentUser aqui para permitir nova tentativa no próximo getUser()
         }
     }
 
     async getUser() {
-        // Se já temos o usuário, retornamos imediatamente
-        if (this.currentUser) return this.currentUser;
+        // Se já temos o usuário VÁLIDO, retornamos imediatamente
+        if (this.currentUser && this.currentUser.full_name !== 'Erro de Carregamento') {
+            return this.currentUser;
+        }
         
-        // Se não temos, tentamos uma última vez de forma rápida
+        // Se não temos ou o que temos é um erro, tentamos carregar
         try {
             const { data: { session } } = await this.client.auth.getSession();
-            if (session && !this.currentUser) {
+            if (session) {
                 await this._refreshUserProfile(session.user.id);
             }
         } catch (e) {
-            console.warn("⚠️ Falha silenciosa ao obter usuário em getUser");
+            console.warn("⚠️ Falha ao obter usuário em getUser");
         }
         
         return this.currentUser;
