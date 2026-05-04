@@ -221,8 +221,8 @@ export class SettingsPage {
                 .grid-row:hover {
                     background: var(--bg-elevated);
                 }
-                .grid-input {
-                    background: var(--bg-elevated);
+                .grid-input, .grid-select {
+                    background: var(--bg-input);
                     border: 1px solid var(--border);
                     color: var(--text-primary);
                     font-size: 0.875rem;
@@ -230,16 +230,26 @@ export class SettingsPage {
                     width: 100%;
                     border-radius: 10px;
                     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+                    box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
                 }
-                .grid-input:hover {
+                .grid-select {
+                    appearance: none;
+                    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+                    background-repeat: no-repeat;
+                    background-position: right 0.75rem center;
+                    background-size: 1rem;
+                    padding-right: 2.5rem;
+                }
+                .grid-input:hover, .grid-select:hover {
                     border-color: var(--border-bright);
                     background: var(--bg-surface);
+                    box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
                 }
-                .grid-input:focus {
+                .grid-input:focus, .grid-select:focus {
                     background: var(--bg-surface);
                     border-color: var(--primary);
                     outline: none;
-                    box-shadow: 0 0 0 4px hsla(var(--h), 100%, 65%, 0.12);
+                    box-shadow: 0 0 0 4px hsla(var(--h), 100%, 65%, 0.12), inset 0 2px 4px rgba(0,0,0,0.02);
                 }
                 .btn-save-row:hover {
                     transform: translateY(-2px);
