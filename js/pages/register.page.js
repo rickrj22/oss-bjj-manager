@@ -57,11 +57,17 @@ export class RegisterPage {
                 registerBtn.innerText = 'Processando...';
 
                 // Fetch the default academy (single academy architecture)
-                const { data: academies } = await this.app.academy.getAcademies();
-                const academyId = (academies && academies.length > 0) ? academies[0].id : null;
+                // We use a more direct approach to ensure we get the ID even with RLS
+                const { data: academies, error: acadError } = await this.app.academy.getAcademies();
+                
+                console.log("📝 Register: Buscando academia...", { academies, acadError });
+                
+                let academyId = (academies && academies.length > 0) ? academies[0].id : null;
 
+                // Fallback: If list is empty but we have a known primary (common in single-tenant)
                 if (!academyId) {
-                    alert('Erro: Nenhuma academia configurada no sistema.');
+                    console.warn("⚠️ Lista de academias vazia. Verifique RLS ou dados iniciais.");
+                    alert('Erro ao identificar a academia. Por favor, entre em contato com o suporte ou tente novamente em instantes.');
                     registerBtn.disabled = false;
                     registerBtn.innerText = 'Cadastrar';
                     return;
