@@ -452,12 +452,9 @@ export class MembersPage {
                             <option value="professor" ${member.role === 'professor' ? 'selected' : ''}>Professor</option>
                         </select>
                     </div>
-                    <div>
-                        <label style="${lbl}">Administrador</label>
-                        <select id="edit-admin" class="input" style="${inp}">
-                            <option value="false" ${!member.is_admin ? 'selected' : ''}>Não</option>
-                            <option value="true" ${member.is_admin ? 'selected' : ''}>Sim</option>
-                        </select>
+                    <div style="display: flex; align-items: center; gap: 0.75rem; background: var(--bg-elevated); padding: 0 1rem; border-radius: 8px; border: 1px solid var(--border); height: 48px; align-self: flex-end;">
+                        <input type="checkbox" id="edit-admin" ${member.is_admin ? 'checked' : ''} style="width: 18px; height: 18px; accent-color: var(--primary);">
+                        <label for="edit-admin" style="font-weight: 700; font-size: 0.85rem; cursor: pointer;">Administrador</label>
                     </div>
                     <div>
                         <label style="${lbl}">Plano de Membro</label>
@@ -518,7 +515,7 @@ export class MembersPage {
                 current_belt: document.getElementById('edit-belt').value,
                 current_stripes: parseInt(document.getElementById('edit-stripes').value),
                 role: document.getElementById('edit-role').value,
-                is_admin: document.getElementById('edit-admin').value === 'true',
+                is_admin: document.getElementById('edit-admin').checked,
                 plan_id: document.getElementById('edit-plan').value || null,
                 payment_due_date: parseInt(document.getElementById('edit-due-date').value) || null
             };
