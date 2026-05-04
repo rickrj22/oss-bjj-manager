@@ -129,7 +129,8 @@ export class ProfilePage {
                         cursor: not-allowed !important;
                         border-radius: 6px !important;
                     }
-                </styl                <main class="main-content" style="padding: 2rem;">
+                </style>
+                <main class="main-content" style="padding: 2rem;">
                     <div class="grid" style="grid-template-columns: var(--grid-main, 1.8fr 1fr); gap: 2rem; max-width: 1200px; margin: 0 auto;">
                         
                         <!-- Coluna Esquerda: Formulários e Timeline -->
@@ -280,7 +281,7 @@ export class ProfilePage {
                     .layout-container { --grid-main: 1fr; }
                     .layout-container { --span-all: 2; }
                 }
-            </style>/div>
+            </style>
             </div>
             <div id="status-message" style="position: fixed; bottom: 20px; right: 20px; z-index: 1000;"></div>
         `;

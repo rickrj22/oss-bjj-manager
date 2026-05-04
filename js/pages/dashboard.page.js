@@ -113,7 +113,9 @@ export class DashboardPage {
                             <span>Sair</span>
                         </button>
                     </div>
-                      <main class="main-content">
+                </aside>
+
+                <main class="main-content">
                     <header class="flex-between mb-8">
                         <div>
                             <h1 class="font-heading font-xl">Dashboard</h1>

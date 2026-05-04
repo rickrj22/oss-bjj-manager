@@ -86,7 +86,9 @@ export class SettingsPage {
                             <span>Sair</span>
                         </button>
                     </div>
-                </aside                <main class="main-content" style="max-width: 100%;">
+                </aside>
+
+                <main class="main-content" style="max-width: 100%;">
                     <header class="flex-between mb-8 animate-in">
                         <div>
                             <h1 class="font-heading font-xl">Configurações</h1>

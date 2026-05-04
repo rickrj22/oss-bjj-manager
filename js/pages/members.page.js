@@ -86,7 +86,9 @@ export class MembersPage {
                             <i data-lucide="log-out" size="18"></i> <span>Sair</span>
                         </button>
                     </div>
-                </aside                <main class="main-content" style="max-width: 100%;">
+                </aside>
+
+                <main class="main-content" style="max-width: 100%;">
                     <header class="flex-between mb-8 animate-in">
                         <div>
                             <h1 class="font-heading font-xl" style="font-weight: 800; font-size: 2.25rem; margin-bottom: 0.5rem;">Membros</h1>

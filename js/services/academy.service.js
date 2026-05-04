@@ -733,7 +733,7 @@ export class AcademyService {
     async getGraduationHistory(studentId) {
         const { data, error } = await this.client
             .from('graduation_history')
-            .select(`*, professor:profiles(full_name)`)
+            .select(`*, professor:profiles!graduation_history_professor_id_fkey(full_name)`)
             .eq('profile_id', studentId)
             .order('promoted_at', { ascending: false });
 
