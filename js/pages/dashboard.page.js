@@ -5,24 +5,6 @@ export class DashboardPage {
 
     async render() {
         this.user = await this.app.auth.getUser();
-
-        // Auto-fix para ambiente de teste: se o usuário não tem academy_id, vincula à primeira encontrada
-        if (!this.user.academy_id) {
-            console.log("🛠️ [AUTO-FIX] Usuário sem academia. Vinculando à primeira disponível...");
-            try {
-                const { data: academy } = await this.app.academy.client.from('academies').select('id').limit(1).single();
-                if (academy) {
-                    const res = await this.app.auth.updateProfile({ academy_id: academy.id });
-                    if (res.success) {
-                        this.user = await this.app.auth.getUser();
-                        console.log("✅ [AUTO-FIX] Academia vinculada:", academy.id);
-                    }
-                }
-            } catch (e) {
-                console.warn("⚠️ Falha ao auto-vincular academia:", e);
-            }
-        }
-
         const theme = this.app.currentTheme;
         
         this.app.dashboardState = this.app.dashboardState || {};
@@ -30,7 +12,8 @@ export class DashboardPage {
         this.academies = academies || [];
         
         if (!this.app.dashboardState.selectedAcademyId) {
-            this.app.dashboardState.selectedAcademyId = this.user.academy_id;
+            const primary = this.academies.find(a => a.is_primary);
+            this.app.dashboardState.selectedAcademyId = primary ? primary.id : this.user.academy_id;
         }
 
         // Buscando dados em paralelo para performance
@@ -169,28 +152,26 @@ export class DashboardPage {
                             <div class="flex-between mb-8" style="border-bottom: 1px solid var(--border); padding-bottom: 1.25rem;">
                                 <div>
                                     <h3 class="font-heading font-large">Agenda de Hoje</h3>
-                                    <p class="text-dim" style="font-size: 0.8125rem;">${new Date().toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' })}</p>
+                                    <p class="text-dim" style="font-size: 0.85rem; text-transform: capitalize;">${new Date().toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' })}</p>
                                 </div>
                                 <div style="display: flex; gap: 0.75rem; align-items: center;">
                                     <button class="btn btn-outline" id="btn-global-checkin">
-                                        Check-in
+                                        REALIZAR CHECK-IN
                                     </button>
                                     ${this.user.is_admin || this.user.role === 'professor' ? `
                                         <button class="btn btn-primary hide-mobile" id="btn-add-technique">
-                                            <i data-lucide="plus" size="18"></i> Técnica
+                                            <i data-lucide="plus" size="16"></i> DEFINIR TÉCNICA
                                         </button>
                                     ` : ''}
                                 </div>
                             </div>
-                            <div style="display: flex; flex-direction: column; gap: 2rem;">
+                            <div class="classes-list" style="display: flex; flex-direction: column; gap: 1.5rem;">
                                 ${classes.length > 0 
                                     ? classes.map(c => this.renderClassItem(c, this.user)).join('')
                                     : `
-                                        <div style="text-align: center; padding: 4rem 2rem; background: var(--bg-elevated); border-radius: 16px; border: 1px dashed var(--border);">
-                                            <div style="width: 64px; height: 64px; background: var(--bg-surface); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem; border: 1px solid var(--border);">
-                                                <i data-lucide="calendar-off" size="32" class="text-dim"></i>
-                                            </div>
-                                            <h4 class="font-heading mb-2" style="font-size: 1.125rem;">Nenhuma Aula</h4>
+                                        <div style="text-align: center; padding: 3rem; background: var(--bg-elevated); border-radius: 12px; border: 1px dashed var(--border);">
+                                            <i data-lucide="calendar-off" size="48" class="text-dim mb-4"></i>
+                                            <p class="text-dim">Nenhuma aula agendada para hoje.</p>
                                         </div>
                                     `
                                 }
