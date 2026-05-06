@@ -823,11 +823,15 @@ export class AcademyService {
 
     async updateMember(userId, updates) {
         // 1. Get current data to check for graduation changes
-        const { data: current } = await this.client
+        const { data: current, error: fetchError } = await this.client
             .from('profiles')
             .select('current_belt, current_stripes')
             .eq('id', userId)
             .single();
+
+        if (fetchError) {
+            console.error("❌ Erro ao buscar dados atuais do membro:", fetchError);
+        }
 
         const { error } = await this.client
             .from('profiles')
@@ -835,26 +839,41 @@ export class AcademyService {
             .eq('id', userId);
 
         if (!error && current) {
-            const beltChanged = updates.current_belt && updates.current_belt !== current.current_belt;
-            const stripesChanged = updates.current_stripes !== undefined && updates.current_stripes !== current.current_stripes;
+            // Comparação robusta (ignora espaços e case)
+            const oldBelt = (current.current_belt || '').trim().toLowerCase();
+            const newBelt = (updates.current_belt || '').trim().toLowerCase();
+            const oldStripes = parseInt(current.current_stripes || 0);
+            const newStripes = updates.current_stripes !== undefined ? parseInt(updates.current_stripes) : oldStripes;
 
-            console.log("🎓 Verificando graduação:", { beltChanged, stripesChanged });
+            const beltChanged = newBelt && newBelt !== oldBelt;
+            const stripesChanged = newStripes !== oldStripes;
+
+            console.log("🎓 Auditoria de Graduação:", { 
+                old: `${oldBelt} (${oldStripes}º)`, 
+                new: `${newBelt} (${newStripes}º)`,
+                beltChanged, 
+                stripesChanged 
+            });
 
             if (beltChanged || stripesChanged) {
                 const user = await this.app.auth.getUser();
-                const { error: histError } = await this.client.from('graduation_history').insert({
+                const histEntry = {
                     profile_id: userId,
                     belt: updates.current_belt || current.current_belt,
-                    stripes: updates.current_stripes !== undefined ? updates.current_stripes : current.current_stripes,
+                    stripes: newStripes,
                     notes: beltChanged ? 'Graduação' : 'Ganho de grau',
                     professor_id: user.id,
-                    promoted_at: new Date()
-                });
+                    promoted_at: new Date().toISOString()
+                };
+
+                const { error: histError } = await this.client
+                    .from('graduation_history')
+                    .insert(histEntry);
 
                 if (histError) {
-                    console.error("❌ Erro ao gravar histórico de graduação:", histError);
+                    console.error("❌ Erro CRÍTICO ao gravar histórico:", histError);
                 } else {
-                    console.log("✅ Histórico de graduação gravado com sucesso.");
+                    console.log("✅ Histórico gravado com sucesso:", histEntry);
                 }
             }
         }
