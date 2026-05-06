@@ -313,7 +313,7 @@ export class DashboardPage {
                                     <div>
                                         <p style="font-size: 1rem; font-weight: 700; color: var(--text-primary);">${a.name}</p>
                                         <p style="font-size: 0.8125rem; color: var(--text-dim); font-weight: 500; text-transform: capitalize;">
-                                            Faixa ${a.belt} ${a.stripes > 0 ? `• ${a.stripes}º Grau` : ''}
+                                            ${a.belt} ${a.stripes > 0 ? `• ${a.stripes}º Grau` : ''}
                                         </p>
                                     </div>
                                 </div>
