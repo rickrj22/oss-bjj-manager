@@ -139,7 +139,7 @@ export class ClassesPage {
                             <!-- History Summary Section -->
                             <div class="card animate-in stagger-2">
                                 <h3 class="font-heading mb-6" style="font-size: 1rem;">Histórico de aulas na atual faixa:</h3>
-                                <div class="grid grid-cols-3" style="text-align: center; gap: 1rem;">
+                                <div class="grid ${this.user.is_admin || this.user.role === 'professor' ? 'grid-cols-3' : 'grid-cols-2'}" style="text-align: center; gap: 1rem;">
                                     <div style="padding: 1.5rem 1rem; background: var(--bg-elevated); border-radius: 12px; border: 1px solid var(--border);">
                                         <p class="text-dim mb-2" style="font-size: 0.6rem; font-weight: 700; text-transform: uppercase;">Horas concluídas</p>
                                         <p class="font-heading" style="font-size: 1.75rem; color: var(--primary);">${stats.totalHours}</p>
@@ -148,10 +148,12 @@ export class ClassesPage {
                                         <p class="text-dim mb-2" style="font-size: 0.6rem; font-weight: 700; text-transform: uppercase;">Qtd de treinos</p>
                                         <p class="font-heading" style="font-size: 1.75rem; color: var(--text-primary);">${stats.trainingsInCurrentBelt}</p>
                                     </div>
-                                    <div style="padding: 1.5rem 1rem; background: var(--bg-elevated); border-radius: 12px; border: 1px solid var(--border);">
-                                        <p class="text-dim mb-2" style="font-size: 0.6rem; font-weight: 700; text-transform: uppercase;">Aulas ministradas</p>
-                                        <p class="font-heading" style="font-size: 1.75rem; color: var(--text-primary);">${stats.classesTaught}</p>
-                                    </div>
+                                    ${this.user.is_admin || this.user.role === 'professor' ? `
+                                        <div style="padding: 1.5rem 1rem; background: var(--bg-elevated); border-radius: 12px; border: 1px solid var(--border);">
+                                            <p class="text-dim mb-2" style="font-size: 0.6rem; font-weight: 700; text-transform: uppercase;">Aulas ministradas</p>
+                                            <p class="font-heading" style="font-size: 1.75rem; color: var(--text-primary);">${stats.classesTaught}</p>
+                                        </div>
+                                    ` : ''}
                                 </div>
                             </div>
                         </div>
