@@ -86,7 +86,12 @@ export class RegisterPage {
                     return;
                 }
 
-                const result = await this.app.auth.signUp(email, password, fullName, academyId, { cpf, phone });
+                const result = await this.app.auth.signUp(email, password, fullName, academyId, { 
+                    cpf, 
+                    phone,
+                    current_belt: 'white belt',
+                    current_stripes: 0
+                });
 
                 if (result.success) {
                     alert('Cadastro realizado! Por favor, verifique seu e-mail para confirmar a conta.');

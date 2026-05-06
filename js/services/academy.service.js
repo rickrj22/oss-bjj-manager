@@ -599,7 +599,9 @@ export class AcademyService {
                 options: {
                     data: {
                         full_name: memberData.full_name,
-                        academy_id: memberData.academy_id
+                        academy_id: memberData.academy_id,
+                        current_belt: memberData.current_belt || 'white belt',
+                        current_stripes: memberData.current_stripes || 0
                     },
                     // Skip email confirmation redirect — allows auto-confirm if
                     // "Enable email confirmations" is OFF in Supabase dashboard
