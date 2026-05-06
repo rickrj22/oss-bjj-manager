@@ -209,14 +209,16 @@ export class AcademyService {
     async getUserStats(userId) {
         try {
             // 1. Fetch primary data in parallel
-            const [attendanceRes, historyRes, teachingRes] = await Promise.all([
+            const [attendanceRes, historyRes, teachingRes, profileRes] = await Promise.all([
                 this.client.from('attendance').select('*').eq('user_id', userId).eq('status', 'confirmed').order('check_in_date', { ascending: true }),
                 this.client.from('graduation_history').select('*').eq('profile_id', userId).order('promoted_at', { ascending: true }),
-                this.client.from('daily_techniques').select('*', { count: 'exact', head: true }).eq('professor_id', userId)
+                this.client.from('daily_techniques').select('*', { count: 'exact', head: true }).eq('professor_id', userId),
+                this.client.from('profiles').select('created_at, current_belt, current_stripes').eq('id', userId).single()
             ]);
 
             const allAttendance = attendanceRes.data || [];
             const beltHistory = historyRes.data || [];
+            const profile = profileRes.data;
             const totalTrainings = allAttendance.length;
             const classesTaught = teachingRes.count || 0;
 
@@ -239,9 +241,20 @@ export class AcademyService {
                         stripes: current.stripes || 0,
                         count: count,
                         hours: count * 1.5,
-                        date: current.promoted_at
+                        date: current.promoted_at,
+                        notes: current.notes
                     });
                 }
+            } else if (profile) {
+                // Fallback para alunos antigos sem histórico: Criar um ponto de "Início" virtual
+                historyByBelt.push({
+                    belt: profile.current_belt || 'white belt',
+                    stripes: profile.current_stripes || 0,
+                    count: totalTrainings,
+                    hours: totalTrainings * 1.5,
+                    date: profile.created_at,
+                    notes: 'Início'
+                });
             }
 
             // Calculate current belt progress
