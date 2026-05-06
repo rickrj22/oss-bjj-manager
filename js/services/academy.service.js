@@ -236,13 +236,23 @@ export class AcademyService {
                         return d >= startDate && (!next || d < endDate);
                     }).length;
 
+                    let eventLabel = 'Graduação';
+                    if (i === 0) {
+                        eventLabel = 'Início';
+                    } else {
+                        const previous = beltHistory[i - 1];
+                        if (current.belt === previous.belt) {
+                            eventLabel = 'Ganho de grau';
+                        }
+                    }
+
                     historyByBelt.push({
                         belt: current.belt,
                         stripes: current.stripes || 0,
                         count: count,
                         hours: count * 1.5,
                         date: current.promoted_at,
-                        notes: current.notes
+                        notes: eventLabel
                     });
                 }
             } else if (profile) {
@@ -653,7 +663,6 @@ export class AcademyService {
                 profile_id: newUserId,
                 belt: profilePayload.current_belt,
                 stripes: profilePayload.current_stripes,
-                notes: 'Início',
                 promoted_at: new Date()
             });
 
@@ -861,7 +870,6 @@ export class AcademyService {
                     profile_id: userId,
                     belt: updates.current_belt || current.current_belt,
                     stripes: newStripes,
-                    notes: beltChanged ? 'Graduação' : 'Ganho de grau',
                     professor_id: user.id,
                     promoted_at: new Date().toISOString()
                 };
