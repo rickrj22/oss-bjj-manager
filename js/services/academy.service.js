@@ -838,9 +838,11 @@ export class AcademyService {
             const beltChanged = updates.current_belt && updates.current_belt !== current.current_belt;
             const stripesChanged = updates.current_stripes !== undefined && updates.current_stripes !== current.current_stripes;
 
+            console.log("🎓 Verificando graduação:", { beltChanged, stripesChanged });
+
             if (beltChanged || stripesChanged) {
                 const user = await this.app.auth.getUser();
-                await this.client.from('graduation_history').insert({
+                const { error: histError } = await this.client.from('graduation_history').insert({
                     profile_id: userId,
                     belt: updates.current_belt || current.current_belt,
                     stripes: updates.current_stripes !== undefined ? updates.current_stripes : current.current_stripes,
@@ -848,6 +850,12 @@ export class AcademyService {
                     professor_id: user.id,
                     promoted_at: new Date()
                 });
+
+                if (histError) {
+                    console.error("❌ Erro ao gravar histórico de graduação:", histError);
+                } else {
+                    console.log("✅ Histórico de graduação gravado com sucesso.");
+                }
             }
         }
 

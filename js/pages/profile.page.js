@@ -25,7 +25,8 @@ export class ProfilePage {
             linkedAcademies = ['Sem academia vinculada'];
         }
 
-        const history = await this.app.academy.getGraduationHistory(user.id);
+        const stats = await this.app.academy.getUserStats(user.id);
+        const history = stats.historyByBelt || [];
 
         const allBelts = [
             'white belt',
@@ -223,7 +224,7 @@ export class ProfilePage {
                                                     <div class="timeline-point" style="display: flex; flex-direction: column; align-items: center; position: relative; flex: 1;">
                                                         <!-- Label Superior -->
                                                         <div style="position: absolute; bottom: 100%; margin-bottom: 1.5rem; text-align: center; width: 150px;">
-                                                            <p style="font-size: 0.75rem; font-weight: 700; color: var(--text-dim);">${new Date(log.date).toLocaleDateString('pt-BR')}</p>
+                                                            <p style="font-size: 0.75rem; font-weight: 700; color: var(--text-dim);">${new Date(log.date || log.promoted_at).toLocaleDateString('pt-BR')}</p>
                                                             <p style="font-size: 0.85rem; font-weight: 800; color: var(--text-primary); text-transform: capitalize;">${log.notes || 'Graduação'}</p>
                                                         </div>
 
