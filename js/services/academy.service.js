@@ -236,6 +236,7 @@ export class AcademyService {
 
                     historyByBelt.push({
                         belt: current.belt,
+                        stripes: current.stripes || 0,
                         count: count,
                         hours: count * 1.5,
                         date: current.promoted_at
@@ -634,7 +635,16 @@ export class AcademyService {
                 if (insertError) return { success: false, error: 'Erro ao criar perfil: ' + insertError.message };
             }
 
-            // 3. Link the user to the academy via user_academies
+            // 3. Record initial graduation history
+            await this.client.from('graduation_history').insert({
+                profile_id: newUserId,
+                belt: profilePayload.current_belt,
+                stripes: profilePayload.current_stripes,
+                notes: 'Início',
+                promoted_at: new Date()
+            });
+
+            // 4. Link the user to the academy via user_academies
             if (memberData.academy_id) {
                 const { error: linkError } = await this.client
                     .from('user_academies')
@@ -799,10 +809,35 @@ export class AcademyService {
     }
 
     async updateMember(userId, updates) {
+        // 1. Get current data to check for graduation changes
+        const { data: current } = await this.client
+            .from('profiles')
+            .select('current_belt, current_stripes')
+            .eq('id', userId)
+            .single();
+
         const { error } = await this.client
             .from('profiles')
             .update(updates)
             .eq('id', userId);
+
+        if (!error && current) {
+            const beltChanged = updates.current_belt && updates.current_belt !== current.current_belt;
+            const stripesChanged = updates.current_stripes !== undefined && updates.current_stripes !== current.current_stripes;
+
+            if (beltChanged || stripesChanged) {
+                const user = await this.app.auth.getUser();
+                await this.client.from('graduation_history').insert({
+                    profile_id: userId,
+                    belt: updates.current_belt || current.current_belt,
+                    stripes: updates.current_stripes !== undefined ? updates.current_stripes : current.current_stripes,
+                    notes: beltChanged ? 'Graduação' : 'Ganho de grau',
+                    professor_id: user.id,
+                    promoted_at: new Date()
+                });
+            }
+        }
+
         return { success: !error, error: error?.message };
     }
 

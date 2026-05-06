@@ -204,28 +204,52 @@ export class ProfilePage {
                                         </div>
                                     ` : ''}
                                 </form>
-                            </div>
-
-                            <!-- Timeline -->
-                            <div style="margin-top: 0.5rem;">
-                                <h4 class="font-heading mb-4" style="font-size: 0.85rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.1em;">Histórico (Timeline)</h4>
+                                                  <!-- Timeline -->
+                            <div style="margin-top: 1.5rem; background: var(--bg-surface); padding: 2.5rem 1.5rem; border-radius: 12px; border: 1px solid var(--border); overflow-x: auto;">
+                                <h4 class="font-heading mb-10" style="font-size: 0.85rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.15em;">Histórico (Timeline)</h4>
+                                
                                 ${history.length === 0 ? '<p class="text-dim" style="font-size: 0.85rem; font-style: italic;">Nenhum histórico de graduação registrado no sistema.</p>' : `
-                                    <div style="display: flex; flex-direction: column; gap: 1rem; padding-left: 1.5rem; border-left: 2px solid var(--border);">
-                                        ${history.map(log => `
-                                            <div style="position: relative;">
-                                                <div style="position: absolute; left: -1.8rem; top: 0.2rem; width: 10px; height: 10px; border-radius: 50%; background: var(--text-primary);"></div>
-                                                <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-                                                    <div>
-                                                        <p style="font-weight: 700; font-size: 0.85rem;">${(log.belt || '').toUpperCase()} • ${log.stripes}º Grau</p>
-                                                        <p class="text-dim" style="font-size: 0.75rem;">Por ${log.professor?.full_name || '---'}</p>
+                                    <div class="timeline-wrapper" style="position: relative; min-width: 600px; padding: 4rem 1rem;">
+                                        <!-- Linha Base -->
+                                        <div style="position: absolute; top: 50%; left: 0; right: 0; height: 4px; background: var(--border); transform: translateY(-50%); z-index: 1;"></div>
+                                        
+                                        <div style="display: flex; justify-content: space-between; position: relative; z-index: 2;">
+                                            ${[...history].reverse().map((log, index, arr) => {
+                                                const beltColor = this.getBeltColor(log.belt);
+                                                const nextLog = arr[index + 1];
+                                                const isLast = index === arr.length - 1;
+                                                
+                                                return `
+                                                    <div class="timeline-point" style="display: flex; flex-direction: column; align-items: center; position: relative; flex: 1;">
+                                                        <!-- Label Superior -->
+                                                        <div style="position: absolute; bottom: 100%; margin-bottom: 1.5rem; text-align: center; width: 150px;">
+                                                            <p style="font-size: 0.75rem; font-weight: 700; color: var(--text-dim);">${new Date(log.date).toLocaleDateString('pt-BR')}</p>
+                                                            <p style="font-size: 0.85rem; font-weight: 800; color: var(--text-primary); text-transform: capitalize;">${log.notes || 'Graduação'}</p>
+                                                        </div>
+
+                                                        <!-- Ponto -->
+                                                        <div style="width: 16px; height: 16px; border-radius: 50%; background: ${beltColor}; border: 4px solid var(--bg-surface); box-shadow: 0 0 0 2px ${beltColor}; z-index: 3;"></div>
+
+                                                        <!-- Linha Colorida (Segmento) -->
+                                                        ${!isLast ? `
+                                                            <div style="position: absolute; top: 50%; left: 50%; width: 100%; height: 4px; background: ${beltColor}; transform: translateY(-50%); z-index: 1;"></div>
+                                                        ` : ''}
+
+                                                        <!-- Label Inferior -->
+                                                        <div style="position: absolute; top: 100%; margin-top: 1.5rem; text-align: center; width: 150px;">
+                                                            <p style="font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 800; color: ${beltColor};">${log.belt}</p>
+                                                            <div style="margin-top: 0.5rem; background: var(--bg-elevated); padding: 0.5rem; border-radius: 6px; border: 1px solid var(--border);">
+                                                                <p style="font-size: 0.65rem; color: var(--text-dim); font-weight: 600;">TREINOS: ${log.count}</p>
+                                                                <p style="font-size: 0.65rem; color: var(--text-dim); font-weight: 600;">HORAS: ${log.hours.toFixed(1)}</p>
+                                                            </div>
+                                                        </div>
                                                     </div>
-                                                    <span class="text-dim" style="font-size: 0.75rem; font-family: monospace;">${new Date(log.promoted_at).toLocaleDateString('pt-BR')}</span>
-                                                </div>
-                                            </div>
-                                        `).join('')}
+                                                `;
+                                            }).join('')}
+                                        </div>
                                     </div>
                                 `}
-                            </div>
+                            </div>               </div>
                         </div>
 
                         <!-- Coluna Direita: Card Profile -->
