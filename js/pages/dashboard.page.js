@@ -501,6 +501,8 @@ export class DashboardPage {
                     }
                 }
             });
+        });
+
         // Confirmar Presença
         document.querySelectorAll('.btn-confirm-attendance').forEach(btn => {
             btn.addEventListener('click', async (e) => {
