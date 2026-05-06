@@ -30,11 +30,11 @@ export class AcademyService {
             .from('classes')
             .select(`
                 *,
-                coach:profiles!classes_coach_id_fkey(id, full_name, avatar_url),
+                coach:profiles!classes_coach_id_fkey(id, full_name, avatar_url, current_belt, current_stripes),
                 technique:daily_techniques(
                     technique, 
                     date,
-                    professor:profiles(id, full_name, avatar_url)
+                    professor:profiles(id, full_name, avatar_url, current_belt, current_stripes)
                 ),
                 attendees:attendance(
                     status,
@@ -774,7 +774,7 @@ export class AcademyService {
     async getGraduationHistory(studentId) {
         const { data, error } = await this.client
             .from('graduation_history')
-            .select(`*, professor:profiles!graduation_history_professor_id_fkey(full_name)`)
+            .select(`*, professor:profiles!graduation_history_professor_id_fkey(full_name, avatar_url, current_belt, current_stripes)`)
             .eq('profile_id', studentId)
             .order('promoted_at', { ascending: false });
 
