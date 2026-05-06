@@ -99,11 +99,12 @@ export class AcademyService {
                 attendees: sortedAttendees
             };
         });
-        async getSidebarData() {
+    }
+
+    async getSidebarData() {
         const { data: academies } = await this.getAcademies();
         const primary = (academies || []).find(a => a.is_primary) || (academies || [])[0] || null;
         return primary;
-    }
     }
 
     async getDashboardStats() {
