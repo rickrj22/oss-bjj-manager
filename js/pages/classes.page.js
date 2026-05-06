@@ -322,11 +322,23 @@ export class ClassesPage {
                                         </p>
                                     </div>
                                 </div>
-                                ${a.id === user.id ? `
-                                    <button class="btn btn-cancel-checkin" data-class-id="${c.id}" style="min-width: 140px; height: 36px; font-size: 0.75rem;">
-                                        Cancelar Check-in
-                                    </button>
-                                ` : ''}
+                                <div style="display: flex; align-items: center; gap: 1rem;">
+                                    ${(user.is_admin || user.role === 'professor') && a.status === 'pending' ? `
+                                        <button class="btn-confirm-attendance" data-class-id="${c.id}" data-user-id="${a.id}" title="Confirmar Presença" style="background: none; border: none; cursor: pointer; color: var(--success); display: flex; align-items: center; justify-content: center; transition: transform 0.2s; padding: 0;">
+                                            <i data-lucide="check-circle-2" size="28" style="stroke-width: 2.5px;"></i>
+                                        </button>
+                                    ` : a.status === 'confirmed' ? `
+                                        <div style="color: var(--success); display: flex; align-items: center; gap: 0.5rem;" title="Presença Confirmada">
+                                            <i data-lucide="check-circle-2" size="28" style="stroke-width: 2.5px; fill: hsla(142, 72%, 29%, 0.1);"></i>
+                                        </div>
+                                    ` : ''}
+
+                                    ${a.id === user.id ? `
+                                        <button class="btn btn-cancel-checkin" data-class-id="${c.id}" style="min-width: 140px; height: 36px; font-size: 0.75rem;">
+                                            Cancelar Check-in
+                                        </button>
+                                    ` : ''}
+                                </div>
                             </div>
                         `).join('')}
                         ${c.attendees.length === 0 ? '<p class="text-dim" style="font-size: 0.8125rem; font-style: italic; padding: 0.5rem;">Nenhum check-in confirmado.</p>' : ''}
@@ -401,6 +413,21 @@ export class ClassesPage {
                     this.app.router.handleRouteChange(window.location.hash);
                 } else {
                     this.showMessage('❌ ' + res.error, 'error');
+                }
+            };
+        });
+
+        // Confirmar Presença
+        document.querySelectorAll('.btn-confirm-attendance').forEach(btn => {
+            btn.onclick = async (e) => {
+                const classId = e.currentTarget.dataset.classId;
+                const userId = e.currentTarget.dataset.userId;
+                
+                const res = await this.app.academy.confirmAttendance(classId, userId);
+                if (res.success) {
+                    this.app.router.handleRouteChange(window.location.hash);
+                } else {
+                    alert('Erro ao confirmar presença: ' + res.error);
                 }
             };
         });

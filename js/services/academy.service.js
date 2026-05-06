@@ -37,6 +37,7 @@ export class AcademyService {
                     professor:profiles(id, full_name, avatar_url)
                 ),
                 attendees:attendance(
+                    status,
                     user:profiles(id, full_name, avatar_url, current_belt, current_stripes, role)
                 )
             `)
@@ -63,7 +64,8 @@ export class AcademyService {
                         avatar: a.user.avatar_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(a.user.full_name)}&background=random`,
                         belt: (a.user.current_belt || 'white belt').toLowerCase(),
                         stripes: a.user.current_stripes || 0,
-                        role: a.user.role
+                        role: a.user.role,
+                        status: a.status || 'pending'
                     });
                 }
             });
@@ -169,6 +171,7 @@ export class AcademyService {
         const { data, error } = await this.client
             .from('attendance')
             .select('user_id, user:profiles(full_name, avatar_url, current_belt)')
+            .eq('status', 'confirmed')
             .gte('attended_at', firstDay);
 
         if (error || !data) return [];
@@ -207,7 +210,7 @@ export class AcademyService {
         try {
             // 1. Fetch primary data in parallel
             const [attendanceRes, historyRes, teachingRes] = await Promise.all([
-                this.client.from('attendance').select('*').eq('user_id', userId).order('check_in_date', { ascending: true }),
+                this.client.from('attendance').select('*').eq('user_id', userId).eq('status', 'confirmed').order('check_in_date', { ascending: true }),
                 this.client.from('graduation_history').select('*').eq('profile_id', userId).order('promoted_at', { ascending: true }),
                 this.client.from('daily_techniques').select('*', { count: 'exact', head: true }).eq('professor_id', userId)
             ]);
@@ -337,6 +340,17 @@ export class AcademyService {
         }
 
         return { success: true };
+    }
+
+    async confirmAttendance(classId, userId) {
+        const { error } = await this.client
+            .from('attendance')
+            .update({ status: 'confirmed' })
+            .eq('class_id', classId)
+            .eq('user_id', userId)
+            .eq('check_in_date', new Date().toISOString().split('T')[0]);
+
+        return { success: !error, error: error?.message };
     }
 
     async getDetailedFinanceData() {
