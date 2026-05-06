@@ -156,11 +156,11 @@ export class DashboardPage {
                                 </div>
                                 <div style="display: flex; gap: 0.75rem; align-items: center;">
                                     <button class="btn btn-outline" id="btn-global-checkin">
-                                        REALIZAR CHECK-IN
+                                        <i data-lucide="check-square" size="16"></i> <span class="hide-mobile">REALIZAR CHECK-IN</span>
                                     </button>
                                     ${this.user.is_admin || this.user.role === 'professor' ? `
-                                        <button class="btn btn-primary hide-mobile" id="btn-add-technique">
-                                            <i data-lucide="plus" size="16"></i> DEFINIR TÉCNICA
+                                        <button class="btn btn-primary" id="btn-add-technique">
+                                            <i data-lucide="plus" size="16"></i> <span class="hide-mobile">DEFINIR TÉCNICA</span>
                                         </button>
                                     ` : ''}
                                 </div>

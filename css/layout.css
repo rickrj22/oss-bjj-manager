@@ -82,6 +82,11 @@
     .hide-mobile {
         display: none !important;
     }
+    .btn {
+        min-width: auto !important;
+        padding-left: 1rem !important;
+        padding-right: 1rem !important;
+    }
 }
 
 /* Auth Layout */

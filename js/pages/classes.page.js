@@ -114,11 +114,11 @@ export class ClassesPage {
                                     </div>
                                     <div style="display: flex; gap: 0.75rem; align-items: center;">
                                         <button class="btn btn-outline" id="btn-global-checkin">
-                                            Realizar Check-in
+                                            <i data-lucide="check-square" size="16"></i> <span class="hide-mobile">Realizar Check-in</span>
                                         </button>
                                         ${this.user.is_admin || this.user.role === 'professor' ? `
-                                            <button class="btn btn-primary hide-mobile" id="btn-add-technique">
-                                                <i data-lucide="plus" size="16"></i> Definir Técnica
+                                            <button class="btn btn-primary" id="btn-add-technique">
+                                                <i data-lucide="plus" size="16"></i> <span class="hide-mobile">Definir Técnica</span>
                                             </button>
                                         ` : ''}
                                     </div>
