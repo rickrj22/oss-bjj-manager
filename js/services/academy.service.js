@@ -585,6 +585,7 @@ export class AcademyService {
             const profilePayload = {
                 full_name: memberData.full_name,
                 email: memberData.email,
+                cpf: memberData.cpf || null,
                 phone: memberData.phone || null,
                 birth_date: memberData.birth_date || null,
                 current_belt: memberData.current_belt || 'white belt',

@@ -154,6 +154,10 @@ export class ProfilePage {
                                             <input type="tel" class="input editable-field" id="prof-phone" value="${user.phone || ''}" style="height: 42px; font-size: 0.85rem;">
                                         </div>
                                         <div class="form-group" style="grid-column: span var(--span-all, 1);">
+                                            <label style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700; color: var(--text-dim); margin-bottom: 0.25rem; display: block;">CPF</label>
+                                            <input type="text" class="input editable-field" id="prof-cpf" value="${user.cpf || ''}" style="height: 42px; font-size: 0.85rem;">
+                                        </div>
+                                        <div class="form-group" style="grid-column: span var(--span-all, 1);">
                                             <label style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700; color: var(--text-dim); margin-bottom: 0.25rem; display: block;">Data de Nascimento</label>
                                             <input type="date" class="input editable-field" id="prof-birth" value="${user.birth_date || ''}" style="height: 42px; font-size: 0.85rem;">
                                         </div>
@@ -389,6 +393,7 @@ export class ProfilePage {
                     email: document.getElementById('prof-email').value,
                     birth_date: document.getElementById('prof-birth').value,
                     phone: document.getElementById('prof-phone').value,
+                    cpf: document.getElementById('prof-cpf').value,
                     avatar_url: document.getElementById('prof-avatar').value
                 };
 

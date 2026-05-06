@@ -23,6 +23,17 @@ export class RegisterPage {
                             <input type="email" id="email" class="input" placeholder="exemplo@email.com" required>
                         </div>
 
+                        <div class="grid grid-cols-2" style="gap: 1rem;">
+                            <div class="mb-4">
+                                <label class="font-heading" style="font-size: 0.7rem; text-transform: uppercase; color: var(--text-dim); letter-spacing: 0.05em;">CPF</label>
+                                <input type="text" id="cpf" class="input" placeholder="000.000.000-00" required>
+                            </div>
+                            <div class="mb-4">
+                                <label class="font-heading" style="font-size: 0.7rem; text-transform: uppercase; color: var(--text-dim); letter-spacing: 0.05em;">Telefone</label>
+                                <input type="tel" id="phone" class="input" placeholder="(00) 00000-0000" required>
+                            </div>
+                        </div>
+
                         <div class="mb-4">
                             <label class="font-heading" style="font-size: 0.7rem; text-transform: uppercase; color: var(--text-dim); letter-spacing: 0.05em;">Senha</label>
                             <input type="password" id="password" class="input" placeholder="••••••••" required>
@@ -51,6 +62,8 @@ export class RegisterPage {
                 
                 const fullName = document.getElementById('full-name').value;
                 const email = document.getElementById('email').value;
+                const cpf = document.getElementById('cpf').value;
+                const phone = document.getElementById('phone').value;
                 const password = document.getElementById('password').value;
 
                 registerBtn.disabled = true;
@@ -73,7 +86,7 @@ export class RegisterPage {
                     return;
                 }
 
-                const result = await this.app.auth.signUp(email, password, fullName, academyId);
+                const result = await this.app.auth.signUp(email, password, fullName, academyId, { cpf, phone });
 
                 if (result.success) {
                     alert('Cadastro realizado! Por favor, verifique seu e-mail para confirmar a conta.');

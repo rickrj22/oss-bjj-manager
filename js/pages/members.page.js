@@ -112,6 +112,10 @@ export class MembersPage {
                                         <input type="text" class="column-filter-input" data-col="email" placeholder="Filtrar...">
                                     </th>
                                     <th style="width: 150px;" class="hide-mobile">
+                                        <div class="th-filter" data-col="cpf">CPF <i data-lucide="chevron-down" size="14"></i></div>
+                                        <input type="text" class="column-filter-input" data-col="cpf" placeholder="Filtrar...">
+                                    </th>
+                                    <th style="width: 150px;" class="hide-mobile">
                                         <div class="th-filter" data-col="telefone">TELEFONE <i data-lucide="chevron-down" size="14"></i></div>
                                         <input type="text" class="column-filter-input" data-col="telefone" placeholder="Filtrar...">
                                     </th>
@@ -313,6 +317,9 @@ export class MembersPage {
                     <div class="spreadsheet-cell" style="background: transparent;">${member.email || '-'}</div>
                 </td>
                 <td>
+                    <div class="spreadsheet-cell" style="background: transparent;">${member.cpf || '-'}</div>
+                </td>
+                <td>
                     <div class="spreadsheet-cell" style="background: transparent;">${member.phone || '-'}</div>
                 </td>
                 <td>
@@ -430,6 +437,10 @@ export class MembersPage {
                         <input type="email" id="edit-email" class="input" style="${inp}" value="${member.email || ''}" required>
                     </div>
                     <div>
+                        <label style="${lbl}">CPF</label>
+                        <input type="text" id="edit-cpf" class="input" style="${inp}" value="${member.cpf || ''}" required>
+                    </div>
+                    <div>
                         <label style="${lbl}">Telefone</label>
                         <input type="tel" id="edit-phone" class="input" style="${inp}" value="${member.phone || ''}">
                     </div>
@@ -511,6 +522,7 @@ export class MembersPage {
             const updates = {
                 full_name: document.getElementById('edit-name').value,
                 email: document.getElementById('edit-email').value,
+                cpf: document.getElementById('edit-cpf').value,
                 phone: document.getElementById('edit-phone').value,
                 current_belt: document.getElementById('edit-belt').value,
                 current_stripes: parseInt(document.getElementById('edit-stripes').value),
@@ -610,12 +622,12 @@ export class MembersPage {
                 // Map columns to cell content
                 if (col === 'membro') cellText = row.querySelector('p').innerText;
                 else if (col === 'email') cellText = row.cells[1].innerText;
-                else if (col === 'telefone') cellText = row.cells[2].innerText;
-                else if (col === 'faixa') cellText = row.cells[3].innerText;
-                else if (col === 'graus') cellText = row.cells[4].innerText;
-                else if (col === 'cargo') cellText = row.cells[5].innerText;
-                else if (col === 'admin') cellText = row.cells[6].innerText;
-                else if (col === 'academias') cellText = row.cells[7].innerText;
+                else if (col === 'cpf') cellText = row.cells[2].innerText;
+                else if (col === 'telefone') cellText = row.cells[3].innerText;
+                else if (col === 'faixa') cellText = row.cells[4].innerText;
+                else if (col === 'graus') cellText = row.cells[5].innerText;
+                else if (col === 'cargo') cellText = row.cells[6].innerText;
+                else if (col === 'admin') cellText = row.cells[7].innerText;
                 else if (col === 'plano') cellText = row.cells[8].innerText;
 
                 if (!cellText.toLowerCase().includes(query)) {
@@ -648,6 +660,14 @@ export class MembersPage {
                     <div>
                         <label style="${lbl}">E-mail *</label>
                         <input type="email" id="new-email" class="input" style="${inp}" placeholder="email@exemplo.com" required>
+                    </div>
+                    <div>
+                        <label style="${lbl}">CPF *</label>
+                        <input type="text" id="new-cpf" class="input" style="${inp}" placeholder="000.000.000-00" required>
+                    </div>
+                    <div>
+                        <label style="${lbl}">Telefone</label>
+                        <input type="tel" id="new-phone" class="input" style="${inp}" placeholder="(00) 00000-0000">
                     </div>
                     <div>
                         <label style="${lbl}">Senha Inicial *</label>
@@ -696,6 +716,8 @@ export class MembersPage {
             const data = {
                 full_name: document.getElementById('new-name').value,
                 email: document.getElementById('new-email').value,
+                cpf: document.getElementById('new-cpf').value,
+                phone: document.getElementById('new-phone').value,
                 password: document.getElementById('new-password').value,
                 academy_id: this.user.academy_id,
                 current_belt: document.getElementById('new-belt').value,

@@ -134,14 +134,15 @@ export class AuthService {
         return { success: true, user: this.currentUser };
     }
 
-    async signUp(email, password, fullName, academyId) {
+    async signUp(email, password, fullName, academyId, metadata = {}) {
         const { data, error } = await this.client.auth.signUp({
             email,
             password,
             options: {
                 data: {
                     full_name: fullName,
-                    academy_id: academyId
+                    academy_id: academyId,
+                    ...metadata
                 }
             }
         });
