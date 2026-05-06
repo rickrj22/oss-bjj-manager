@@ -220,11 +220,23 @@ export class ProfilePage {
                                                 const nextLog = arr[index + 1];
                                                 const isLast = index === arr.length - 1;
                                                 
+                                                // Tratamento de fuso horário para datas YYYY-MM-DD
+                                                const rawDate = log.date || log.promoted_at;
+                                                let displayDate = '---';
+                                                if (rawDate) {
+                                                    if (typeof rawDate === 'string' && rawDate.includes('-') && rawDate.length <= 10) {
+                                                        const [y, m, d] = rawDate.split('-');
+                                                        displayDate = `${d}/${m}/${y}`;
+                                                    } else {
+                                                        displayDate = new Date(rawDate).toLocaleDateString('pt-BR');
+                                                    }
+                                                }
+                                                
                                                 return `
                                                     <div class="timeline-point" style="display: flex; flex-direction: column; align-items: center; position: relative; flex: 1;">
                                                         <!-- Label Superior -->
                                                         <div style="position: absolute; bottom: 100%; margin-bottom: 1.5rem; text-align: center; width: 150px;">
-                                                            <p style="font-size: 0.75rem; font-weight: 700; color: var(--text-dim);">${new Date(log.date || log.promoted_at).toLocaleDateString('pt-BR')}</p>
+                                                            <p style="font-size: 0.75rem; font-weight: 700; color: var(--text-dim);">${displayDate}</p>
                                                             <p style="font-size: 0.85rem; font-weight: 800; color: var(--text-primary); text-transform: capitalize;">${log.notes || 'Graduação'}</p>
                                                         </div>
 
