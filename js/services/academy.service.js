@@ -868,7 +868,7 @@ export class AcademyService {
                 const user = await this.app.auth.getUser();
                 const histEntry = {
                     profile_id: userId,
-                    belt: updates.current_belt || current.current_belt,
+                    belt: updates.current_belt, // Usa exatamente o valor que o profiles aceitou
                     stripes: newStripes,
                     professor_id: user.id,
                     promoted_at: new Date().toISOString()
@@ -879,7 +879,8 @@ export class AcademyService {
                     .insert(histEntry);
 
                 if (histError) {
-                    console.error("❌ Erro CRÍTICO ao gravar histórico:", histError);
+                    console.error("❌ Erro ao gravar histórico:", histError);
+                    alert("Erro ao gravar histórico: " + histError.message);
                 } else {
                     console.log("✅ Histórico gravado com sucesso:", histEntry);
                 }
