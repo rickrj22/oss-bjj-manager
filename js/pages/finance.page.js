@@ -6,8 +6,12 @@ export class FinancePage {
     async render() {
         const user = await this.app.auth.getUser();
         const theme = this.app.currentTheme;
-        const records = await this.app.academy.getFinancialRecords();
-        const stats = user.is_admin ? await this.app.academy.getDetailedFinanceData() : null;
+        const [records, stats, sidebarAcad] = await Promise.all([
+            this.app.academy.getFinancialRecords(),
+            user.is_admin ? this.app.academy.getDetailedFinanceData() : Promise.resolve(null),
+            this.app.academy.getSidebarData()
+        ]);
+        this.sidebarAcad = sidebarAcad || user.academy || {};
         
         // Calculate status for student view
         const latestRecord = records[0];
@@ -17,12 +21,21 @@ export class FinancePage {
             return `
                 <div class="layout-container">
                     <aside class="sidebar" style="padding-top: 2rem;">
-                        <div class="mb-12" style="display: flex; flex-direction: column; align-items: center; gap: 1rem; padding: 0 1rem; text-align: center;">
-                            <div id="sidebar-logo-container" style="width: 80px; height: 80px; border-radius: 50%; overflow: hidden; background: var(--bg-elevated); display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 16px rgba(0,0,0,0.3); border: 3px solid var(--border); position: relative;">
-                                ${user.academy?.logo_url ? `<img src="${user.academy.logo_url}" style="width: 100%; height: 100%; object-fit: contain;">` : `<i data-lucide="shield" style="color: var(--primary);"></i>`}
-                            </div>
-                            <h2 class="font-heading" style="font-size: 1rem; text-transform: uppercase;">${user.academy?.name || 'OSS'}</h2>
+                        <div id="sidebar-logo-container" style="width: 80px; height: 80px; border-radius: 50%; overflow: hidden; background: var(--bg-elevated); display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 16px rgba(0,0,0,0.3); border: 3px solid var(--border); position: relative;">
+                            ${this.sidebarAcad.logo_url ? `
+                                <img src="${this.sidebarAcad.logo_url}" 
+                                     style="width: 100%; height: 100%; object-fit: contain;" 
+                                     onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                <div style="display: none; width: 100%; height: 100%; align-items: center; justify-content: center; background: var(--inverse-bg);">
+                                    <i data-lucide="image" style="color: var(--text-dim); opacity: 0.5;"></i>
+                                </div>
+                            ` : `
+                                <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: var(--inverse-bg);">
+                                    <i data-lucide="shield" style="color: var(--primary);"></i>
+                                </div>
+                            `}
                         </div>
+                        <h2 class="font-heading" style="font-size: 1rem; letter-spacing: 0.1em; color: var(--text-primary); text-transform: uppercase;">${this.sidebarAcad.name || 'Academia Edson França'}</h2>
                         <nav class="nav-list" style="flex: 1;">
                             <a href="#dashboard" class="nav-item"><i data-lucide="layout-dashboard" size="18"></i> <span>Dashboard</span></a>
                             <a href="#membros" class="nav-item"><i data-lucide="users" size="18"></i> <span>Membros</span></a>
@@ -171,10 +184,9 @@ export class FinancePage {
         return `
             <div class="layout-container">
                 <aside class="sidebar" style="padding-top: 2rem;">
-                    <div class="mb-12" style="display: flex; flex-direction: column; align-items: center; gap: 1rem; padding: 0 1rem; text-align: center;">
                         <div id="sidebar-logo-container" style="width: 80px; height: 80px; border-radius: 50%; overflow: hidden; background: var(--bg-elevated); display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 16px rgba(0,0,0,0.3); border: 3px solid var(--border); position: relative;">
-                            ${user.academy?.logo_url ? `
-                                <img src="${user.academy.logo_url}" 
+                            ${this.sidebarAcad.logo_url ? `
+                                <img src="${this.sidebarAcad.logo_url}" 
                                      style="width: 100%; height: 100%; object-fit: contain;" 
                                      onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
                                 <div style="display: none; width: 100%; height: 100%; align-items: center; justify-content: center; background: var(--inverse-bg);">
@@ -186,8 +198,7 @@ export class FinancePage {
                                 </div>
                             `}
                         </div>
-                        <h2 class="font-heading" style="font-size: 1rem; letter-spacing: 0.1em; color: var(--text-primary); text-transform: uppercase;">${user.academy?.name || 'OSS'}</h2>
-                    </div>
+                        <h2 class="font-heading" style="font-size: 1rem; letter-spacing: 0.1em; color: var(--text-primary); text-transform: uppercase;">${this.sidebarAcad.name || 'Academia Edson França'}</h2>
 
                     <nav class="nav-list" style="flex: 1;">
                         ${user.is_admin ? `

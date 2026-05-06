@@ -9,19 +9,24 @@ export class MembersPage {
     async render() {
         this.user = await this.app.auth.getUser();
         const user = this.user;
-        this.members = await this.app.academy.getAcademyMembers();
-        const { data: academies } = await this.app.academy.getAcademies();
-        const { data: plans } = await this.app.academy.getPlans();
-        this.allAcademies = academies || [];
-        this.plans = plans || [];
+        const [members, sidebarAcad, academiesRes, plansRes] = await Promise.all([
+            this.app.academy.getAcademyMembers(),
+            this.app.academy.getSidebarData(),
+            this.app.academy.getAcademies(),
+            this.app.academy.getPlans()
+        ]);
+        this.members = members;
+        this.sidebarAcad = sidebarAcad || user.academy || {};
+        this.allAcademies = academiesRes.data || [];
+        this.plans = plansRes.data || [];
         
         return `
             <div class="layout-container">
                 <aside class="sidebar" style="padding-top: 2rem;">
                     <div class="mb-12" style="display: flex; flex-direction: column; align-items: center; gap: 1rem; padding: 0 1rem; text-align: center;">
                         <div id="sidebar-logo-container" style="width: 80px; height: 80px; border-radius: 50%; overflow: hidden; background: var(--bg-elevated); display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 16px rgba(0,0,0,0.3); border: 3px solid var(--border); position: relative;">
-                            ${user.academy?.logo_url ? `
-                                <img src="${user.academy.logo_url}" 
+                            ${this.sidebarAcad.logo_url ? `
+                                <img src="${this.sidebarAcad.logo_url}" 
                                      style="width: 100%; height: 100%; object-fit: contain;" 
                                      onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
                                 <div style="display: none; width: 100%; height: 100%; align-items: center; justify-content: center; background: var(--inverse-bg);">
@@ -33,7 +38,7 @@ export class MembersPage {
                                 </div>
                             `}
                         </div>
-                        <h2 class="font-heading" style="font-size: 1rem; letter-spacing: 0.1em; color: var(--text-primary); text-transform: uppercase;">${user.academy?.name || 'Academia Edson França'}</h2>
+                        <h2 class="font-heading" style="font-size: 1rem; letter-spacing: 0.1em; color: var(--text-primary); text-transform: uppercase;">${this.sidebarAcad.name || 'Academia Edson França'}</h2>
                     </div>
 
                     <nav class="nav-list" style="flex: 1;">

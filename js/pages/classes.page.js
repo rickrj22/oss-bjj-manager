@@ -17,19 +17,21 @@ export class ClassesPage {
         }
 
         // Fetching data
-        const [classes, stats, announcements] = await Promise.all([
+        const [classes, stats, announcements, sidebarAcad] = await Promise.all([
             this.app.academy.getTodaysClasses(this.app.classesState.selectedAcademyId),
             this.app.academy.getUserStats(this.user.id),
-            this.app.academy.getAnnouncements()
+            this.app.academy.getAnnouncements(),
+            this.app.academy.getSidebarData()
         ]);
+        this.sidebarAcad = sidebarAcad || this.user.academy || {};
 
         return `
             <div class="layout-container">
                 <aside class="sidebar" style="padding-top: 2rem;">
                     <div class="mb-12" style="display: flex; flex-direction: column; align-items: center; gap: 1rem; padding: 0 1rem; text-align: center;">
                         <div id="sidebar-logo-container" style="width: 80px; height: 80px; border-radius: 50%; overflow: hidden; background: var(--bg-elevated); display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 16px rgba(0,0,0,0.3); border: 3px solid var(--border); position: relative;">
-                            ${this.user.academy?.logo_url ? `
-                                <img src="${this.user.academy.logo_url}" 
+                            ${this.sidebarAcad.logo_url ? `
+                                <img src="${this.sidebarAcad.logo_url}" 
                                      style="width: 100%; height: 100%; object-fit: contain;" 
                                      onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
                                 <div style="display: none; width: 100%; height: 100%; align-items: center; justify-content: center; background: var(--inverse-bg);">
@@ -41,7 +43,7 @@ export class ClassesPage {
                                 </div>
                             `}
                         </div>
-                        <h2 class="font-heading" style="font-size: 1rem; letter-spacing: 0.1em; color: var(--text-primary); text-transform: uppercase;">${this.user.academy?.name || 'Academia Edson França'}</h2>
+                        <h2 class="font-heading" style="font-size: 1rem; letter-spacing: 0.1em; color: var(--text-primary); text-transform: uppercase;">${this.sidebarAcad.name || 'Academia Edson França'}</h2>
                     </div>
 
                     <nav class="nav-list" style="flex: 1;">
