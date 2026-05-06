@@ -36,7 +36,7 @@ export class LoginPage {
 
                     <div style="margin-top: 3rem; text-align: center;">
                         <p class="text-dim" style="font-size: 0.75rem;">
-                            Problemas no acesso? <a href="#" style="text-decoration: underline; color: var(--text-primary);">Suporte</a>
+                            <a href="mailto:rickcgrj@gmail.com" style="text-decoration: none; color: var(--text-dim); transition: color 0.2s;" onmouseover="this.style.color='var(--text-primary)'" onmouseout="this.style.color='var(--text-dim)'">Gostaria de saber mais sobre o aplicativo?</a>
                         </p>
                     </div>
                 </div>
