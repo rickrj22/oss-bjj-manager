@@ -372,7 +372,8 @@ export class AcademyService {
             .insert({
                 user_id: user.id,
                 class_id: classId,
-                check_in_date: this.getLocalDateString()
+                check_in_date: this.getLocalDateString(),
+                status: 'confirmed'
             });
 
         if (error && error.code !== '23505') { 
