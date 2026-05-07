@@ -24,6 +24,7 @@ export class DashboardPage {
             this.app.academy.getSidebarData()
         ]);
         
+        const dateStr = this.app.academy.getLocalDateString();
         this.sidebarAcad = sidebarAcad || this.user.academy || {};
         
         return `
