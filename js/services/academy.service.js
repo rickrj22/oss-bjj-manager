@@ -381,13 +381,26 @@ export class AcademyService {
         return { success: true };
     }
 
-    async confirmAttendance(classId, userId) {
+    async confirmAttendance(classId, userId, customDate = null) {
+        const date = customDate || this.getLocalDateString();
         const { error } = await this.client
             .from('attendance')
             .update({ status: 'confirmed' })
             .eq('class_id', classId)
             .eq('user_id', userId)
-            .eq('check_in_date', this.getLocalDateString());
+            .eq('check_in_date', date);
+
+        return { success: !error, error: error?.message };
+    }
+
+    async unconfirmAttendance(classId, userId, customDate = null) {
+        const date = customDate || this.getLocalDateString();
+        const { error } = await this.client
+            .from('attendance')
+            .update({ status: 'pending' })
+            .eq('class_id', classId)
+            .eq('user_id', userId)
+            .eq('check_in_date', date);
 
         return { success: !error, error: error?.message };
     }

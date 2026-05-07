@@ -23,6 +23,7 @@ export class ClassesPage {
             this.app.academy.getAnnouncements(),
             this.app.academy.getSidebarData()
         ]);
+        const dateStr = this.app.academy.getLocalDateString();
         this.sidebarAcad = sidebarAcad || this.user.academy || {};
 
         return `
@@ -132,7 +133,7 @@ export class ClassesPage {
                                             <i data-lucide="calendar-off" size="48" class="text-dim mb-4"></i>
                                             <p class="text-dim">Nenhuma aula agendada para hoje.</p>
                                         </div>
-                                    ` : classes.map(c => this.renderClassItem(c, this.user)).join('')}
+                                    ` : classes.map(c => this.renderClassItem(c, this.user, dateStr)).join('')}
                                 </div>
                             </div>
 
@@ -257,7 +258,7 @@ export class ClassesPage {
         `;
     }
 
-    renderClassItem(c, user) {
+    renderClassItem(c, user, dateStr) {
         const beltColors = {
             'white belt': '#ffffff',
             'blue belt': '#0055ff',
@@ -328,12 +329,19 @@ export class ClassesPage {
                                 </div>
                                 <div style="display: flex; align-items: center; gap: 1rem;">
                                     ${(user.is_admin || user.role === 'professor') && a.status === 'pending' ? `
-                                        <button class="btn-confirm-attendance" data-class-id="${c.id}" data-user-id="${a.id}" title="Confirmar Presença" style="background: none; border: none; cursor: pointer; color: var(--success); display: flex; align-items: center; justify-content: center; transition: transform 0.2s; padding: 0;">
+                                        <button class="btn-confirm-attendance" data-class-id="${c.id}" data-user-id="${a.id}" data-date="${dateStr}" title="Confirmar Presença" style="background: none; border: none; cursor: pointer; color: var(--success); display: flex; align-items: center; justify-content: center; transition: transform 0.2s; padding: 0;">
                                             <i data-lucide="check-circle-2" size="28" style="stroke-width: 2.5px;"></i>
                                         </button>
                                     ` : a.status === 'confirmed' ? `
-                                        <div style="color: var(--success); display: flex; align-items: center; gap: 0.5rem;" title="Presença Confirmada">
-                                            <i data-lucide="check-circle-2" size="28" style="stroke-width: 2.5px; fill: hsla(142, 72%, 29%, 0.1);"></i>
+                                        <div style="display: flex; align-items: center; gap: 0.75rem;">
+                                            <div style="color: var(--success); display: flex; align-items: center; gap: 0.5rem;" title="Presença Confirmada">
+                                                <i data-lucide="check-circle-2" size="28" style="stroke-width: 2.5px; fill: hsla(142, 72%, 29%, 0.1);"></i>
+                                            </div>
+                                            ${(user.is_admin || user.role === 'professor') ? `
+                                                <button class="btn-unconfirm-attendance" data-class-id="${c.id}" data-user-id="${a.id}" data-date="${dateStr}" title="Desfazer Confirmação" style="background: none; border: none; cursor: pointer; color: var(--error); opacity: 0.5; transition: opacity 0.2s; display: flex; align-items: center; justify-content: center; padding: 4px;">
+                                                    <i data-lucide="rotate-ccw" size="18"></i>
+                                                </button>
+                                            ` : ''}
                                         </div>
                                     ` : ''}
 
@@ -426,6 +434,7 @@ export class ClassesPage {
             btn.onclick = async (e) => {
                 const classId = e.currentTarget.dataset.classId;
                 const userId = e.currentTarget.dataset.userId;
+                const date = e.currentTarget.dataset.date;
                 const button = e.currentTarget;
                 const container = button.parentElement;
                 
@@ -433,7 +442,7 @@ export class ClassesPage {
                 button.innerHTML = '<i data-lucide="loader-2" class="animate-spin" size="24"></i>';
                 if (window.lucide) window.lucide.createIcons();
 
-                const res = await this.app.academy.confirmAttendance(classId, userId);
+                const res = await this.app.academy.confirmAttendance(classId, userId, date);
                 if (res.success) {
                     // Substitui o botão pela mensagem de sucesso
                     container.innerHTML = `
@@ -451,6 +460,21 @@ export class ClassesPage {
                 } else {
                     alert('Erro ao confirmar presença: ' + res.error);
                     this.app.router.handleRouteChange(window.location.hash);
+                }
+            };
+        });
+
+        // Desfazer Confirmação
+        document.querySelectorAll('.btn-unconfirm-attendance').forEach(btn => {
+            btn.onclick = async (e) => {
+                if (confirm('Deseja realmente desfazer a confirmação deste aluno?')) {
+                    const classId = e.currentTarget.dataset.classId;
+                    const userId = e.currentTarget.dataset.userId;
+                    const date = e.currentTarget.dataset.date;
+                    
+                    const res = await this.app.academy.unconfirmAttendance(classId, userId, date);
+                    if (res.success) this.app.router.handleRouteChange(window.location.hash);
+                    else alert('Erro ao desfazer: ' + res.error);
                 }
             };
         });

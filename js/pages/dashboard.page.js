@@ -169,7 +169,7 @@ export class DashboardPage {
                             </div>
                             <div class="classes-list" style="display: flex; flex-direction: column; gap: 1.5rem;">
                                 ${classes.length > 0 
-                                    ? classes.map(c => this.renderClassItem(c, this.user)).join('')
+                                    ? classes.map(c => this.renderClassItem(c, this.user, dateStr)).join('')
                                     : `
                                         <div style="text-align: center; padding: 3rem; background: var(--bg-elevated); border-radius: 12px; border: 1px dashed var(--border);">
                                             <i data-lucide="calendar-off" size="48" class="text-dim mb-4"></i>
@@ -248,7 +248,7 @@ export class DashboardPage {
         `;
     }
 
-    renderClassItem(c, user) {
+    renderClassItem(c, user, dateStr) {
         const beltColors = {
             'white belt': '#ffffff',
             'blue belt': '#0055ff',
@@ -319,12 +319,19 @@ export class DashboardPage {
                                 </div>
                                 <div style="display: flex; align-items: center; gap: 1rem;">
                                     ${(user.is_admin || user.role === 'professor') && a.status === 'pending' ? `
-                                        <button class="btn-confirm-attendance" data-class-id="${c.id}" data-user-id="${a.id}" title="Confirmar Presença" style="background: none; border: none; cursor: pointer; color: var(--success); display: flex; align-items: center; justify-content: center; transition: transform 0.2s; padding: 0;">
+                                        <button class="btn-confirm-attendance" data-class-id="${c.id}" data-user-id="${a.id}" data-date="${dateStr}" title="Confirmar Presença" style="background: none; border: none; cursor: pointer; color: var(--success); display: flex; align-items: center; justify-content: center; transition: transform 0.2s; padding: 0;">
                                             <i data-lucide="check-circle-2" size="28" style="stroke-width: 2.5px;"></i>
                                         </button>
                                     ` : a.status === 'confirmed' ? `
-                                        <div style="color: var(--success); display: flex; align-items: center; gap: 0.5rem;" title="Presença Confirmada">
-                                            <i data-lucide="check-circle-2" size="28" style="stroke-width: 2.5px; fill: hsla(142, 72%, 29%, 0.1);"></i>
+                                        <div style="display: flex; align-items: center; gap: 0.75rem;">
+                                            <div style="color: var(--success); display: flex; align-items: center; gap: 0.5rem;" title="Presença Confirmada">
+                                                <i data-lucide="check-circle-2" size="28" style="stroke-width: 2.5px; fill: hsla(142, 72%, 29%, 0.1);"></i>
+                                            </div>
+                                            ${(user.is_admin || user.role === 'professor') ? `
+                                                <button class="btn-unconfirm-attendance" data-class-id="${c.id}" data-user-id="${a.id}" data-date="${dateStr}" title="Desfazer Confirmação" style="background: none; border: none; cursor: pointer; color: var(--error); opacity: 0.5; transition: opacity 0.2s; display: flex; align-items: center; justify-content: center; padding: 4px;">
+                                                    <i data-lucide="rotate-ccw" size="18"></i>
+                                                </button>
+                                            ` : ''}
                                         </div>
                                     ` : ''}
 
@@ -510,17 +517,16 @@ export class DashboardPage {
             btn.addEventListener('click', async (e) => {
                 const classId = e.currentTarget.dataset.classId;
                 const userId = e.currentTarget.dataset.userId;
+                const date = e.currentTarget.dataset.date;
                 const button = e.currentTarget;
                 const container = button.parentElement;
                 
-                // Feedback visual imediato para evitar múltiplos cliques
                 button.style.pointerEvents = 'none';
                 button.innerHTML = '<i data-lucide="loader-2" class="animate-spin" size="24"></i>';
                 if (window.lucide) window.lucide.createIcons();
 
-                const res = await this.app.academy.confirmAttendance(classId, userId);
+                const res = await this.app.academy.confirmAttendance(classId, userId, date);
                 if (res.success) {
-                    // Substitui o botão pela mensagem de sucesso
                     container.innerHTML = `
                         <div style="color: var(--success); display: flex; align-items: center; gap: 0.5rem;" class="animate-in fade-in">
                             <span style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase;">Presença Confirmada!</span>
@@ -528,14 +534,25 @@ export class DashboardPage {
                         </div>
                     `;
                     if (window.lucide) window.lucide.createIcons();
-                    
-                    // Pequeno atraso antes de recarregar para o usuário ver a confirmação
-                    setTimeout(() => {
-                        this.app.router.handleRouteChange(window.location.hash);
-                    }, 1200);
+                    setTimeout(() => this.app.router.handleRouteChange(window.location.hash), 1200);
                 } else {
                     alert('Erro ao confirmar presença: ' + res.error);
                     this.app.router.handleRouteChange(window.location.hash);
+                }
+            });
+        });
+
+        // Desfazer Confirmação
+        document.querySelectorAll('.btn-unconfirm-attendance').forEach(btn => {
+            btn.addEventListener('click', async (e) => {
+                if (confirm('Deseja realmente desfazer a confirmação deste aluno?')) {
+                    const classId = e.currentTarget.dataset.classId;
+                    const userId = e.currentTarget.dataset.userId;
+                    const date = e.currentTarget.dataset.date;
+                    
+                    const res = await this.app.academy.unconfirmAttendance(classId, userId, date);
+                    if (res.success) this.app.router.handleRouteChange(window.location.hash);
+                    else alert('Erro ao desfazer: ' + res.error);
                 }
             });
         });
