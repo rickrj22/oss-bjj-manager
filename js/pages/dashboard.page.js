@@ -237,13 +237,12 @@ export class DashboardPage {
                 </div>
             </div>
             
-            </div>
-            
             <style>
                 @media (max-width: 1024px) {
                     .layout-container { --grid-main: 1fr; }
                 }
-            </style>
+            </style>    </div>
+            </div>
             
             <!-- Modals -->
             <div id="modal-container"></div>
@@ -356,10 +355,14 @@ export class DashboardPage {
                                                 </button>
                                             ` : ''}
                                         </div>
+                                    `}
+                                </div>
+                            </div>
                         `).join('')}
                         ${c.attendees.length === 0 ? '<p class="text-dim" style="font-size: 0.8125rem; font-style: italic; padding: 0.5rem;">Nenhum check-in confirmado.</p>' : ''}
                     </div>
                 </div>
+            </div>
         `;
     }
 
@@ -552,8 +555,7 @@ export class DashboardPage {
                     if (window.lucide) window.lucide.createIcons();
                     setTimeout(() => this.app.router.handleRouteChange(window.location.hash), 1200);
                 } else {
-                    // Alerta detalhado para depuração
-                    alert('Erro na Confirmação!\n\nDetalhes: ' + (res.error || 'O banco de dados recusou a alteração. Verifique se o seu papel (role) no sistema permite confirmar presenças.'));
+                    alert('Erro ao confirmar presença: ' + res.error);
                     this.app.router.handleRouteChange(window.location.hash);
                 }
             });
