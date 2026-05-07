@@ -344,17 +344,21 @@ export class ClassesPage {
                                                 </button>
                                             ` : ''}
                                         </div>
-                                    ` : (user.is_admin || user.role === 'professor' || user.role === 'admin') ? `
-                                        <button class="btn-confirm-attendance" data-class-id="${c.id}" data-user-id="${a.id}" data-date="${dateStr}" title="Confirmar Presença" style="background: none; border: none; cursor: pointer; color: var(--success); display: flex; align-items: center; justify-content: center; transition: transform 0.2s; padding: 0;">
-                                            <i data-lucide="check-circle-2" size="28" style="stroke-width: 2.5px;"></i>
-                                        </button>
-                                    ` : ''}
-
-                                    ${a.id === user.id ? `
-                                        <button class="btn btn-cancel-checkin" data-class-id="${c.id}" style="min-width: 140px; height: 36px; font-size: 0.75rem;">
-                                            Cancelar Check-in
-                                        </button>
-                                    ` : ''}
+                                    ` : `
+                                        <div style="display: flex; align-items: center; gap: 1rem;">
+                                            ${(user.is_admin || user.role === 'professor' || user.role === 'admin') ? `
+                                                <button class="btn-confirm-attendance" data-class-id="${c.id}" data-user-id="${a.id}" data-date="${dateStr}" title="Confirmar Presença" style="background: none; border: none; cursor: pointer; color: var(--success); display: flex; align-items: center; justify-content: center; transition: transform 0.2s; padding: 0;">
+                                                    <i data-lucide="check-circle-2" size="28" style="stroke-width: 2.5px;"></i>
+                                                </button>
+                                            ` : ''}
+                                            
+                                            ${a.id === user.id ? `
+                                                <button class="btn btn-cancel-checkin" data-class-id="${c.id}" style="min-width: 140px; height: 36px; font-size: 0.75rem;">
+                                                    Cancelar Check-in
+                                                </button>
+                                            ` : ''}
+                                        </div>
+                                    `}
                                 </div>
                             </div>
                         `).join('')}

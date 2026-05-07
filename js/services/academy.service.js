@@ -373,7 +373,7 @@ export class AcademyService {
                 check_in_date: this.getLocalDateString()
             });
 
-        if (error && error.code !== '23505') { // Ignora se já existir check-in (duplicata)
+        if (error && error.code !== '23505') { 
             console.error('Error recording check-in:', error);
             return { success: false, error: 'Erro ao registrar check-in.' };
         }
