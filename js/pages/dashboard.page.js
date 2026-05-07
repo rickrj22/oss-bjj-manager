@@ -318,7 +318,6 @@ export class DashboardPage {
                                         </p>
                                     </div>
                                 </div>
-                                <div style="display: flex; align-items: center; gap: 1rem;">
                                     ${a.status === 'confirmed' ? `
                                         <div style="display: flex; align-items: center; gap: 0.75rem;">
                                             <div style="color: var(--success); display: flex; align-items: center; gap: 0.5rem;" title="Presença Confirmada">
@@ -326,6 +325,7 @@ export class DashboardPage {
                                             </div>
                                             ${(user.is_admin || user.role === 'professor' || user.role === 'admin') ? `
                                                 <button class="btn-unconfirm-attendance" 
+                                                        data-attendance-id="${a.attendanceId}"
                                                         data-class-id="${c.id}" 
                                                         data-user-id="${a.id}" 
                                                         data-date="${dateStr}" 
@@ -338,7 +338,13 @@ export class DashboardPage {
                                     ` : `
                                         <div style="display: flex; align-items: center; gap: 1rem;">
                                             ${(user.is_admin || user.role === 'professor' || user.role === 'admin') ? `
-                                                <button class="btn-confirm-attendance" data-class-id="${c.id}" data-user-id="${a.id}" data-date="${dateStr}" title="Confirmar Presença" style="background: none; border: none; cursor: pointer; color: var(--success); display: flex; align-items: center; justify-content: center; transition: transform 0.2s; padding: 0;">
+                                                <button class="btn-confirm-attendance" 
+                                                        data-attendance-id="${a.attendanceId}"
+                                                        data-class-id="${c.id}" 
+                                                        data-user-id="${a.id}" 
+                                                        data-date="${dateStr}" 
+                                                        title="Confirmar Presença" 
+                                                        style="background: none; border: none; cursor: pointer; color: var(--success); display: flex; align-items: center; justify-content: center; transition: transform 0.2s; padding: 0;">
                                                     <i data-lucide="check-circle-2" size="28" style="stroke-width: 2.5px;"></i>
                                                 </button>
                                             ` : ''}
@@ -525,21 +531,24 @@ export class DashboardPage {
         // Confirmar Presença
         document.querySelectorAll('.btn-confirm-attendance').forEach(btn => {
             btn.addEventListener('click', async (e) => {
-                const classId = e.currentTarget.dataset.classId;
-                const userId = e.currentTarget.dataset.userId;
-                const date = e.currentTarget.dataset.date;
                 const button = e.currentTarget;
+                const attendanceId = button.dataset.attendanceId;
+                const classId = button.dataset.classId;
+                const userId = button.dataset.userId;
+                const date = button.dataset.date;
                 const container = button.parentElement;
                 
+                // Feedback visual imediato e bloqueio de cliques
                 button.style.pointerEvents = 'none';
+                button.style.opacity = '0.5';
                 button.innerHTML = '<i data-lucide="loader-2" class="animate-spin" size="24"></i>';
                 if (window.lucide) window.lucide.createIcons();
 
-                const res = await this.app.academy.confirmAttendance(classId, userId, date);
+                const res = await this.app.academy.confirmAttendance(classId, userId, date, attendanceId);
                 if (res.success) {
                     container.innerHTML = `
                         <div style="color: var(--success); display: flex; align-items: center; gap: 0.5rem;" class="animate-in fade-in">
-                            <span style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase;">Presença Confirmada!</span>
+                            <span style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase;">Confirmado!</span>
                             <i data-lucide="check-circle-2" size="28" style="stroke-width: 2.5px; fill: hsla(142, 72%, 29%, 0.1);"></i>
                         </div>
                     `;
@@ -556,11 +565,13 @@ export class DashboardPage {
         document.querySelectorAll('.btn-unconfirm-attendance').forEach(btn => {
             btn.addEventListener('click', async (e) => {
                 if (confirm('Deseja realmente desfazer a confirmação deste aluno?')) {
-                    const classId = e.currentTarget.dataset.classId;
-                    const userId = e.currentTarget.dataset.userId;
-                    const date = e.currentTarget.dataset.date;
+                    const button = e.currentTarget;
+                    const attendanceId = button.dataset.attendanceId;
+                    const classId = button.dataset.classId;
+                    const userId = button.dataset.userId;
+                    const date = button.dataset.date;
                     
-                    const res = await this.app.academy.unconfirmAttendance(classId, userId, date);
+                    const res = await this.app.academy.unconfirmAttendance(classId, userId, date, attendanceId);
                     if (res.success) this.app.router.handleRouteChange(window.location.hash);
                     else alert('Erro ao desfazer: ' + res.error);
                 }

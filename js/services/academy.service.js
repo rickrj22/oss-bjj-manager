@@ -45,6 +45,7 @@ export class AcademyService {
                     professor:profiles(id, full_name, avatar_url, current_belt, current_stripes)
                 ),
                 attendees:attendance(
+                    id,
                     status,
                     check_in_date,
                     user:profiles(id, full_name, avatar_url, current_belt, current_stripes, role)
@@ -68,6 +69,7 @@ export class AcademyService {
             (c.attendees || []).forEach(a => {
                 if (a.check_in_date === dateStr && !attendeeMap.has(a.user.id)) {
                     attendeeMap.set(a.user.id, {
+                        attendanceId: a.id,
                         id: a.user.id,
                         name: a.user.full_name,
                         avatar: a.user.avatar_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(a.user.full_name)}&background=random`,
@@ -381,27 +383,31 @@ export class AcademyService {
         return { success: true };
     }
 
-    async confirmAttendance(classId, userId, customDate = null) {
-        const date = customDate || this.getLocalDateString();
-        const { error } = await this.client
-            .from('attendance')
-            .update({ status: 'confirmed' })
-            .eq('class_id', classId)
-            .eq('user_id', userId)
-            .eq('check_in_date', date);
+    async confirmAttendance(classId, userId, customDate = null, attendanceId = null) {
+        let query = this.client.from('attendance').update({ status: 'confirmed' });
+        
+        if (attendanceId) {
+            query = query.eq('id', attendanceId);
+        } else {
+            const date = customDate || this.getLocalDateString();
+            query = query.eq('class_id', classId).eq('user_id', userId).eq('check_in_date', date);
+        }
 
+        const { error } = await query;
         return { success: !error, error: error?.message };
     }
 
-    async unconfirmAttendance(classId, userId, customDate = null) {
-        const date = customDate || this.getLocalDateString();
-        const { error } = await this.client
-            .from('attendance')
-            .update({ status: 'pending' })
-            .eq('class_id', classId)
-            .eq('user_id', userId)
-            .eq('check_in_date', date);
+    async unconfirmAttendance(classId, userId, customDate = null, attendanceId = null) {
+        let query = this.client.from('attendance').update({ status: 'pending' });
+        
+        if (attendanceId) {
+            query = query.eq('id', attendanceId);
+        } else {
+            const date = customDate || this.getLocalDateString();
+            query = query.eq('class_id', classId).eq('user_id', userId).eq('check_in_date', date);
+        }
 
+        const { error } = await query;
         return { success: !error, error: error?.message };
     }
 
