@@ -399,7 +399,7 @@ export class AcademyService {
     }
 
     async unconfirmAttendance(classId, userId, customDate = null, attendanceId = null) {
-        let query = this.client.from('attendance').update({ status: 'pending' });
+        let query = this.client.from('attendance').delete();
         
         if (attendanceId) {
             query = query.eq('id', attendanceId);
@@ -409,6 +409,7 @@ export class AcademyService {
         }
 
         const { error } = await query;
+        if (error) console.error('Error deleting attendance:', error);
         return { success: !error, error: error?.message };
     }
 
