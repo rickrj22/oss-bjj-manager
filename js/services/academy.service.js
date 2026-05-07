@@ -7,6 +7,14 @@ export class AcademyService {
         return this.app.auth.client;
     }
 
+    getLocalDateString() {
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = String(now.getMonth() + 1).padStart(2, '0');
+        const day = String(now.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    }
+
     async getTodaysClasses(customAcademyId = null) {
         const user = await this.app.auth.getUser();
         
@@ -15,7 +23,7 @@ export class AcademyService {
         if (!academyId) return [];
 
         const today = new Date().getDay();
-        const dateStr = new Date().toISOString().split('T')[0];
+        const dateStr = this.getLocalDateString();
         
         const beltOrder = { 
             'black belt': 17, 'brown belt': 16, 'purple belt': 15, 'blue belt': 14,
@@ -38,6 +46,7 @@ export class AcademyService {
                 ),
                 attendees:attendance(
                     status,
+                    check_in_date,
                     user:profiles(id, full_name, avatar_url, current_belt, current_stripes, role)
                 )
             `)
@@ -57,7 +66,7 @@ export class AcademyService {
 
             const attendeeMap = new Map();
             (c.attendees || []).forEach(a => {
-                if (!attendeeMap.has(a.user.id)) {
+                if (a.check_in_date === dateStr && !attendeeMap.has(a.user.id)) {
                     attendeeMap.set(a.user.id, {
                         id: a.user.id,
                         name: a.user.full_name,
@@ -298,7 +307,7 @@ export class AcademyService {
 
     async saveDailyTechnique(classId, technique) {
         const user = await this.app.auth.getUser();
-        const date = new Date().toISOString().split('T')[0];
+        const date = this.getLocalDateString();
 
         const { error } = await this.client
             .from('daily_techniques')
@@ -318,7 +327,7 @@ export class AcademyService {
     }
 
     async deleteDailyTechnique(classId) {
-        const date = new Date().toISOString().split('T')[0];
+        const date = this.getLocalDateString();
         const { error } = await this.client
             .from('daily_techniques')
             .delete()
@@ -361,7 +370,7 @@ export class AcademyService {
             .insert({
                 user_id: user.id,
                 class_id: classId,
-                check_in_date: new Date().toISOString().split('T')[0]
+                check_in_date: this.getLocalDateString()
             });
 
         if (error && error.code !== '23505') { // Ignora se já existir check-in (duplicata)
@@ -378,7 +387,7 @@ export class AcademyService {
             .update({ status: 'confirmed' })
             .eq('class_id', classId)
             .eq('user_id', userId)
-            .eq('check_in_date', new Date().toISOString().split('T')[0]);
+            .eq('check_in_date', this.getLocalDateString());
 
         return { success: !error, error: error?.message };
     }
