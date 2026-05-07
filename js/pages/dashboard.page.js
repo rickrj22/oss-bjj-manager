@@ -237,8 +237,6 @@ export class DashboardPage {
                 </div>
             </div>
             
-            </div>
-            
             <style>
                 @media (max-width: 1024px) {
                     .layout-container { --grid-main: 1fr; }
@@ -356,7 +354,8 @@ export class DashboardPage {
                                                 </button>
                                             ` : ''}
                                         </div>
-                        `).join('')}
+                                    `}
+                                `).join('')}
                         ${c.attendees.length === 0 ? '<p class="text-dim" style="font-size: 0.8125rem; font-style: italic; padding: 0.5rem;">Nenhum check-in confirmado.</p>' : ''}
                     </div>
                 </div>
