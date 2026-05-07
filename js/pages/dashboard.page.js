@@ -510,12 +510,32 @@ export class DashboardPage {
             btn.addEventListener('click', async (e) => {
                 const classId = e.currentTarget.dataset.classId;
                 const userId = e.currentTarget.dataset.userId;
+                const button = e.currentTarget;
+                const container = button.parentElement;
                 
+                // Feedback visual imediato para evitar múltiplos cliques
+                button.style.pointerEvents = 'none';
+                button.innerHTML = '<i data-lucide="loader-2" class="animate-spin" size="24"></i>';
+                if (window.lucide) window.lucide.createIcons();
+
                 const res = await this.app.academy.confirmAttendance(classId, userId);
                 if (res.success) {
-                    this.app.router.handleRouteChange(window.location.hash);
+                    // Substitui o botão pela mensagem de sucesso
+                    container.innerHTML = `
+                        <div style="color: var(--success); display: flex; align-items: center; gap: 0.5rem;" class="animate-in fade-in">
+                            <span style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase;">Presença Confirmada!</span>
+                            <i data-lucide="check-circle-2" size="28" style="stroke-width: 2.5px; fill: hsla(142, 72%, 29%, 0.1);"></i>
+                        </div>
+                    `;
+                    if (window.lucide) window.lucide.createIcons();
+                    
+                    // Pequeno atraso antes de recarregar para o usuário ver a confirmação
+                    setTimeout(() => {
+                        this.app.router.handleRouteChange(window.location.hash);
+                    }, 1200);
                 } else {
                     alert('Erro ao confirmar presença: ' + res.error);
+                    this.app.router.handleRouteChange(window.location.hash);
                 }
             });
         });
