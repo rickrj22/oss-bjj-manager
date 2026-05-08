@@ -258,7 +258,7 @@ export class DashboardPage {
         };
 
         return `
-            <div style="padding-bottom: 2rem; border-bottom: 1px solid var(--border); last-child { border: 0 };">
+            <div style="padding-bottom: 2rem; border-bottom: 1px solid var(--border);">
                 <div class="flex-between mb-4">
                     <div>
                         <div style="display: flex; align-items: center; gap: 0.5rem;">
@@ -356,50 +356,7 @@ export class DashboardPage {
                             `}
                         </div>
                     `).join('')}
-                    ${c.attendees.length === 0 ? '<p class="text-dim" style="font-size: 0.8125rem; font-style: italic; padding: 0.5rem;">Nenhum check-in confirmado.</p>' : ''}
-                </div>
-                                </div>
-                                    ${a.status === 'confirmed' ? `
-                                        <div style="display: flex; align-items: center; gap: 0.75rem;">
-                                            <div style="color: var(--success); display: flex; align-items: center; gap: 0.5rem;" title="Presença Confirmada">
-                                                <i data-lucide="check-circle-2" size="28" style="stroke-width: 2.5px; fill: hsla(142, 72%, 29%, 0.1);"></i>
-                                            </div>
-                                            ${(user.is_admin || user.role === 'professor' || user.role === 'admin') ? `
-                                                <button class="btn-unconfirm-attendance" 
-                                                        data-attendance-id="${a.attendanceId}"
-                                                        data-class-id="${c.id}" 
-                                                        data-user-id="${a.id}" 
-                                                        data-date="${dateStr}" 
-                                                        title="Desfazer Confirmação" 
-                                                        style="background: var(--bg-elevated); border: 1px solid var(--border); cursor: pointer; color: var(--error); border-radius: 6px; display: flex; align-items: center; justify-content: center; padding: 6px; transition: all 0.2s;">
-                                                    <i data-lucide="rotate-ccw" size="16"></i>
-                                                </button>
-                                            ` : ''}
-                                        </div>
-                                    ` : `
-                                        <div style="display: flex; align-items: center; gap: 1rem;">
-                                            ${(user.is_admin || user.role === 'professor' || user.role === 'admin') ? `
-                                                <button class="btn-confirm-attendance" 
-                                                        data-attendance-id="${a.attendanceId}"
-                                                        data-class-id="${c.id}" 
-                                                        data-user-id="${a.id}" 
-                                                        data-date="${dateStr}" 
-                                                        title="Confirmar Presença" 
-                                                        style="background: none; border: none; cursor: pointer; color: var(--success); display: flex; align-items: center; justify-content: center; transition: transform 0.2s; padding: 0;">
-                                                    <i data-lucide="check-circle-2" size="28" style="stroke-width: 2.5px;"></i>
-                                                </button>
-                                            ` : ''}
-                                            
-                                            ${a.id === user.id ? `
-                                                <button class="btn btn-cancel-checkin" data-class-id="${c.id}" style="min-width: 140px; height: 36px; font-size: 0.75rem;">
-                                                    Cancelar Check-in
-                                                </button>
-                                            ` : ''}
-                                        </div>
-                                    `}
-                                `).join('')}
-                        ${c.attendees.length === 0 ? '<p class="text-dim" style="font-size: 0.8125rem; font-style: italic; padding: 0.5rem;">Nenhum check-in confirmado.</p>' : ''}
-                    </div>
+${c.attendees.length === 0 ? '<p class="text-dim" style="font-size: 0.8125rem; font-style: italic; padding: 0.5rem;">Nenhum check-in confirmado.</p>' : ''}
                 </div>
         `;
     }
