@@ -191,7 +191,7 @@ export class AuthService {
         this.onAuthStateChangeCallback = callback;
     }
 
-    async uploadImage(file, bucket = 'avatars', folder = 'avatars') {
+async uploadImage(file, bucket = 'avatars', folder = 'avatars') {
         try {
             const user = await this.getUser();
             if (!user) throw new Error("Usuário não identificado.");
@@ -210,14 +210,36 @@ export class AuthService {
 
             if (error) throw error;
 
-            const { data: urlData } = await this.client.storage
+            // Gera URL de assinatura válida por 1 hora (3600 segundos)
+            const { data: signedData, error: signError } = await this.client.storage
                 .from(bucket)
-                .getPublicUrl(filePath);
+                .createSignedUrl(filePath, 3600);
 
-            return { success: true, url: urlData.publicUrl };
+            if (signError) throw signError;
+
+            return { success: true, url: signedData.signedUrl };
         } catch (e) {
             console.error("❌ Erro ao fazer upload:", e);
             return { success: false, error: e.message };
+        }
+    }
+}
+    }
+
+    async getSignedUrl(filePath) {
+        try {
+            // Remove o prefixo do bucket se existir
+            const cleanPath = filePath.replace('avatars/', '');
+            
+            const { data, error } = await this.client.storage
+                .from('avatars')
+                .createSignedUrl(cleanPath, 3600);
+
+            if (error) throw error;
+            return data.signedUrl;
+        } catch (e) {
+            console.error("❌ Erro ao gerar URL:", e);
+            return null;
         }
     }
 

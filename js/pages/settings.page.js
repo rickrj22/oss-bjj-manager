@@ -615,11 +615,14 @@ export class SettingsPage {
             if (result.success) {
                 hiddenInput.value = result.url;
                 previewContainer.innerHTML = `<img src="${result.url}" style="width: 100%; height: 100%; object-fit: contain;">`;
-                statusEl.textContent = 'Upload concluído!';
+                statusEl.textContent = 'Upload concluído! Clique em SALVAR para aplicar.';
                 statusEl.style.color = 'var(--success)';
 
                 const saveBtn = document.querySelector('.btn-save-row');
-                if (saveBtn) saveBtn.classList.add('active');
+                if (saveBtn) {
+                    saveBtn.classList.add('active');
+                    saveBtn.style.display = 'inline-block';
+                }
             } else {
                 statusEl.textContent = 'Erro: ' + result.error;
                 statusEl.style.color = 'var(--error)';
