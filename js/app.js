@@ -85,29 +85,43 @@ class App {
     }
 
     render(content) {
-        // Get current opacity for smooth transition
-        const currentOpacity = parseFloat(getComputedStyle(this.appElement).opacity) || 1;
+        const nextElement = document.getElementById('app-next');
+        const currentElement = document.getElementById('app');
         
-        // Start transition to fade out
-        this.appElement.style.transition = 'opacity 0.2s ease-in-out';
-        this.appElement.style.opacity = '0.5';
-        
-        // Wait for half transition then swap content while maintaining 0.5 opacity
-        setTimeout(() => {
-            // Inject new content while opacity is at 0.5 (no white flash)
+        if (!nextElement || !currentElement) {
+            // Fallback for initial load
             this.appElement.innerHTML = content;
+            if (window.lucide) window.lucide.createIcons();
+            return;
+        }
+        
+        // Inject new content in the "next" container (invisible)
+        nextElement.innerHTML = content;
+        if (window.lucide) window.lucide.createIcons();
+        
+        // Start crossfade: fade in next while fading out current
+        nextElement.style.transition = 'opacity 0.35s ease-in-out';
+        nextElement.style.opacity = '1';
+        nextElement.style.pointerEvents = 'auto';
+        
+        currentElement.style.transition = 'opacity 0.35s ease-in-out';
+        currentElement.style.opacity = '0';
+        currentElement.style.pointerEvents = 'none';
+        
+        // After transition completes, swap the containers
+        setTimeout(() => {
+            currentElement.innerHTML = ''; // Clear old content
+            nextElement.style.transition = 'none';
+            nextElement.style.opacity = '0';
+            nextElement.style.pointerEvents = 'none';
             
-            // Re-initialize icons after content is injected
-            if (window.lucide) {
-                window.lucide.createIcons();
-            }
+            // Move content to main container
+            currentElement.innerHTML = content;
+            if (window.lucide) window.lucide.createIcons();
             
-            // Complete fade in
-            requestAnimationFrame(() => {
-                this.appElement.style.transition = 'opacity 0.3s ease-in-out';
-                this.appElement.style.opacity = '1';
-            });
-        }, 200);
+            currentElement.style.transition = 'opacity 0.3s ease-in-out';
+            currentElement.style.opacity = '1';
+        }, 350);
     }
 
     showModal(title, content, className = '') {
