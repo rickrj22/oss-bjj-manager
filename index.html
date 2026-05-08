@@ -26,16 +26,9 @@
     <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body>
-    <div id="app-container" style="position: relative; width: 100%; min-height: 100vh;">
-        <div id="app" style="opacity: 1; transition: opacity 0.3s ease-in-out;"></div>
-        <div id="app-next" style="position: absolute; top: 0; left: 0; width: 100%; opacity: 0; transition: opacity 0.3s ease-in-out; pointer-events: none;"></div>
-    </div>
-    <script>
-        // Patch the App render method for crossfade
-        const originalAppRender = null;
-    </script>
-    <!-- SPA content will be injected here -->
-    <div class="loader-container" id="initial-loader">
+    <div id="app" style="opacity: 1; transition: opacity 0.3s ease-in-out;">
+        <!-- SPA content will be injected here -->
+        <div class="loader-container">
             <div class="loader"></div>
             <p class="font-heading" style="color: var(--text-primary); margin-top: 2rem; letter-spacing: 0.1em; font-size: 0.8rem; text-transform: uppercase; opacity: 0.8;">Sincronizando Tatame...</p>
         </div>
