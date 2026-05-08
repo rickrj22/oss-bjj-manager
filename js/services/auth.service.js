@@ -187,11 +187,11 @@ export class AuthService {
         }
     }
 
-    onAuthStateChange(callback) {
+onAuthStateChange(callback) {
         this.onAuthStateChangeCallback = callback;
     }
 
-async uploadImage(file, bucket = 'avatars', folder = 'avatars') {
+    async uploadImage(file, bucket = 'avatars', folder = 'avatars') {
         try {
             const user = await this.getUser();
             if (!user) throw new Error("Usuário não identificado.");
