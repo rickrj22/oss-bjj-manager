@@ -154,4 +154,13 @@ class App {
 // Global App Instance
 document.addEventListener('DOMContentLoaded', () => {
     window.App = new App();
+    
+    // Global listener for theme toggle
+    document.addEventListener('click', (e) => {
+        const toggle = e.target.closest('#theme-toggle');
+        if (toggle && window.App) {
+            window.App.toggleTheme();
+            window.App.router.handleRouteChange(window.location.hash);
+        }
+    });
 });
