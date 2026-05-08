@@ -124,8 +124,20 @@ export class SettingsPage {
                                         <input type="text" class="grid-input" value="${academy.phone || ''}" data-field="phone" placeholder="(00) 00000-0000" style="height: 52px; padding: 0 1.25rem; border-radius: 10px;">
                                     </div>
                                     <div class="form-group">
-                                        <label style="font-size: 0.65rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.75rem; display: block; color: var(--text-dim);">Link da Logo (URL)</label>
-                                        <input type="text" class="grid-input" value="${academy.logo_url || ''}" data-field="logo_url" placeholder="https://link-da-logo.png" style="height: 52px; padding: 0 1.25rem; border-radius: 10px; font-size: 0.8rem;">
+                                        <label style="font-size: 0.65rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.75rem; display: block; color: var(--text-dim);">Logo da Academia</label>
+                                        <div style="display: flex; align-items: center; gap: 1rem;">
+                                            <div id="logo-preview-container" style="width: 60px; height: 60px; border-radius: 8px; overflow: hidden; background: var(--bg-elevated); border: 2px solid var(--border); display: flex; align-items: center; justify-content: center;">
+                                                ${academy.logo_url ? `<img src="${academy.logo_url}" style="width: 100%; height: 100%; object-fit: contain;">` : `<i data-lucide="image" style="color: var(--text-dim);"></i>`}
+                                            </div>
+                                            <div style="flex: 1;">
+                                                <input type="file" id="academy-logo-upload" accept="image/*" style="display: none;" onchange="window.App.currentPage.handleLogoUpload(this)">
+                                                <button type="button" class="btn" onclick="document.getElementById('academy-logo-upload').click()" style="height: 44px; padding: 0 1.5rem; font-size: 0.8rem; background: var(--bg-surface); color: var(--text-primary); border: 1px solid var(--border); border-radius: 10px;">
+                                                    <i data-lucide="upload" size="16" style="margin-right: 0.5rem;"></i>Selecionar Imagem
+                                                </button>
+                                                <input type="hidden" id="logo-url-hidden" data-field="logo_url" value="${academy.logo_url || ''}">
+                                                <p id="logo-upload-status" style="font-size: 0.75rem; color: var(--text-dim); margin-top: 0.5rem;"></p>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </form>
@@ -584,6 +596,38 @@ export class SettingsPage {
         const msg = document.getElementById('status-message');
         msg.innerHTML = `<span class="badge ${type === 'success' ? 'badge-success' : 'badge-error'}" style="padding: 1rem; border-radius: 4px; background: var(--bg-surface); border: 1px solid var(--border); box-shadow: var(--shadow-md); font-weight: 700;">${text}</span>`;
         setTimeout(() => msg.innerHTML = '', 3000);
+    }
+
+    async handleLogoUpload(input) {
+        if (!input.files || !input.files[0]) return;
+
+        const file = input.files[0];
+        const statusEl = document.getElementById('logo-upload-status');
+        const previewContainer = document.getElementById('logo-preview-container');
+        const hiddenInput = document.getElementById('logo-url-hidden');
+
+        statusEl.textContent = 'Redimensionando e carregando...';
+        statusEl.style.color = 'var(--primary)';
+
+        try {
+            const result = await this.app.auth.resizeAndUploadImage(file, 1080, 1080, 'avatars', 'logos');
+
+            if (result.success) {
+                hiddenInput.value = result.url;
+                previewContainer.innerHTML = `<img src="${result.url}" style="width: 100%; height: 100%; object-fit: contain;">`;
+                statusEl.textContent = 'Upload concluído!';
+                statusEl.style.color = 'var(--success)';
+
+                const saveBtn = document.querySelector('.btn-save-row');
+                if (saveBtn) saveBtn.classList.add('active');
+            } else {
+                statusEl.textContent = 'Erro: ' + result.error;
+                statusEl.style.color = 'var(--error)';
+            }
+        } catch (e) {
+            statusEl.textContent = 'Erro: ' + e.message;
+            statusEl.style.color = 'var(--error)';
+        }
     }
 
     async showPlansModal() {

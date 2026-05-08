@@ -165,8 +165,20 @@ export class ProfilePage {
                                             <input type="date" class="input editable-field" id="prof-birth" value="${user.birth_date || ''}" style="height: 42px; font-size: 0.85rem;">
                                         </div>
                                         <div class="form-group" style="grid-column: span var(--span-all, 1);">
-                                            <label style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700; color: var(--text-dim); margin-bottom: 0.25rem; display: block;">URL da Foto de Perfil</label>
-                                            <input type="text" class="input editable-field" id="prof-avatar" value="${user.avatar_url || ''}" style="height: 42px; font-size: 0.85rem;">
+                                            <label style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700; color: var(--text-dim); margin-bottom: 0.25rem; display: block;">Foto de Perfil</label>
+                                            <div style="display: flex; align-items: center; gap: 1rem;">
+                                                <div id="avatar-preview-container" style="width: 60px; height: 60px; border-radius: 50%; overflow: hidden; background: var(--bg-elevated); border: 2px solid var(--border); display: flex; align-items: center; justify-content: center;">
+                                                    ${user.avatar_url ? `<img src="${user.avatar_url}" style="width: 100%; height: 100%; object-fit: cover;">` : `<i data-lucide="user" style="color: var(--text-dim);"></i>`}
+                                                </div>
+                                                <div style="flex: 1;">
+                                                    <input type="file" id="prof-avatar-upload" accept="image/*" style="display: none;" onchange="window.App.currentPage.handleAvatarUpload(this)">
+                                                    <button type="button" class="btn" onclick="document.getElementById('prof-avatar-upload').click()" style="height: 36px; padding: 0 1rem; font-size: 0.75rem; background: var(--bg-surface); color: var(--text-primary); border: 1px solid var(--border);">
+                                                        <i data-lucide="upload" size="14" style="margin-right: 0.5rem;"></i>Selecionar
+                                                    </button>
+                                                    <input type="hidden" id="prof-avatar" value="${user.avatar_url || ''}">
+                                                    <p id="avatar-upload-status" style="font-size: 0.65rem; color: var(--text-dim); margin-top: 0.25rem;"></p>
+                                                </div>
+                                            </div>
                                         </div>
                                         <div class="form-group" style="grid-column: span var(--span-all, 1);">
                                             <label style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700; color: var(--text-dim); margin-bottom: 0.25rem; display: block;">Dia de Vencimento</label>
@@ -478,5 +490,37 @@ export class ProfilePage {
         msg.innerHTML = `<span class="badge ${type === 'success' ? 'badge-success' : 'badge-error'}" style="padding: 1rem; border-radius: 4px; background: var(--bg-surface); opacity: 0; transition: opacity 0.3s;">${text}</span>`;
         setTimeout(() => msg.firstChild.style.opacity = '1', 10);
         setTimeout(() => msg.firstChild.style.opacity = '0', 3000);
+    }
+
+    async handleAvatarUpload(input) {
+        if (!input.files || !input.files[0]) return;
+
+        const file = input.files[0];
+        const statusEl = document.getElementById('avatar-upload-status');
+        const previewContainer = document.getElementById('avatar-preview-container');
+        const hiddenInput = document.getElementById('prof-avatar');
+
+        statusEl.textContent = 'Redimensionando e carregando...';
+        statusEl.style.color = 'var(--primary)';
+
+        try {
+            const result = await this.app.auth.resizeAndUploadImage(file, 1080, 1080, 'avatars', 'avatars');
+
+            if (result.success) {
+                hiddenInput.value = result.url;
+                previewContainer.innerHTML = `<img src="${result.url}" style="width: 100%; height: 100%; object-fit: cover;">`;
+                statusEl.textContent = 'Upload concluído!';
+                statusEl.style.color = 'var(--success)';
+
+                const saveBtn = document.getElementById('btn-save-profile');
+                if (saveBtn) saveBtn.style.display = 'inline-block';
+            } else {
+                statusEl.textContent = 'Erro: ' + result.error;
+                statusEl.style.color = 'var(--error)';
+            }
+        } catch (e) {
+            statusEl.textContent = 'Erro: ' + e.message;
+            statusEl.style.color = 'var(--error)';
+        }
     }
 }

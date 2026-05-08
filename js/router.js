@@ -49,6 +49,7 @@ export class Router {
         const PageClass = this.routes[routeHash] || (user?.is_admin ? DashboardPage : ClassesPage);
         
         const page = new PageClass(this.app);
+        this.app.currentPage = page;
         const html = await page.render();
         this.app.render(html);
         

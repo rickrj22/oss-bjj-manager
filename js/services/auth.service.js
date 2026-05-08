@@ -190,4 +190,79 @@ export class AuthService {
     onAuthStateChange(callback) {
         this.onAuthStateChangeCallback = callback;
     }
+
+    async uploadImage(file, bucket = 'avatars', folder = 'avatars') {
+        try {
+            const user = await this.getUser();
+            if (!user) throw new Error("Usuário não identificado.");
+
+            const fileExt = file.name.split('.').pop();
+            const fileName = `${user.id}_${Date.now()}.${fileExt}`;
+            const filePath = `${folder}/${fileName}`;
+
+            const { data, error } = await this.client.storage
+                .from(bucket)
+                .upload(filePath, file, {
+                    cacheControl: '3600',
+                    upsert: false,
+                    contentType: file.type || 'image/jpeg'
+                });
+
+            if (error) throw error;
+
+            const { data: urlData } = await this.client.storage
+                .from(bucket)
+                .getPublicUrl(filePath);
+
+            return { success: true, url: urlData.publicUrl };
+        } catch (e) {
+            console.error("❌ Erro ao fazer upload:", e);
+            return { success: false, error: e.message };
+        }
+    }
+
+    async resizeAndUploadImage(file, maxWidth = 1080, maxHeight = 1080, bucket = 'avatars', folder = 'avatars') {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = (event) => {
+                const img = new Image();
+                img.src = event.target.result;
+                img.onload = async () => {
+                    let width = img.width;
+                    let height = img.height;
+
+                    if (width > height) {
+                        if (width > maxWidth) {
+                            height = Math.round((height * maxWidth) / width);
+                            width = maxWidth;
+                        }
+                    } else {
+                        if (height > maxHeight) {
+                            width = Math.round((width * maxHeight) / height);
+                            height = maxHeight;
+                        }
+                    }
+
+                    const canvas = document.createElement('canvas');
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+
+                    canvas.toBlob(async (blob) => {
+                        const resizedFile = new File([blob], file.name, {
+                            type: 'image/jpeg',
+                            lastModified: Date.now()
+                        });
+
+                        const result = await this.uploadImage(resizedFile, bucket, folder);
+                        resolve(result);
+                    }, 'image/jpeg', 0.85);
+                };
+                img.onerror = () => reject(new Error("Erro ao carregar imagem"));
+            };
+            reader.onerror = () => reject(new Error("Erro ao ler arquivo"));
+        });
+    }
 }

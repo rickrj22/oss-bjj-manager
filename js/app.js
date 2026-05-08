@@ -12,6 +12,7 @@ class App {
         this.auth = new AuthService();
         this.academy = new AcademyService(this);
         this.router = new Router(this);
+        this.currentPage = null;
         
         this.initTheme();
         this.init();
