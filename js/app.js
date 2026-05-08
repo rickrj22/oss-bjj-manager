@@ -85,26 +85,29 @@ class App {
     }
 
     render(content) {
-        // Prepare container for transition
-        this.appElement.style.opacity = '0';
-        this.appElement.style.transform = 'translateY(6px)';
-        this.appElement.style.transition = 'none';
-
-        // Inject new content
-        this.appElement.innerHTML = content;
+        // Get current opacity for smooth transition
+        const currentOpacity = parseFloat(getComputedStyle(this.appElement).opacity) || 1;
         
-        // Re-initialize icons
-        if (window.lucide) {
-            window.lucide.createIcons();
-        }
-
-        // Trigger reflow to ensure the "hidden" state is applied before animating
-        void this.appElement.offsetWidth;
-
-        // Apply smooth reveal transition
-        this.appElement.style.transition = 'opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1), transform 0.3s cubic-bezier(0.16, 1, 0.3, 1)';
-        this.appElement.style.opacity = '1';
-        this.appElement.style.transform = 'translateY(0)';
+        // Start transition to fade out
+        this.appElement.style.transition = 'opacity 0.2s ease-in-out';
+        this.appElement.style.opacity = '0.5';
+        
+        // Wait for half transition then swap content while maintaining 0.5 opacity
+        setTimeout(() => {
+            // Inject new content while opacity is at 0.5 (no white flash)
+            this.appElement.innerHTML = content;
+            
+            // Re-initialize icons after content is injected
+            if (window.lucide) {
+                window.lucide.createIcons();
+            }
+            
+            // Complete fade in
+            requestAnimationFrame(() => {
+                this.appElement.style.transition = 'opacity 0.3s ease-in-out';
+                this.appElement.style.opacity = '1';
+            });
+        }, 200);
     }
 
     showModal(title, content, className = '') {
