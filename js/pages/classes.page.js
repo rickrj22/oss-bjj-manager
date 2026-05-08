@@ -313,63 +313,60 @@ export class ClassesPage {
                 </div>
 
                 <!-- Check-ins realizados -->
-                <div style="margin-top: 1.5rem;">
-                    <p style="font-size: 0.75rem; font-weight: 700; color: var(--text-dim); text-transform: uppercase; margin-bottom: 1rem; letter-spacing: 0.05em;">Check-ins realizados:</p>
-                    <div style="display: flex; flex-direction: column; gap: 0.75rem;">
-                        ${c.attendees.map(a => `
-                            <div style="display: flex; align-items: center; justify-content: space-between; padding: 0.75rem 1rem; background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px;">
-                                <div style="display: flex; align-items: center; gap: 1.25rem;">
-                                    ${this.renderAvatarWithStripes(a, 48)}
-                                    <div>
-                                        <p style="font-size: 1rem; font-weight: 700; color: var(--text-primary);">${a.name}</p>
-                                        <p style="font-size: 0.8125rem; color: var(--text-dim); font-weight: 500; text-transform: capitalize;">
-                                            ${a.belt} ${a.stripes > 0 ? `• ${a.stripes}º Grau` : ''}
-                                        </p>
-                                    </div>
-                                </div>
-                                    ${a.status === 'confirmed' ? `
-                                        <div style="display: flex; align-items: center; gap: 0.75rem;">
-                                            <div style="color: var(--success); display: flex; align-items: center; gap: 0.5rem;" title="Presença Confirmada">
-                                                <i data-lucide="check-circle-2" size="28" style="stroke-width: 2.5px; fill: hsla(142, 72%, 29%, 0.1);"></i>
-                                            </div>
-                                            ${(user.is_admin || user.role === 'professor' || user.role === 'admin') ? `
-                                                <button class="btn-unconfirm-attendance" 
-                                                        data-attendance-id="${a.attendanceId}"
-                                                        data-class-id="${c.id}" 
-                                                        data-user-id="${a.id}" 
-                                                        data-date="${dateStr}" 
-                                                        title="Desfazer Confirmação" 
-                                                        style="background: var(--bg-elevated); border: 1px solid var(--border); cursor: pointer; color: var(--error); border-radius: 6px; display: flex; align-items: center; justify-content: center; padding: 6px; transition: all 0.2s;">
-                                                    <i data-lucide="rotate-ccw" size="16"></i>
-                                                </button>
-                                            ` : ''}
-                                        </div>
-                                    ` : `
-                                        <div style="display: flex; align-items: center; gap: 1rem;">
-                                            ${(user.is_admin || user.role === 'professor' || user.role === 'admin') ? `
-                                                <button class="btn-confirm-attendance" 
-                                                        data-attendance-id="${a.attendanceId}"
-                                                        data-class-id="${c.id}" 
-                                                        data-user-id="${a.id}" 
-                                                        data-date="${dateStr}" 
-                                                        title="Confirmar Presença" 
-                                                        style="background: none; border: none; cursor: pointer; color: var(--success); display: flex; align-items: center; justify-content: center; transition: transform 0.2s; padding: 0;">
-                                                    <i data-lucide="check-circle-2" size="28" style="stroke-width: 2.5px;"></i>
-                                                </button>
-                                            ` : ''}
-                                            
-                                            ${a.id === user.id ? `
-                                                <button class="btn btn-cancel-checkin" data-class-id="${c.id}" style="min-width: 140px; height: 36px; font-size: 0.75rem;">
-                                                    Cancelar Check-in
-                                                </button>
-                                            ` : ''}
-                                        </div>
-                                    `}
+                <div class="checkins-container">
+                    <p class="checkins-title">Check-ins realizados:</p>
+                    ${c.attendees.map(a => `
+                        <div class="checkin-item">
+                            <div class="checkin-item-info">
+                                ${this.renderAvatarWithStripes(a, 48)}
+                                <div>
+                                    <p class="checkin-item-name">${a.name}</p>
+                                    <p class="checkin-item-belt">
+                                        ${a.belt} ${a.stripes > 0 ? `• ${a.stripes}º Grau` : ''}
+                                    </p>
                                 </div>
                             </div>
-                        `).join('')}
-                        ${c.attendees.length === 0 ? '<p class="text-dim" style="font-size: 0.8125rem; font-style: italic; padding: 0.5rem;">Nenhum check-in confirmado.</p>' : ''}
-                    </div>
+                            ${a.status === 'confirmed' ? `
+                                <div class="checkin-item-actions">
+                                    <div style="color: var(--success); display: flex; align-items: center; gap: 0.5rem;" title="Presença Confirmada">
+                                        <i data-lucide="check-circle-2" size="28" style="stroke-width: 2.5px; fill: hsla(142, 72%, 29%, 0.1);"></i>
+                                    </div>
+                                    ${(user.is_admin || user.role === 'professor' || user.role === 'admin') ? `
+                                        <button class="btn-unconfirm-attendance" 
+                                                data-attendance-id="${a.attendanceId}"
+                                                data-class-id="${c.id}" 
+                                                data-user-id="${a.id}" 
+                                                data-date="${dateStr}" 
+                                                title="Desfazer Confirmação" 
+                                                style="background: var(--bg-elevated); border: 1px solid var(--border); cursor: pointer; color: var(--error); border-radius: 6px; display: flex; align-items: center; justify-content: center; padding: 6px; transition: all 0.2s;">
+                                            <i data-lucide="rotate-ccw" size="16"></i>
+                                        </button>
+                                    ` : ''}
+                                </div>
+                            ` : `
+                                <div class="checkin-item-actions">
+                                    ${(user.is_admin || user.role === 'professor' || user.role === 'admin') ? `
+                                        <button class="btn-confirm-attendance" 
+                                                data-attendance-id="${a.attendanceId}"
+                                                data-class-id="${c.id}" 
+                                                data-user-id="${a.id}" 
+                                                data-date="${dateStr}" 
+                                                title="Confirmar Presença" 
+                                                style="background: none; border: none; cursor: pointer; color: var(--success); display: flex; align-items: center; justify-content: center; transition: transform 0.2s; padding: 0;">
+                                            <i data-lucide="check-circle-2" size="28" style="stroke-width: 2.5px;"></i>
+                                        </button>
+                                    ` : ''}
+                                    
+                                    ${a.id === user.id ? `
+                                        <button class="btn btn-cancel-checkin" data-class-id="${c.id}" style="min-width: 140px; height: 36px; font-size: 0.75rem;">
+                                            Cancelar Check-in
+                                        </button>
+                                    ` : ''}
+                                </div>
+                            `}
+                        </div>
+                    `).join('')}
+                    ${c.attendees.length === 0 ? '<p class="text-dim" style="font-size: 0.8125rem; font-style: italic; padding: 0.5rem;">Nenhum check-in confirmado.</p>' : ''}
                 </div>
             </div>
         `;

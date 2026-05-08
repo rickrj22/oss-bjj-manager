@@ -324,6 +324,84 @@ select.input {
     from { transform: translateY(20px); opacity: 0; }
     to { transform: translateY(0); opacity: 1; }
 }
+/* Check-ins List */
+.checkins-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+}
+
+.checkins-title {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+    letter-spacing: 0.05em;
+}
+
+.checkin-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 1rem;
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    gap: 1rem;
+}
+
+.checkin-item-info {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    flex: 1;
+    min-width: 0;
+}
+
+.checkin-item-name {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.checkin-item-belt {
+    font-size: 0.8125rem;
+    color: var(--text-dim);
+    font-weight: 500;
+    text-transform: capitalize;
+}
+
+.checkin-item-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-shrink: 0;
+}
+
+@media (max-width: 640px) {
+    .checkins-container {
+        gap: 0.5rem;
+    }
+    .checkin-item {
+        padding: 0.625rem 0.75rem;
+        flex-wrap: wrap;
+    }
+    .checkin-item-info {
+        gap: 0.75rem;
+    }
+    .checkin-item-name {
+        font-size: 0.875rem;
+    }
+    .checkin-item-belt {
+        font-size: 0.75rem;
+    }
+}
+
 /* Avatar with Belt Border */
 .avatar-belt {
     border-radius: 50%;

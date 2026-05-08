@@ -87,6 +87,9 @@
         padding-left: 1rem !important;
         padding-right: 1rem !important;
     }
+    .grid {
+        grid-template-columns: 1fr !important;
+    }
 }
 
 /* Auth Layout */
