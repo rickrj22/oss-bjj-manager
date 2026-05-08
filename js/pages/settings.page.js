@@ -618,13 +618,22 @@ export class SettingsPage {
             if (result.success) {
                 hiddenInput.value = result.url;
                 previewContainer.innerHTML = `<img src="${result.url}" style="width: 100%; height: 100%; object-fit: contain;">`;
-                statusEl.textContent = 'Upload concluído! Clique em SALVAR para aplicar.';
-                statusEl.style.color = 'var(--success)';
+                statusEl.textContent = 'Salvando automaticamente...';
+                statusEl.style.color = 'var(--primary)';
 
-                const saveBtn = document.querySelector('.btn-save-row');
-                if (saveBtn) {
-                    saveBtn.classList.add('active');
-                    saveBtn.style.display = 'inline-block';
+                const res = await this.app.academy.updateAcademy(academyId, { logo_url: result.url });
+
+                if (res.success) {
+                    statusEl.textContent = 'Logo atualizado com sucesso!';
+                    statusEl.style.color = 'var(--success)';
+
+                    const logoContainer = document.getElementById('sidebar-logo-container');
+                    if (logoContainer) {
+                        logoContainer.innerHTML = `<img src="${result.url}" style="width: 100%; height: 100%; object-fit: contain;">`;
+                    }
+                } else {
+                    statusEl.textContent = 'Erro ao salvar: ' + res.error;
+                    statusEl.style.color = 'var(--error)';
                 }
             } else {
                 statusEl.textContent = 'Erro: ' + result.error;

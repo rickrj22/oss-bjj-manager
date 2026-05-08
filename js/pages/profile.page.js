@@ -509,11 +509,20 @@ export class ProfilePage {
             if (result.success) {
                 hiddenInput.value = result.url;
                 previewContainer.innerHTML = `<img src="${result.url}" style="width: 100%; height: 100%; object-fit: cover;">`;
-                statusEl.textContent = 'Upload concluído!';
-                statusEl.style.color = 'var(--success)';
+                statusEl.textContent = 'Salvando automaticamente...';
+                statusEl.style.color = 'var(--primary)';
 
-                const saveBtn = document.getElementById('btn-save-profile');
-                if (saveBtn) saveBtn.style.display = 'inline-block';
+                const user = await this.app.auth.getUser();
+                const res = await this.app.auth.updateProfile({ avatar_url: result.url });
+
+                if (res.success) {
+                    statusEl.textContent = 'Foto atualizada com sucesso!';
+                    statusEl.style.color = 'var(--success)';
+                    await this.app.auth._refreshUserProfile(user.id);
+                } else {
+                    statusEl.textContent = 'Erro ao salvar: ' + res.error;
+                    statusEl.style.color = 'var(--error)';
+                }
             } else {
                 statusEl.textContent = 'Erro: ' + result.error;
                 statusEl.style.color = 'var(--error)';

@@ -212,14 +212,10 @@ onAuthStateChange(callback) {
 
             if (error) throw error;
 
-            // Gera URL de assinatura válida por 1 hora (3600 segundos)
-            const { data: signedData, error: signError } = await this.client.storage
-                .from(bucket)
-                .createSignedUrl(filePath, 3600);
+            // Gera URL pública permanente (sem expiração)
+            const publicUrl = `${SUPABASE_URL}/storage/v1/object/public/${bucket}/${filePath}`;
 
-            if (signError) throw signError;
-
-            return { success: true, url: signedData.signedUrl };
+            return { success: true, url: publicUrl };
         } catch (e) {
             console.error("❌ Erro ao fazer upload:", e);
             return { success: false, error: e.message };
