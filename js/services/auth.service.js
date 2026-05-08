@@ -223,8 +223,6 @@ onAuthStateChange(callback) {
             return { success: false, error: e.message };
         }
     }
-}
-    }
 
     async getSignedUrl(filePath) {
         try {
