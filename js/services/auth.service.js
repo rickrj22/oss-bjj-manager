@@ -191,20 +191,22 @@ onAuthStateChange(callback) {
         this.onAuthStateChangeCallback = callback;
     }
 
-    async uploadImage(file, bucket = 'avatars', folder = 'avatars') {
+    async uploadImage(file, bucket = 'avatars', folder = 'avatars', customId = null) {
         try {
             const user = await this.getUser();
-            if (!user) throw new Error("Usuário não identificado.");
+            if (!user && !customId) throw new Error("Usuário não identificado.");
 
             const fileExt = file.name.split('.').pop();
-            const fileName = `${user.id}_${Date.now()}.${fileExt}`;
+            // Usa ID do usuário ou customId + extensão fixa para sobrescrever o arquivo anterior
+            const id = customId || user.id;
+            const fileName = `${id}.${fileExt}`;
             const filePath = `${folder}/${fileName}`;
 
             const { data, error } = await this.client.storage
                 .from(bucket)
                 .upload(filePath, file, {
                     cacheControl: '3600',
-                    upsert: false,
+                    upsert: true, // Substitui se já existir
                     contentType: file.type || 'image/jpeg'
                 });
 
@@ -241,7 +243,7 @@ onAuthStateChange(callback) {
         }
     }
 
-    async resizeAndUploadImage(file, maxWidth = 1080, maxHeight = 1080, bucket = 'avatars', folder = 'avatars') {
+    async resizeAndUploadImage(file, maxWidth = 1080, maxHeight = 1080, bucket = 'avatars', folder = 'avatars', customId = null) {
         return new Promise((resolve, reject) => {
             const reader = new FileReader();
             reader.readAsDataURL(file);
@@ -276,7 +278,7 @@ onAuthStateChange(callback) {
                             lastModified: Date.now()
                         });
 
-                        const result = await this.uploadImage(resizedFile, bucket, folder);
+                        const result = await this.uploadImage(resizedFile, bucket, folder, customId);
                         resolve(result);
                     }, 'image/jpeg', 0.85);
                 };

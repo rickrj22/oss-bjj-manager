@@ -606,11 +606,14 @@ export class SettingsPage {
         const previewContainer = document.getElementById('logo-preview-container');
         const hiddenInput = document.getElementById('logo-url-hidden');
 
+        const form = document.getElementById('academy-details-form');
+        const academyId = form?.dataset.id;
+
         statusEl.textContent = 'Redimensionando e carregando...';
         statusEl.style.color = 'var(--primary)';
 
         try {
-            const result = await this.app.auth.resizeAndUploadImage(file, 1080, 1080, 'avatars', 'logos');
+            const result = await this.app.auth.resizeAndUploadImage(file, 1080, 1080, 'avatars', 'logos', academyId);
 
             if (result.success) {
                 hiddenInput.value = result.url;
