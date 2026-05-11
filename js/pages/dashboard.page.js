@@ -501,6 +501,7 @@ ${c.attendees.length === 0 ? '<p class="text-dim" style="font-size: 0.8125rem; f
                         const res = await this.app.academy.createAnnouncement(content);
                         if (res.success) {
                             this.app.closeModal();
+                            this.showWhatsAppDispatcher(content);
                             this.app.router.handleRouteChange(window.location.hash);
                         }
                     }
@@ -577,6 +578,88 @@ ${c.attendees.length === 0 ? '<p class="text-dim" style="font-size: 0.8125rem; f
         // Lucide
         if (window.lucide) window.lucide.createIcons();
     }
+
+    async showWhatsAppDispatcher(message) {
+        const members = await this.app.academy.getAcademyActiveMembersWithPhone(this.app.dashboardState.selectedAcademyId);
+        
+        if (members.length === 0) {
+            alert('Comunicado publicado! (Nenhum aluno com telefone cadastrado para envio via WhatsApp)');
+            return;
+        }
+
+        const encodedMessage = encodeURIComponent(message);
+        
+        this.app.showModal('Enviar via WhatsApp', `
+            <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+                <div style="padding: 1rem; background: var(--bg-elevated); border-radius: 8px; border: 1px solid var(--border);">
+                    <p style="font-size: 0.75rem; color: var(--text-dim); text-transform: uppercase; font-weight: 800; margin-bottom: 0.5rem;">Mensagem</p>
+                    <p style="font-size: 0.9375rem; line-height: 1.5;">${message}</p>
+                </div>
+
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <h4 class="font-heading" style="font-size: 1rem;">Alunos Encontrados (${members.length})</h4>
+                    <button class="btn btn-primary" id="btn-whatsapp-all" style="height: 36px; font-size: 0.75rem;">
+                        <i data-lucide="send" size="14"></i> ABRIR LISTA DE ENVIO
+                    </button>
+                </div>
+
+                <div style="max-height: 300px; overflow-y: auto; border: 1px solid var(--border); border-radius: 8px;">
+                    <table style="width: 100%; border-collapse: collapse;">
+                        <tbody id="whatsapp-list">
+                            ${members.map((m, i) => `
+                                <tr style="border-bottom: 1px solid var(--border);">
+                                    <td style="padding: 0.75rem 1rem;">
+                                        <p style="font-weight: 600; font-size: 0.875rem;">${m.full_name}</p>
+                                        <p style="font-size: 0.75rem; color: var(--text-dim);">${m.phone}</p>
+                                    </td>
+                                    <td style="padding: 0.75rem 1rem; text-align: right;">
+                                        <a href="https://api.whatsapp.com/send?phone=${(() => {
+                                            let p = m.phone.replace(/\D/g, '');
+                                            if (p.length >= 10 && p.length <= 11 && !p.startsWith('55')) p = '55' + p;
+                                            return p;
+                                        })()}&text=${encodedMessage}" 
+                                           target="_blank" 
+                                           class="btn btn-outline whatsapp-single-btn" 
+                                           style="height: 32px; font-size: 0.7rem; gap: 0.5rem; display: inline-flex; align-items: center;">
+                                            <i data-lucide="message-circle" size="14"></i> ENVIAR
+                                        </a>
+                                    </td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>
+
+                <div style="background: hsla(var(--h), 100%, 65%, 0.1); padding: 1rem; border-radius: 8px; border: 1px solid hsla(var(--h), 100%, 65%, 0.2);">
+                    <p style="font-size: 0.75rem; color: var(--primary); font-weight: 600;">
+                        <i data-lucide="info" size="14" style="vertical-align: middle; margin-right: 0.25rem;"></i>
+                        Devido às políticas do WhatsApp, os envios devem ser feitos individualmente para evitar bloqueios.
+                    </p>
+                </div>
+
+                <div style="display: flex; justify-content: flex-end; gap: 1rem;">
+                    <button class="btn btn-secondary" onclick="window.App.closeModal()">CONCLUIR</button>
+                </div>
+            </div>
+        `, 'modal-large');
+
+        if (window.lucide) window.lucide.createIcons();
+
+        const allBtns = document.querySelectorAll('.whatsapp-single-btn');
+        allBtns.forEach(btn => {
+            btn.onclick = () => {
+                btn.style.opacity = '0.5';
+                btn.style.background = 'var(--bg-elevated)';
+                btn.innerHTML = '<i data-lucide="check" size="14"></i> ENVIADO';
+                if (window.lucide) window.lucide.createIcons();
+            };
+        });
+
+        document.getElementById('btn-whatsapp-all').onclick = () => {
+            alert('Para sua segurança, abriremos os contatos um a um. Clique no botão "ENVIAR" ao lado de cada aluno.');
+        };
+    }
+
     renderAvatarWithStripes(data, size, isStacked = false) {
         const belt = (data.current_belt || data.belt || 'white belt');
         const beltColor = (() => {
@@ -628,5 +711,3 @@ ${c.attendees.length === 0 ? '<p class="text-dim" style="font-size: 0.8125rem; f
         `;
     }
 }
-
-

@@ -1050,4 +1050,20 @@ export class AcademyService {
 
         return unpaidRecords && unpaidRecords.length > 0;
     }
+
+    async getAcademyActiveMembersWithPhone(academyId) {
+        const { data, error } = await this.client
+            .from('profiles')
+            .select('full_name, phone')
+            .eq('academy_id', academyId)
+            .eq('is_active', true)
+            .not('phone', 'is', null);
+
+        if (error) {
+            console.error('Error fetching members with phone:', error);
+            return [];
+        }
+
+        return data.filter(m => m.phone && m.phone.trim().length >= 8);
+    }
 }
