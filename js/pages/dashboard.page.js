@@ -750,6 +750,10 @@ ${c.attendees.length === 0 ? '<p class="text-dim" style="font-size: 0.8125rem; f
         const tipWidth = barWidth * 0.35;
         const borderThickness = Math.max(3, Math.floor(size * 0.06));
         
+        // BJJ Tradition: Black belts have a red tip (tarja), others have black
+        const isBlackBelt = belt?.toLowerCase() === 'black belt';
+        const tipColor = isBlackBelt ? '#d32f2f' : '#111';
+        
         let stripesHtml = '';
         for(let i=0; i<stripes; i++) {
             stripesHtml += `<div style="background: #fff; width: ${Math.max(2, Math.floor(barHeight*0.25))}px; height: 100%;"></div>`;
@@ -761,7 +765,7 @@ ${c.attendees.length === 0 ? '<p class="text-dim" style="font-size: 0.8125rem; f
                      style="width: ${size}px; height: ${size}px; border-radius: 50%; border: ${borderThickness}px solid ${beltColor}; box-shadow: 0 4px 10px rgba(0,0,0,0.2); object-fit: cover; background: var(--bg-surface);">
                 
                 <div style="position: absolute; bottom: -${barHeight/3}px; left: 50%; transform: translateX(-50%); width: ${barWidth}px; height: ${barHeight}px; background: ${beltColor}; border-radius: 2px; display: flex; justify-content: flex-end; overflow: hidden; box-shadow: 0 2px 5px rgba(0,0,0,0.3); border: 1px solid rgba(0,0,0,0.2); z-index: 2;">
-                    <div style="width: ${tipWidth}px; background: #111; display: flex; align-items: center; justify-content: space-evenly; padding: 0 2%;">
+                    <div style="width: ${tipWidth}px; background: ${tipColor}; display: flex; align-items: center; justify-content: space-evenly; padding: 0 2%;">
                         ${stripesHtml}
                     </div>
                 </div>
