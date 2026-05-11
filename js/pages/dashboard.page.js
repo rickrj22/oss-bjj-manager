@@ -191,8 +191,18 @@ export class DashboardPage {
                             </div>
                             <div style="display: flex; flex-direction: column; gap: 1.5rem;">
                                 ${announcements.length > 0 ? announcements.map(a => `
-                                    <div style="padding-bottom: 1.25rem; border-bottom: 1px solid var(--border); last-child { border: 0 };">
-                                        <p style="font-weight: 500; font-size: 0.9375rem; line-height: 1.6; color: var(--text-primary);">${a.content}</p>
+                                    <div class="announcement-item" style="padding-bottom: 1.25rem; border-bottom: 1px solid var(--border); last-child { border: 0 }; position: relative;">
+                                        ${this.user.is_admin || this.user.role === 'professor' ? `
+                                            <div style="position: absolute; top: 0; right: 0; display: flex; gap: 0.5rem;">
+                                                <button class="btn-icon btn-edit-announcement" data-id="${a.id}" data-content="${a.content}" title="Editar Comunicado" style="color: var(--text-dim); background: var(--bg-elevated); border-radius: 6px; padding: 0.4rem; border: 1px solid var(--border);">
+                                                    <i data-lucide="edit-3" size="14"></i>
+                                                </button>
+                                                <button class="btn-icon btn-delete-announcement" data-id="${a.id}" title="Excluir Comunicado" style="color: var(--error); background: hsla(0, 72%, 51%, 0.08); border-radius: 6px; padding: 0.4rem; border: 1px solid hsla(0, 72%, 51%, 0.2);">
+                                                    <i data-lucide="trash-2" size="14"></i>
+                                                </button>
+                                            </div>
+                                        ` : ''}
+                                        <p style="font-weight: 500; font-size: 0.9375rem; line-height: 1.6; color: var(--text-primary); padding-right: 3rem;">${a.content}</p>
                                         <div class="flex-between mt-3">
                                             <p class="text-dim" style="font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">${a.author.full_name}</p>
                                             <p class="text-dim" style="font-size: 0.7rem; font-weight: 500;">${new Date(a.created_at).toLocaleDateString()}</p>
@@ -508,6 +518,51 @@ ${c.attendees.length === 0 ? '<p class="text-dim" style="font-size: 0.8125rem; f
                 };
             });
         }
+
+        // Editar Comunicado
+        document.querySelectorAll('.btn-edit-announcement').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const id = btn.dataset.id;
+                const content = btn.dataset.content;
+
+                this.app.showModal('Editar Comunicado', `
+                    <div class="form-group">
+                        <label>Mensagem</label>
+                        <textarea class="input" id="edit-ann-content" style="height: 100px;">${content}</textarea>
+                    </div>
+                    <div class="flex-between mt-6">
+                        <button class="btn btn-outline" onclick="window.App.closeModal()">Cancelar</button>
+                        <button class="btn btn-primary" id="modal-save-ann">Salvar Alterações</button>
+                    </div>
+                `);
+
+                document.getElementById('modal-save-ann').onclick = async () => {
+                    const newContent = document.getElementById('edit-ann-content').value;
+                    if (newContent) {
+                        const res = await this.app.academy.updateAnnouncement(id, newContent);
+                        if (res.success) {
+                            this.app.closeModal();
+                            this.app.router.handleRouteChange(window.location.hash);
+                        }
+                    }
+                };
+            });
+        });
+
+        // Excluir Comunicado
+        document.querySelectorAll('.btn-delete-announcement').forEach(btn => {
+            btn.addEventListener('click', async () => {
+                if (confirm('Deseja realmente excluir este comunicado?')) {
+                    const id = btn.dataset.id;
+                    const res = await this.app.academy.deleteAnnouncement(id);
+                    if (res.success) {
+                        this.app.router.handleRouteChange(window.location.hash);
+                    } else {
+                        alert('Erro ao excluir: ' + res.error);
+                    }
+                }
+            });
+        });
 
         // Remover Técnica
         document.querySelectorAll('.btn-delete-technique').forEach(btn => {

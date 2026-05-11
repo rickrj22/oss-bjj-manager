@@ -352,6 +352,24 @@ export class AcademyService {
         return { success: !error, error: error?.message };
     }
 
+    async updateAnnouncement(id, content) {
+        const { error } = await this.client
+            .from('announcements')
+            .update({ content: content })
+            .eq('id', id);
+
+        return { success: !error, error: error?.message };
+    }
+
+    async deleteAnnouncement(id) {
+        const { error } = await this.client
+            .from('announcements')
+            .delete()
+            .eq('id', id);
+
+        return { success: !error, error: error?.message };
+    }
+
     async checkIn(classId) {
         const user = await this.app.auth.getUser();
         
