@@ -191,22 +191,25 @@ export class DashboardPage {
                             </div>
                             <div style="display: flex; flex-direction: column; gap: 1.5rem;">
                                 ${announcements.length > 0 ? announcements.map(a => `
-                                    <div class="announcement-item" style="padding-bottom: 1.25rem; border-bottom: 1px solid var(--border); last-child { border: 0 }; position: relative;">
-                                        ${this.user.is_admin || this.user.role === 'professor' ? `
-                                            <div style="position: absolute; top: 0; right: 0; display: flex; gap: 0.5rem;">
-                                                <button class="btn-icon btn-edit-announcement" data-id="${a.id}" data-content="${a.content}" title="Editar Comunicado" style="color: var(--text-dim); background: var(--bg-elevated); border-radius: 6px; padding: 0.4rem; border: 1px solid var(--border);">
-                                                    <i data-lucide="edit-3" size="14"></i>
-                                                </button>
-                                                <button class="btn-icon btn-delete-announcement" data-id="${a.id}" title="Excluir Comunicado" style="color: var(--error); background: hsla(0, 72%, 51%, 0.08); border-radius: 6px; padding: 0.4rem; border: 1px solid hsla(0, 72%, 51%, 0.2);">
-                                                    <i data-lucide="trash-2" size="14"></i>
-                                                </button>
+                                    <div class="announcement-item" style="padding-bottom: 1.25rem; border-bottom: 1px solid var(--border); last-child { border: 0 };">
+                                        <div class="flex-between mb-3">
+                                            <div style="display: flex; gap: 0.5rem; align-items: center;">
+                                                <p class="text-dim" style="font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">${a.author.full_name}</p>
+                                                <span style="color: var(--border); font-size: 0.7rem;">•</span>
+                                                <p class="text-dim" style="font-size: 0.7rem; font-weight: 500;">${new Date(a.created_at).toLocaleDateString()}</p>
                                             </div>
-                                        ` : ''}
-                                        <p style="font-weight: 500; font-size: 0.9375rem; line-height: 1.6; color: var(--text-primary); padding-right: 3rem;">${a.content}</p>
-                                        <div class="flex-between mt-3">
-                                            <p class="text-dim" style="font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">${a.author.full_name}</p>
-                                            <p class="text-dim" style="font-size: 0.7rem; font-weight: 500;">${new Date(a.created_at).toLocaleDateString()}</p>
+                                            ${this.user.is_admin || this.user.role === 'professor' ? `
+                                                <div style="display: flex; gap: 0.5rem;">
+                                                    <button class="btn-icon btn-edit-announcement" data-id="${a.id}" data-content="${a.content.replace(/"/g, '&quot;')}" title="Editar Comunicado" style="color: var(--text-dim); background: var(--bg-elevated); border-radius: 6px; padding: 0.4rem; border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; width: 28px; height: 28px;">
+                                                        <i data-lucide="edit-3" size="14"></i>
+                                                    </button>
+                                                    <button class="btn-icon btn-delete-announcement" data-id="${a.id}" title="Excluir Comunicado" style="color: var(--error); background: hsla(0, 72%, 51%, 0.08); border-radius: 6px; padding: 0.4rem; border: 1px solid hsla(0, 72%, 51%, 0.2); display: flex; align-items: center; justify-content: center; width: 28px; height: 28px;">
+                                                        <i data-lucide="trash-2" size="14"></i>
+                                                    </button>
+                                                </div>
+                                            ` : ''}
                                         </div>
+                                        <p style="font-weight: 500; font-size: 0.9375rem; line-height: 1.6; color: var(--text-primary);">${a.content}</p>
                                     </div>
                                 `).join('') : '<p class="text-dim" style="font-size: 0.875rem; font-style: italic;">Nenhum comunicado recente.</p>'}
                             </div>
