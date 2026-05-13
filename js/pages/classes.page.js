@@ -337,14 +337,15 @@ export class ClassesPage {
                                                 data-class-id="${c.id}" 
                                                 data-user-id="${a.id}" 
                                                 data-date="${dateStr}" 
-                                                title="Desfazer Confirmação" 
+                                                title="Cancelar Check-in" 
                                                 style="background: var(--bg-elevated); border: 1px solid var(--border); cursor: pointer; color: var(--error); border-radius: 6px; display: flex; align-items: center; justify-content: center; padding: 6px; transition: all 0.2s;">
-                                            <i data-lucide="rotate-ccw" size="16"></i>
+                                            <i data-lucide="x" size="16"></i>
                                         </button>
                                     ` : ''}
                                 </div>
                             ` : `
                                 <div class="checkin-item-actions">
+                                    <span style="font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #f59e0b; background: hsla(38, 92%, 50%, 0.1); border: 1px solid hsla(38, 92%, 50%, 0.3); border-radius: 4px; padding: 2px 8px;">Pendente</span>
                                     ${(user.is_admin || user.role === 'professor' || user.role === 'admin') ? `
                                         <button class="btn-confirm-attendance" 
                                                 data-attendance-id="${a.attendanceId}"
@@ -357,8 +358,8 @@ export class ClassesPage {
                                         </button>
                                     ` : ''}
                                     
-                                    ${a.id === user.id ? `
-                                        <button class="btn btn-cancel-checkin" data-class-id="${c.id}" style="min-width: 140px; height: 36px; font-size: 0.75rem;">
+                                    ${(a.id === user.id || user.is_admin || user.role === 'professor') ? `
+                                        <button class="btn btn-cancel-checkin" data-class-id="${c.id}" data-attendance-id="${a.attendanceId}" style="min-width: 140px; height: 36px; font-size: 0.75rem;">
                                             Cancelar Check-in
                                         </button>
                                     ` : ''}
@@ -366,7 +367,7 @@ export class ClassesPage {
                             `}
                         </div>
                     `).join('')}
-                    ${c.attendees.length === 0 ? '<p class="text-dim" style="font-size: 0.8125rem; font-style: italic; padding: 0.5rem;">Nenhum check-in confirmado.</p>' : ''}
+                    ${c.attendees.length === 0 ? '<p class="text-dim" style="font-size: 0.8125rem; font-style: italic; padding: 0.5rem;">Nenhum check-in realizado.</p>' : ''}
                 </div>
             </div>
         `;
@@ -478,10 +479,10 @@ export class ClassesPage {
             };
         });
 
-        // Desfazer Confirmação
+        // Cancelar Check-in (admin/prof) — exclui a linha da tabela
         document.querySelectorAll('.btn-unconfirm-attendance').forEach(btn => {
             btn.onclick = async (e) => {
-                if (confirm('Deseja realmente desfazer a confirmação deste aluno?')) {
+                if (confirm('Deseja realmente cancelar o check-in deste aluno? A presença será removida.')) {
                     const button = e.currentTarget;
                     const attendanceId = button.dataset.attendanceId;
                     const classId = button.dataset.classId;
@@ -490,16 +491,26 @@ export class ClassesPage {
                     
                     const res = await this.app.academy.unconfirmAttendance(classId, userId, date, attendanceId);
                     if (res.success) this.app.router.handleRouteChange(window.location.hash);
-                    else alert('Erro ao desfazer: ' + res.error);
+                    else alert('Erro ao cancelar: ' + res.error);
                 }
             };
         });
 
-        // Cancel Check-in
+        // Cancelar Check-in (botão do aluno em registros pendentes)
         document.querySelectorAll('.btn-cancel-checkin').forEach(btn => {
             btn.onclick = async (e) => {
-                const classId = e.target.dataset.classId || e.target.closest('button').dataset.classId;
-                const res = await this.app.academy.cancelCheckIn(classId);
+                const button = e.target.closest('button');
+                const classId = button.dataset.classId;
+                const attendanceId = button.dataset.attendanceId;
+
+                // Se temos um attendanceId, deletamos pelo ID diretamente (mais preciso)
+                let res;
+                if (attendanceId) {
+                    res = await this.app.academy.unconfirmAttendance(null, null, null, attendanceId);
+                } else {
+                    res = await this.app.academy.cancelCheckIn(classId);
+                }
+
                 if (res.success) {
                     this.showMessage('⚠️ Check-in cancelado.', 'success');
                     this.app.router.handleRouteChange(window.location.hash);
@@ -570,7 +581,7 @@ export class ClassesPage {
                         </div>
                         <div class="flex-between mt-6">
                             <button class="btn btn-outline" onclick="window.App.closeModal()">Cancelar</button>
-                            <button class="btn btn-primary" id="modal-confirm-checkin">Confirmar Presença</button>
+                            <button class="btn btn-primary" id="modal-confirm-checkin">Realizar Check-in</button>
                         </div>
                     `);
                     

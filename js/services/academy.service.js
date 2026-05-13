@@ -391,7 +391,7 @@ export class AcademyService {
                 user_id: user.id,
                 class_id: classId,
                 check_in_date: this.getLocalDateString(),
-                status: 'confirmed'
+                status: 'pending'
             });
 
         if (error && error.code !== '23505') { 
@@ -416,6 +416,7 @@ export class AcademyService {
         return { success: !error, error: error?.message };
     }
 
+    // Admin/professor cancels a pending check-in — deletes the row entirely
     async unconfirmAttendance(classId, userId, customDate = null, attendanceId = null) {
         let query = this.client.from('attendance').delete();
         
@@ -553,11 +554,13 @@ export class AcademyService {
 
     async cancelCheckIn(classId) {
         const user = await this.app.auth.getUser();
+        const date = this.getLocalDateString();
         const { error } = await this.client
             .from('attendance')
             .delete()
             .eq('user_id', user.id)
-            .eq('class_id', classId);
+            .eq('class_id', classId)
+            .eq('check_in_date', date);
 
         if (error) {
             console.error('Error cancelling check-in:', error);
