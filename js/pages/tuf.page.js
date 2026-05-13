@@ -413,61 +413,74 @@ export class TUFPage {
                 }
 
                 .tuf-participant-item {
-                    display: flex;
-                    align-items: center;
-                    padding: 1.25rem;
-                    background: var(--bg-surface);
-                    cursor: pointer;
-                    transition: all 0.2s;
-                    gap: 1rem;
+                    display: grid !important;
+                    grid-template-columns: 30px 50px 1fr !important;
+                    align-items: center !important;
+                    padding: 1.25rem !important;
+                    background: var(--bg-surface) !important;
+                    cursor: pointer !important;
+                    transition: all 0.2s !important;
+                    gap: 1rem !important;
+                    border: none !important;
+                    margin: 0 !important;
+                    height: auto !important;
+                    text-align: left !important;
                 }
 
                 .tuf-participant-item:hover {
-                    background: var(--bg-elevated);
+                    background: var(--bg-elevated) !important;
                 }
 
                 .tuf-participant-check {
-                    flex-shrink: 0;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
+                    display: flex !important;
+                    align-items: center !important;
+                    justify-content: center !important;
+                    width: 30px !important;
+                    height: 100% !important;
                 }
 
                 .tuf-participant-avatar {
-                    flex-shrink: 0;
-                    width: 50px;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
+                    display: flex !important;
+                    align-items: center !important;
+                    justify-content: center !important;
+                    width: 50px !important;
+                    height: 100% !important;
                 }
 
                 .tuf-participant-checkbox {
-                    width: 20px;
-                    height: 20px;
-                    cursor: pointer;
-                    margin: 0;
+                    width: 20px !important;
+                    height: 20px !important;
+                    cursor: pointer !important;
+                    margin: 0 !important;
+                    position: static !important;
                 }
 
                 .tuf-participant-info {
-                    flex: 1;
-                    min-width: 0; /* Prevents overflow */
+                    display: flex !important;
+                    flex-direction: column !important;
+                    justify-content: center !important;
+                    gap: 2px !important;
+                    min-width: 0 !important;
                 }
 
                 .tuf-participant-info .name {
-                    font-size: 0.85rem;
-                    font-weight: 700;
-                    color: var(--text-primary);
-                    line-height: 1.3;
-                    white-space: normal;
-                    word-break: break-word;
+                    font-size: 0.85rem !important;
+                    font-weight: 700 !important;
+                    color: var(--text-primary) !important;
+                    line-height: 1.2 !important;
+                    margin: 0 !important;
+                    padding: 0 !important;
+                    white-space: normal !important;
                 }
 
                 .tuf-participant-info .role {
-                    font-size: 0.65rem;
-                    color: var(--text-dim);
-                    font-weight: 700;
-                    margin-top: 2px;
-                    letter-spacing: 0.05em;
+                    font-size: 0.65rem !important;
+                    color: var(--text-dim) !important;
+                    font-weight: 700 !important;
+                    margin: 0 !important;
+                    padding: 0 !important;
+                    text-transform: uppercase !important;
+                    letter-spacing: 0.05em !important;
                 }
 
                 .tuf-info-alert {
