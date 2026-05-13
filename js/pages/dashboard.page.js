@@ -521,7 +521,7 @@ ${c.attendees.length === 0 ? '<p class="text-dim" style="font-size: 0.8125rem; f
                         const res = await this.app.academy.createAnnouncement(content);
                         if (res.success) {
                             this.app.closeModal();
-                            this.showWhatsAppDispatcher(content);
+                            this.showAnnouncementDispatcher(content);
                             this.app.router.handleRouteChange(window.location.hash);
                         }
                     }
