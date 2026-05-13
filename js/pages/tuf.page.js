@@ -309,49 +309,201 @@ export class TUFPage {
         const members = await this.app.academy.getAcademyMembers();
         
         const content = `
-            <div style="display: flex; flex-direction: column; gap: 2rem; width: 800px; max-width: 95vw; padding: 0.5rem;">
-                <div style="max-height: 65vh; overflow-y: auto; padding-right: 1rem; display: flex; flex-direction: column; gap: 2rem;">
-                    <div>
-                        <label style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.15em; font-weight: 800; color: var(--text-dim); margin-bottom: 1rem; display: block;">Nome do Torneio</label>
-                        <input type="text" id="tuf-name" class="input" placeholder="Ex: Copa Interna Verão 2024" style="height: 56px; font-size: 1.1rem; padding: 0 1.5rem; border-radius: 12px;">
+            <div class="tuf-modal-content">
+                <div class="tuf-modal-scrollable">
+                    <div class="form-group">
+                        <label class="tuf-label">NOME DO TORNEIO</label>
+                        <input type="text" id="tuf-name" class="tuf-input" placeholder="Ex: Copa Interna Verão 2024">
                     </div>
 
-                    <div>
-                        <label style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.15em; font-weight: 800; color: var(--text-dim); margin-bottom: 1rem; display: block;">Selecionar Participantes</label>
-                        <div style="background: var(--bg-surface); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; box-shadow: var(--shadow-sm);">
-                            <div style="max-height: 350px; overflow-y: auto;">
-                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--border);">
-                                    ${members.map(m => `
-                                        <label style="display: flex; align-items: center; gap: 1.25rem; padding: 1.25rem; background: var(--bg-surface); cursor: pointer; transition: all 0.2s;" class="participant-select-item">
-                                            <input type="checkbox" class="tuf-participant-checkbox" value="${m.id}" data-name="${m.full_name}" data-avatar="${m.avatar_url || ''}" data-belt="${m.current_belt || 'white belt'}" data-stripes="${m.current_stripes || 0}" style="width: 20px; height: 20px; accent-color: var(--primary);">
-                                            ${this.renderAvatarWithStripes(m, 40)}
-                                            <div style="flex: 1;">
-                                                <p style="font-size: 0.95rem; font-weight: 700; color: var(--text-primary);">${m.full_name}</p>
-                                                <p style="font-size: 0.7rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600;">${m.role}</p>
-                                            </div>
-                                        </label>
-                                    `).join('')}
-                                </div>
+                    <div class="form-group">
+                        <label class="tuf-label">SELECIONAR PARTICIPANTES</label>
+                        <div class="tuf-participants-container">
+                            <div class="tuf-participants-grid">
+                                ${members.map(m => `
+                                    <label class="tuf-participant-item">
+                                        <input type="checkbox" class="tuf-participant-checkbox" value="${m.id}" data-name="${m.full_name}" data-avatar="${m.avatar_url || ''}" data-belt="${m.current_belt || 'white belt'}" data-stripes="${m.current_stripes || 0}">
+                                        ${this.renderAvatarWithStripes(m, 36)}
+                                        <div class="tuf-participant-info">
+                                            <p class="name">${m.full_name}</p>
+                                            <p class="role">${m.role.toUpperCase()}</p>
+                                        </div>
+                                    </label>
+                                `).join('')}
                             </div>
                         </div>
-                        <div style="display: flex; align-items: center; gap: 0.75rem; margin-top: 1.25rem; padding: 1rem; background: var(--bg-elevated); border-radius: 8px; border: 1px solid var(--border);">
-                            <i data-lucide="info" size="18" style="color: var(--primary);"></i>
-                            <p style="font-size: 0.8rem; color: var(--text-dim); font-weight: 500;">
-                                Selecione pelo menos 2 participantes. O sistema gerará automaticamente as lutas e as folgas (byes).
-                            </p>
-                        </div>
+                    </div>
+
+                    <div class="tuf-info-alert">
+                        <i data-lucide="info" size="18"></i>
+                        <span>Selecione pelo menos 2 participantes. O sistema gerará automaticamente as lutas e as folgas (byes).</span>
                     </div>
                 </div>
 
-                <div style="display: grid; grid-template-columns: 1fr 1.5fr; gap: 1.5rem; padding-top: 2rem; border-top: 1px solid var(--border);">
-                    <button class="btn btn-secondary" onclick="window.App.closeModal()" style="height: 56px; font-weight: 800; letter-spacing: 0.1em; border-radius: 12px; font-size: 0.85rem;">CANCELAR</button>
-                    <button class="btn btn-primary" id="btn-create-bracket" style="height: 56px; background: var(--inverse-bg); color: var(--inverse-text); font-weight: 900; letter-spacing: 0.1em; border: none; border-radius: 12px; font-size: 0.85rem; box-shadow: 0 8px 20px rgba(0,0,0,0.15);">GERAR CHAVEAMENTO</button>
+                <div class="tuf-modal-actions">
+                    <button class="tuf-btn btn-secondary" onclick="window.App.closeModal()">CANCELAR</button>
+                    <button class="tuf-btn btn-primary" id="btn-create-bracket">GERAR CHAVEAMENTO</button>
                 </div>
             </div>
+
             <style>
-                .participant-select-item:hover {
-                    background: var(--bg-elevated) !important;
-                    padding-left: 1.5rem !important;
+                .tuf-modal-content {
+                    width: 850px;
+                    max-width: 95vw;
+                    display: flex;
+                    flex-direction: column;
+                    gap: 1.5rem;
+                    padding: 0.5rem;
+                }
+
+                .tuf-modal-scrollable {
+                    max-height: 65vh;
+                    overflow-y: auto;
+                    padding-right: 0.5rem;
+                    display: flex;
+                    flex-direction: column;
+                    gap: 2rem;
+                }
+
+                .tuf-label {
+                    font-size: 0.75rem;
+                    text-transform: uppercase;
+                    letter-spacing: 0.15em;
+                    font-weight: 800;
+                    color: #999;
+                    margin-bottom: 1rem;
+                    display: block;
+                }
+
+                .tuf-input {
+                    width: 100%;
+                    height: 56px;
+                    border: 1px solid var(--border);
+                    border-radius: 12px;
+                    padding: 0 1.5rem;
+                    font-size: 1.1rem;
+                    background: var(--bg-surface);
+                    color: var(--text-primary);
+                    transition: border-color 0.2s;
+                }
+
+                .tuf-input:focus {
+                    border-color: var(--primary);
+                    outline: none;
+                }
+
+                .tuf-participants-container {
+                    border: 1px solid var(--border);
+                    border-radius: 16px;
+                    overflow: hidden;
+                    background: var(--bg-surface);
+                }
+
+                .tuf-participants-grid {
+                    display: grid;
+                    grid-template-columns: repeat(2, 1fr);
+                    max-height: 400px;
+                    overflow-y: auto;
+                    background: var(--border);
+                    gap: 1px;
+                }
+
+                .tuf-participant-item {
+                    display: flex;
+                    align-items: center;
+                    gap: 1.25rem;
+                    padding: 1.25rem;
+                    background: var(--bg-surface);
+                    cursor: pointer;
+                    transition: all 0.2s;
+                }
+
+                .tuf-participant-item:hover {
+                    background: var(--bg-elevated);
+                }
+
+                .tuf-participant-checkbox {
+                    width: 20px;
+                    height: 20px;
+                    cursor: pointer;
+                }
+
+                .tuf-participant-info .name {
+                    font-size: 0.95rem;
+                    font-weight: 700;
+                    color: var(--text-primary);
+                    line-height: 1.2;
+                }
+
+                .tuf-participant-info .role {
+                    font-size: 0.65rem;
+                    color: var(--text-dim);
+                    font-weight: 700;
+                    margin-top: 2px;
+                }
+
+                .tuf-info-alert {
+                    display: flex;
+                    align-items: center;
+                    gap: 1rem;
+                    padding: 1.25rem;
+                    background: #f1f3f9;
+                    border-radius: 12px;
+                    color: #777;
+                    font-size: 0.85rem;
+                    line-height: 1.4;
+                }
+                
+                [data-theme="dark"] .tuf-info-alert {
+                    background: #1e222a;
+                    color: #aaa;
+                }
+
+                .tuf-modal-actions {
+                    display: grid;
+                    grid-template-columns: 1fr 1fr;
+                    gap: 1.25rem;
+                    padding-top: 1.5rem;
+                    border-top: 1px solid var(--border);
+                }
+
+                .tuf-btn {
+                    height: 56px;
+                    border-radius: 12px;
+                    font-weight: 900;
+                    font-size: 0.9rem;
+                    letter-spacing: 0.05em;
+                    text-transform: uppercase;
+                    border: none;
+                    cursor: pointer;
+                    transition: all 0.2s;
+                }
+
+                .btn-secondary {
+                    background: #000;
+                    color: #fff;
+                }
+
+                .btn-primary {
+                    background: #000;
+                    color: #fff;
+                }
+
+                .tuf-btn:hover {
+                    opacity: 0.9;
+                    transform: translateY(-1px);
+                }
+
+                @media (max-width: 768px) {
+                    .tuf-participants-grid {
+                        grid-template-columns: 1fr;
+                    }
+                    .tuf-modal-actions {
+                        grid-template-columns: 1fr;
+                    }
+                    .tuf-modal-content {
+                        width: 100%;
+                    }
                 }
             </style>
         `;
