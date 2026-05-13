@@ -82,6 +82,10 @@ export class ClassesPage {
                             <i data-lucide="graduation-cap" size="18"></i> 
                             <span>Instrutores</span>
                         </a>
+                        <a href="#tuf" class="nav-item animate-in stagger-2">
+                            <i data-lucide="swords" size="18"></i> 
+                            <span>TUF</span>
+                        </a>
                     </nav>
 
                     <div id="theme-toggle" class="theme-toggle">

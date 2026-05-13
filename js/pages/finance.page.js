@@ -44,6 +44,7 @@ export class FinancePage {
                             <a href="#configuracoes" class="nav-item"><i data-lucide="settings" size="18"></i> <span>Configurações</span></a>
                             <a href="#perfil" class="nav-item"><i data-lucide="user" size="18"></i> <span>Perfil</span></a>
                             <a href="#instrutores" class="nav-item"><i data-lucide="graduation-cap" size="18"></i> <span>Instrutores</span></a>
+                            <a href="#tuf" class="nav-item"><i data-lucide="swords" size="18"></i> <span>TUF</span></a>
                         </nav>
                         <div id="theme-toggle" class="theme-toggle">
                             <i data-lucide="${theme === 'dark' ? 'sun' : 'moon'}"></i>
@@ -235,6 +236,10 @@ export class FinancePage {
                         <a href="#instrutores" class="nav-item">
                             <i data-lucide="graduation-cap" size="18"></i> 
                             <span>Instrutores</span>
+                        </a>
+                        <a href="#tuf" class="nav-item">
+                            <i data-lucide="swords" size="18"></i> 
+                            <span>TUF</span>
                         </a>
                     </nav>
 

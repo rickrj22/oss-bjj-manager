@@ -7,6 +7,7 @@ import { MembersPage } from './pages/members.page.js';
 import { SettingsPage } from './pages/settings.page.js';
 import { ClassesPage } from './pages/classes.page.js';
 import { InstructorsPage } from './pages/instructors.page.js';
+import { TUFPage } from './pages/tuf.page.js';
 
 export class Router {
     constructor(app) {
@@ -21,7 +22,8 @@ export class Router {
             '#financeiro': FinancePage,
             '#membros': MembersPage,
             '#configuracoes': SettingsPage,
-            '#instrutores': InstructorsPage
+            '#instrutores': InstructorsPage,
+            '#tuf': TUFPage
         };
     }
 

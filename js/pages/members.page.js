@@ -76,6 +76,10 @@ export class MembersPage {
                             <i data-lucide="graduation-cap" size="18"></i> 
                             <span>Instrutores</span>
                         </a>
+                        <a href="#tuf" class="nav-item">
+                            <i data-lucide="swords" size="18"></i> 
+                            <span>TUF</span>
+                        </a>
                     </nav>
 
                     <div id="theme-toggle" class="theme-toggle">
