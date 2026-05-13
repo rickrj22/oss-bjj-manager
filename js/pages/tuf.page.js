@@ -309,51 +309,54 @@ export class TUFPage {
         const members = await this.app.academy.getAcademyMembers();
         
         const content = `
-            <div style="display: flex; flex-direction: column; gap: 1.5rem; width: 600px; max-width: 95vw;">
-                <div style="max-height: 70vh; overflow-y: auto; padding: 0.5rem; display: flex; flex-direction: column; gap: 1.5rem;">
+            <div style="display: flex; flex-direction: column; gap: 2rem; width: 800px; max-width: 95vw; padding: 0.5rem;">
+                <div style="max-height: 65vh; overflow-y: auto; padding-right: 1rem; display: flex; flex-direction: column; gap: 2rem;">
                     <div>
-                        <label style="font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 800; color: var(--text-dim); margin-bottom: 0.75rem; display: block;">Nome do Torneio</label>
-                        <input type="text" id="tuf-name" class="input" placeholder="Ex: Copa Interna Verão 2024" style="height: 52px; font-size: 1rem;">
+                        <label style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.15em; font-weight: 800; color: var(--text-dim); margin-bottom: 1rem; display: block;">Nome do Torneio</label>
+                        <input type="text" id="tuf-name" class="input" placeholder="Ex: Copa Interna Verão 2024" style="height: 56px; font-size: 1.1rem; padding: 0 1.5rem; border-radius: 12px;">
                     </div>
 
                     <div>
-                        <label style="font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 800; color: var(--text-dim); margin-bottom: 0.75rem; display: block;">Selecionar Participantes</label>
-                        <div style="background: var(--bg-surface); border: 1px solid var(--border); border-radius: 12px; overflow: hidden;">
-                            <div style="max-height: 320px; overflow-y: auto;">
-                                ${members.map(m => `
-                                    <label style="display: flex; align-items: center; gap: 1rem; padding: 1rem; border-bottom: 1px solid var(--border); cursor: pointer; transition: background 0.2s;" class="participant-select-item">
-                                        <input type="checkbox" class="tuf-participant-checkbox" value="${m.id}" data-name="${m.full_name}" data-avatar="${m.avatar_url || ''}" data-belt="${m.current_belt || 'white belt'}" data-stripes="${m.current_stripes || 0}" style="width: 18px; height: 18px;">
-                                        ${this.renderAvatarWithStripes(m, 36)}
-                                        <div style="flex: 1;">
-                                            <p style="font-size: 0.9rem; font-weight: 700; color: var(--text-primary);">${m.full_name}</p>
-                                            <p style="font-size: 0.7rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.05em;">${m.role}</p>
-                                        </div>
-                                    </label>
-                                `).join('')}
+                        <label style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.15em; font-weight: 800; color: var(--text-dim); margin-bottom: 1rem; display: block;">Selecionar Participantes</label>
+                        <div style="background: var(--bg-surface); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; box-shadow: var(--shadow-sm);">
+                            <div style="max-height: 350px; overflow-y: auto;">
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--border);">
+                                    ${members.map(m => `
+                                        <label style="display: flex; align-items: center; gap: 1.25rem; padding: 1.25rem; background: var(--bg-surface); cursor: pointer; transition: all 0.2s;" class="participant-select-item">
+                                            <input type="checkbox" class="tuf-participant-checkbox" value="${m.id}" data-name="${m.full_name}" data-avatar="${m.avatar_url || ''}" data-belt="${m.current_belt || 'white belt'}" data-stripes="${m.current_stripes || 0}" style="width: 20px; height: 20px; accent-color: var(--primary);">
+                                            ${this.renderAvatarWithStripes(m, 40)}
+                                            <div style="flex: 1;">
+                                                <p style="font-size: 0.95rem; font-weight: 700; color: var(--text-primary);">${m.full_name}</p>
+                                                <p style="font-size: 0.7rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600;">${m.role}</p>
+                                            </div>
+                                        </label>
+                                    `).join('')}
+                                </div>
                             </div>
                         </div>
-                        <p style="font-size: 0.75rem; color: var(--text-dim); margin-top: 1rem; display: flex; align-items: center; gap: 0.5rem;">
-                            <i data-lucide="info" size="14"></i> Selecione pelo menos 2 participantes para gerar as chaves.
-                        </p>
+                        <div style="display: flex; align-items: center; gap: 0.75rem; margin-top: 1.25rem; padding: 1rem; background: var(--bg-elevated); border-radius: 8px; border: 1px solid var(--border);">
+                            <i data-lucide="info" size="18" style="color: var(--primary);"></i>
+                            <p style="font-size: 0.8rem; color: var(--text-dim); font-weight: 500;">
+                                Selecione pelo menos 2 participantes. O sistema gerará automaticamente as lutas e as folgas (byes).
+                            </p>
+                        </div>
                     </div>
                 </div>
 
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; padding-top: 1.5rem; border-top: 1px solid var(--border);">
-                    <button class="btn btn-secondary" onclick="window.App.closeModal()" style="height: 52px; font-weight: 800; letter-spacing: 0.05em;">CANCELAR</button>
-                    <button class="btn btn-primary" id="btn-create-bracket" style="height: 52px; background: var(--inverse-bg); color: var(--inverse-text); font-weight: 800; letter-spacing: 0.05em; border: none; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">GERAR CHAVEAMENTO</button>
+                <div style="display: grid; grid-template-columns: 1fr 1.5fr; gap: 1.5rem; padding-top: 2rem; border-top: 1px solid var(--border);">
+                    <button class="btn btn-secondary" onclick="window.App.closeModal()" style="height: 56px; font-weight: 800; letter-spacing: 0.1em; border-radius: 12px; font-size: 0.85rem;">CANCELAR</button>
+                    <button class="btn btn-primary" id="btn-create-bracket" style="height: 56px; background: var(--inverse-bg); color: var(--inverse-text); font-weight: 900; letter-spacing: 0.1em; border: none; border-radius: 12px; font-size: 0.85rem; box-shadow: 0 8px 20px rgba(0,0,0,0.15);">GERAR CHAVEAMENTO</button>
                 </div>
             </div>
             <style>
                 .participant-select-item:hover {
-                    background: var(--bg-elevated);
-                }
-                .participant-select-item:last-child {
-                    border-bottom: none;
+                    background: var(--bg-elevated) !important;
+                    padding-left: 1.5rem !important;
                 }
             </style>
         `;
 
-        this.app.showModal('Configurar Novo TUF', content);
+        this.app.showModal('Configurar Novo TUF', content, 'modal-large');
         if (window.lucide) window.lucide.createIcons();
 
         document.getElementById('btn-create-bracket').onclick = () => {
