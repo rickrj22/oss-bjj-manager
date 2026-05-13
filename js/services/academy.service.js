@@ -118,6 +118,22 @@ export class AcademyService {
         return primary;
     }
 
+    async getInstructors() {
+        const { data, error } = await this.client
+            .from('profiles')
+            .select('*')
+            .eq('role', 'professor')
+            .eq('is_active', true)
+            .order('full_name', { ascending: true });
+
+        if (error) {
+            console.error('Error fetching instructors:', error);
+            return [];
+        }
+
+        return data;
+    }
+
     async getDashboardStats() {
         console.log("📊 AcademyService: Calculando estatísticas...");
         try {

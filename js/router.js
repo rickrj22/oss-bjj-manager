@@ -6,6 +6,7 @@ import { FinancePage } from './pages/finance.page.js';
 import { MembersPage } from './pages/members.page.js';
 import { SettingsPage } from './pages/settings.page.js';
 import { ClassesPage } from './pages/classes.page.js';
+import { InstructorsPage } from './pages/instructors.page.js';
 
 export class Router {
     constructor(app) {
@@ -19,7 +20,8 @@ export class Router {
             '#perfil': ProfilePage,
             '#financeiro': FinancePage,
             '#membros': MembersPage,
-            '#configuracoes': SettingsPage
+            '#configuracoes': SettingsPage,
+            '#instrutores': InstructorsPage
         };
     }
 

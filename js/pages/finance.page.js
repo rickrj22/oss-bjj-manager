@@ -43,6 +43,7 @@ export class FinancePage {
                             <a href="#financeiro" class="nav-item active"><i data-lucide="dollar-sign" size="18"></i> <span>Financeiro</span></a>
                             <a href="#configuracoes" class="nav-item"><i data-lucide="settings" size="18"></i> <span>Configurações</span></a>
                             <a href="#perfil" class="nav-item"><i data-lucide="user" size="18"></i> <span>Perfil</span></a>
+                            <a href="#instrutores" class="nav-item"><i data-lucide="graduation-cap" size="18"></i> <span>Instrutores</span></a>
                         </nav>
                         <div id="theme-toggle" class="theme-toggle">
                             <i data-lucide="${theme === 'dark' ? 'sun' : 'moon'}"></i>
@@ -230,6 +231,10 @@ export class FinancePage {
                         <a href="#perfil" class="nav-item animate-in stagger-3">
                             <i data-lucide="user" size="18"></i> 
                             <span>Perfil</span>
+                        </a>
+                        <a href="#instrutores" class="nav-item">
+                            <i data-lucide="graduation-cap" size="18"></i> 
+                            <span>Instrutores</span>
                         </a>
                     </nav>
 

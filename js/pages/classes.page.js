@@ -78,6 +78,10 @@ export class ClassesPage {
                             <i data-lucide="user" size="18"></i> 
                             <span>Perfil</span>
                         </a>
+                        <a href="#instrutores" class="nav-item animate-in stagger-1">
+                            <i data-lucide="graduation-cap" size="18"></i> 
+                            <span>Instrutores</span>
+                        </a>
                     </nav>
 
                     <div id="theme-toggle" class="theme-toggle">
