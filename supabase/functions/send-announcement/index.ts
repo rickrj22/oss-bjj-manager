@@ -13,10 +13,13 @@ serve(async (req) => {
   }
 
   try {
-    const { recipients, subject, content } = await req.json()
+    if (!BREVO_API_KEY) {
+      throw new Error('Configuração ausente: BREVO_API_KEY não encontrada nos segredos do Supabase.')
+    }
 
-    // Preparando os destinatários para o formato do Brevo
-    // recipients vem como um array de strings ['email1', 'email2']
+    const { recipients, subject, content } = await req.json()
+    console.log(`Tentando enviar para ${recipients.length} alunos...`)
+
     const bccList = recipients.map(email => ({ email }))
 
     const res = await fetch('https://api.brevo.com/v3/smtp/email', {
@@ -49,9 +52,13 @@ serve(async (req) => {
     })
 
     const data = await res.json()
+    console.log('Resposta do Brevo:', JSON.stringify(data))
 
     if (!res.ok) {
-      throw new Error(data.message || JSON.stringify(data))
+      return new Response(JSON.stringify({ error: data.message || 'Erro no Brevo', details: data }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        status: 400,
+      })
     }
 
     return new Response(JSON.stringify(data), {
@@ -59,6 +66,7 @@ serve(async (req) => {
       status: 200,
     })
   } catch (error) {
+    console.error('Erro na Function:', error.message)
     return new Response(JSON.stringify({ error: error.message }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       status: 400,
