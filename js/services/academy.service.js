@@ -1206,4 +1206,32 @@ export class AcademyService {
         const { error } = await this.client.from('profiles').update({ tuf_championships: current + 1 }).eq('id', userId);
         return { success: !error, error: error?.message };
     }
+
+    async saveTournament(name, participants, createdBy) {
+        const { data, error } = await this.client.from('tournaments').insert({
+            name,
+            participants, // JSONB field
+            created_by: createdBy,
+            academy_id: this.academyId,
+            status: 'active'
+        }).select().single();
+
+        if (error) {
+            console.error('Error saving tournament:', error);
+            // Fallback for logging if table doesn't exist
+            await this.logActivity('tournament_created', { name, created_by: createdBy });
+            return { success: false, error: error.message };
+        }
+        return { success: true, tournament: data };
+    }
+
+    async logActivity(type, metadata) {
+        const user = await this.client.auth.getUser();
+        await this.client.from('activity_logs').insert({
+            user_id: user.data.user?.id,
+            type,
+            metadata,
+            academy_id: this.academyId
+        });
+    }
 }

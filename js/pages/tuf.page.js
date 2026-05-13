@@ -568,6 +568,9 @@ export class TUFPage {
             // Increment participations
             this.app.academy.incrementTufParticipations(selected.map(s => s.id));
 
+            // Log and Save Tournament
+            this.app.academy.saveTournament(name, selected, this.user.id);
+
             this.createBracket(name, selected);
             this.app.closeModal();
         };
