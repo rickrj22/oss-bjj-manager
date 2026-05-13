@@ -369,6 +369,9 @@ export class TUFPage {
             if (!name) return alert('Por favor, dê um nome ao torneio.');
             if (selected.length < 2) return alert('Selecione pelo menos 2 participantes.');
 
+            // Increment participations
+            this.app.academy.incrementTufParticipations(selected.map(s => s.id));
+
             this.createBracket(name, selected);
             this.app.closeModal();
         };
@@ -478,11 +481,15 @@ export class TUFPage {
         if (window.lucide) window.lucide.createIcons();
     }
 
-    setWinner(roundIndex, matchIndex, participantNum) {
+    async setWinner(roundIndex, matchIndex, participantNum) {
         const match = this.tournament.rounds[roundIndex].matches[matchIndex];
         const winner = participantNum === 1 ? match.p1 : match.p2;
+        const loser = participantNum === 1 ? match.p2 : match.p1;
         
         match.winner = winner;
+
+        // Increment matches count for both
+        this.app.academy.incrementTufMatches([winner.id, loser.id]);
 
         // Advance to next round
         const nextRound = this.tournament.rounds[roundIndex + 1];
@@ -491,17 +498,15 @@ export class TUFPage {
             const nextMatch = nextRound.matches[nextMatchIndex];
             
             if (matchIndex % 2 === 0) {
-                // If it was match 0, 2, 4... it's p1 of the next match
-                // EXCEPT if p1 is already filled by a bye waiter
                 if (nextMatch.p1) nextMatch.p2 = winner;
                 else nextMatch.p1 = winner;
             } else {
-                // If it was match 1, 3, 5... it's p2
-                if (nextMatch.p2) nextMatch.p1 = winner; // Swap if p2 exists? No, logic needs to be cleaner.
+                if (nextMatch.p2) nextMatch.p1 = winner;
                 else nextMatch.p2 = winner;
             }
         } else {
             // This was the final!
+            this.app.academy.incrementTufChampionships(winner.id);
             alert(`🎉 ${winner.full_name} é o grande campeão do TUF!`);
         }
 

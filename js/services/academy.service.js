@@ -1161,4 +1161,49 @@ export class AcademyService {
             return { success: false, error: e.message || 'Erro ao processar envio' };
         }
     }
+
+    // --- TUF STATISTICS ---
+
+    async incrementTufParticipations(userIds) {
+        if (!userIds || userIds.length === 0) return { success: true };
+        
+        // This is a simplified approach. In a real scenario, we'd use a RPC or multiple updates.
+        const promises = userIds.map(id => 
+            this.client.rpc('increment_profile_field', { 
+                profile_id: id, 
+                field_name: 'tuf_participations' 
+            }).then(res => {
+                // If RPC doesn't exist, fallback to direct update (less safe for concurrency)
+                if (res.error) {
+                    return this.client.from('profiles').select('tuf_participations').eq('id', id).single().then(p => {
+                        const current = p.data?.tuf_participations || 0;
+                        return this.client.from('profiles').update({ tuf_participations: current + 1 }).eq('id', id);
+                    });
+                }
+                return res;
+            })
+        );
+        
+        await Promise.all(promises);
+        return { success: true };
+    }
+
+    async incrementTufMatches(userIds) {
+        if (!userIds || userIds.length === 0) return { success: true };
+        const promises = userIds.map(id => 
+            this.client.from('profiles').select('tuf_matches').eq('id', id).single().then(p => {
+                const current = p.data?.tuf_matches || 0;
+                return this.client.from('profiles').update({ tuf_matches: current + 1 }).eq('id', id);
+            })
+        );
+        await Promise.all(promises);
+        return { success: true };
+    }
+
+    async incrementTufChampionships(userId) {
+        const { data } = await this.client.from('profiles').select('tuf_championships').eq('id', userId).single();
+        const current = data?.tuf_championships || 0;
+        const { error } = await this.client.from('profiles').update({ tuf_championships: current + 1 }).eq('id', userId);
+        return { success: !error, error: error?.message };
+    }
 }

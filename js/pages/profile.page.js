@@ -301,7 +301,26 @@ export class ProfilePage {
                                 <p class="text-dim" style="font-size: 0.75rem;">${user.current_stripes || 0}º Grau Confirmado</p>
                             </div>
 
-
+                            <!-- TUF Stats Card -->
+                            <div class="card" style="padding: 1.5rem; border: 1px solid var(--border); border-radius: 12px; background: var(--bg-surface);">
+                                <h3 class="font-heading mb-4" style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-dim); display: flex; align-items: center; gap: 0.5rem;">
+                                    <i data-lucide="swords" size="16"></i> Performance TUF
+                                </h3>
+                                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem;">
+                                    <div style="text-align: center;">
+                                        <p style="font-size: 1.5rem; font-weight: 900; color: var(--text-primary);">${user.tuf_participations || 0}</p>
+                                        <p style="font-size: 0.6rem; text-transform: uppercase; color: var(--text-dim); font-weight: 700;">Participações</p>
+                                    </div>
+                                    <div style="text-align: center; border-left: 1px solid var(--border); border-right: 1px solid var(--border);">
+                                        <p style="font-size: 1.5rem; font-weight: 900; color: var(--text-primary);">${user.tuf_matches || 0}</p>
+                                        <p style="font-size: 0.6rem; text-transform: uppercase; color: var(--text-dim); font-weight: 700;">Lutas</p>
+                                    </div>
+                                    <div style="text-align: center;">
+                                        <p style="font-size: 1.5rem; font-weight: 900; color: var(--primary);">${user.tuf_championships || 0}</p>
+                                        <p style="font-size: 0.6rem; text-transform: uppercase; color: var(--text-dim); font-weight: 700;">Títulos</p>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </main>
