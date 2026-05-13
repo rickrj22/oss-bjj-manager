@@ -176,3 +176,13 @@
 .mb-1 { margin-bottom: 0.25rem; }
 .mb-4 { margin-bottom: 1rem; }
 .mb-8 { margin-bottom: 2rem; }
+
+.hide-desktop {
+    display: none !important;
+}
+
+@media (max-width: 768px) {
+    .hide-desktop {
+        display: block !important;
+    }
+}

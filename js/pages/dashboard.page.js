@@ -110,10 +110,15 @@ export class DashboardPage {
                 </aside>
 
                 <main class="main-content">
-                    <header class="flex-between mb-8">
-                        <div>
-                            <h1 class="font-heading font-xl">Dashboard</h1>
-                            <p class="text-graphite hide-mobile">Bem-vindo ao centro de comando da sua Academia.</p>
+                    <header class="page-header animate-in stagger-1">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; width: 100%;">
+                            <div>
+                                <h1 class="font-heading">Dashboard</h1>
+                                <p class="text-dim">Bem-vindo ao centro de comando da sua Academia.</p>
+                            </div>
+                            <button class="btn-icon hide-desktop" onclick="window.App.auth.signOut()" style="background: none; border: none; padding: 0.5rem; color: var(--text-primary); cursor: pointer;">
+                                <i data-lucide="log-out" size="24"></i>
+                            </button>
                         </div>
                     </header>
 

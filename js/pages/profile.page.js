@@ -321,6 +321,13 @@ export class ProfilePage {
                                     </div>
                                 </div>
                             </div>
+
+                            <!-- Logout for Mobile -->
+                            <div class="hide-desktop" style="margin-top: 2rem;">
+                                <button onclick="window.App.auth.signOut()" style="width: 100%; height: 56px; background: #000; color: #fff; border: none; border-radius: 12px; font-weight: 800; display: flex; align-items: center; justify-content: center; gap: 0.75rem; cursor: pointer;">
+                                    <i data-lucide="log-out" size="20"></i> SAIR DA CONTA
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </main>
