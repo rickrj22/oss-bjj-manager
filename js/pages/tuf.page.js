@@ -322,8 +322,12 @@ export class TUFPage {
                             <div class="tuf-participants-grid">
                                 ${members.map(m => `
                                     <label class="tuf-participant-item">
-                                        <input type="checkbox" class="tuf-participant-checkbox" value="${m.id}" data-name="${m.full_name}" data-avatar="${m.avatar_url || ''}" data-belt="${m.current_belt || 'white belt'}" data-stripes="${m.current_stripes || 0}">
-                                        ${this.renderAvatarWithStripes(m, 36)}
+                                        <div class="tuf-participant-check">
+                                            <input type="checkbox" class="tuf-participant-checkbox" value="${m.id}" data-name="${m.full_name}" data-avatar="${m.avatar_url || ''}" data-belt="${m.current_belt || 'white belt'}" data-stripes="${m.current_stripes || 0}">
+                                        </div>
+                                        <div class="tuf-participant-avatar">
+                                            ${this.renderAvatarWithStripes(m, 36)}
+                                        </div>
                                         <div class="tuf-participant-info">
                                             <p class="name">${m.full_name}</p>
                                             <p class="role">${m.role.toUpperCase()}</p>
@@ -411,28 +415,51 @@ export class TUFPage {
                 .tuf-participant-item {
                     display: flex;
                     align-items: center;
-                    gap: 1.25rem;
                     padding: 1.25rem;
                     background: var(--bg-surface);
                     cursor: pointer;
                     transition: all 0.2s;
+                    gap: 1rem;
                 }
 
                 .tuf-participant-item:hover {
                     background: var(--bg-elevated);
                 }
 
+                .tuf-participant-check {
+                    flex-shrink: 0;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                }
+
+                .tuf-participant-avatar {
+                    flex-shrink: 0;
+                    width: 50px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                }
+
                 .tuf-participant-checkbox {
                     width: 20px;
                     height: 20px;
                     cursor: pointer;
+                    margin: 0;
+                }
+
+                .tuf-participant-info {
+                    flex: 1;
+                    min-width: 0; /* Prevents overflow */
                 }
 
                 .tuf-participant-info .name {
-                    font-size: 0.95rem;
+                    font-size: 0.85rem;
                     font-weight: 700;
                     color: var(--text-primary);
-                    line-height: 1.2;
+                    line-height: 1.3;
+                    white-space: normal;
+                    word-break: break-word;
                 }
 
                 .tuf-participant-info .role {
@@ -440,6 +467,7 @@ export class TUFPage {
                     color: var(--text-dim);
                     font-weight: 700;
                     margin-top: 2px;
+                    letter-spacing: 0.05em;
                 }
 
                 .tuf-info-alert {
