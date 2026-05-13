@@ -74,7 +74,7 @@
         margin-left: 0;
         padding: 1.25rem;
         padding-top: 2rem;
-        padding-bottom: 90px; /* Space for bottom nav */
+        padding-bottom: 120px; /* Space for bottom nav + extra buffer */
     }
     .bottom-nav {
         display: flex;
