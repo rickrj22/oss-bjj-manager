@@ -99,7 +99,9 @@ export class InstructorsPage {
                     </header>
 
                     <div class="instructors-grid animate-in stagger-2">
-                        ${instructors.map(instructor => `
+                        ${instructors
+                            .sort((a, b) => this.getRankWeight(b) - this.getRankWeight(a))
+                            .map(instructor => `
                             <div class="instructor-card">
                                 <img src="${instructor.avatar_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(instructor.full_name)}&background=random&size=512`}" 
                                      alt="${instructor.full_name}" 
@@ -153,7 +155,7 @@ export class InstructorsPage {
             <style>
                 .instructors-grid {
                     display: grid;
-                    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+                    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
                     gap: 1px; /* Artofjiujitsu style gap */
                     background: var(--border);
                     border: 1px solid var(--border);
@@ -287,6 +289,23 @@ export class InstructorsPage {
                 </div>
             </div>
         `;
+    }
+
+    getRankWeight(data) {
+        const belt = (data.current_belt || data.belt || 'white belt').toLowerCase();
+        const stripes = Number(data.current_stripes || data.stripes || 0);
+        
+        const beltOrder = [
+            'white belt',
+            'grey white belt', 'grey belt', 'grey black belt',
+            'yellow white belt', 'yellow belt', 'yellow black belt',
+            'orange white belt', 'orange belt', 'orange black belt',
+            'green white belt', 'green belt', 'green black belt',
+            'blue belt', 'purple belt', 'brown belt', 'black belt'
+        ];
+        
+        const beltWeight = beltOrder.indexOf(belt);
+        return (beltWeight * 10) + stripes;
     }
 
     getBeltColor(belt) {
