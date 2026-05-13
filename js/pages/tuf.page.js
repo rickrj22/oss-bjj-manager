@@ -565,11 +565,23 @@ export class TUFPage {
             if (!name) return alert('Por favor, dê um nome ao torneio.');
             if (selected.length < 2) return alert('Selecione pelo menos 2 participantes.');
 
-            // Increment participations
-            this.app.academy.incrementTufParticipations(selected.map(s => s.id));
+            const btn = document.getElementById('btn-create-bracket');
+            const originalText = btn.innerText;
+            btn.innerText = 'SALVANDO...';
+            btn.disabled = true;
 
             // Log and Save Tournament
-            this.app.academy.saveTournament(name, selected, this.user.id);
+            const saveRes = await this.app.academy.saveTournament(name, selected, this.user.id);
+            
+            if (!saveRes.success) {
+                alert(`Erro: ${saveRes.error}`);
+                btn.innerText = originalText;
+                btn.disabled = false;
+                return;
+            }
+
+            // Increment participations
+            this.app.academy.incrementTufParticipations(selected.map(s => s.id));
 
             this.createBracket(name, selected);
             this.app.closeModal();

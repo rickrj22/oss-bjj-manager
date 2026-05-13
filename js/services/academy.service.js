@@ -1208,30 +1208,50 @@ export class AcademyService {
     }
 
     async saveTournament(name, participants, createdBy) {
+        const user = await this.app.auth.getUser();
+        const academyId = user.academy_id;
+
+        if (!academyId) return { success: false, error: 'Usuário não vinculado a uma academia' };
+
+        // Check for duplicate name in the same academy
+        const { data: existing } = await this.client
+            .from('tournaments')
+            .select('id')
+            .eq('name', name)
+            .eq('academy_id', academyId)
+            .maybeSingle();
+
+        if (existing) {
+            return { success: false, error: 'Já existe um torneio com este nome nesta academia.' };
+        }
+
         const { data, error } = await this.client.from('tournaments').insert({
             name,
             participants, // JSONB field
             created_by: createdBy,
-            academy_id: this.academyId,
+            academy_id: academyId,
             status: 'active'
         }).select().single();
 
         if (error) {
             console.error('Error saving tournament:', error);
-            // Fallback for logging if table doesn't exist
-            await this.logActivity('tournament_created', { name, created_by: createdBy });
+            await this.logActivity('tournament_created_error', { name, error: error.message });
             return { success: false, error: error.message };
         }
+
+        await this.logActivity('tournament_created', { name, tournament_id: data.id });
         return { success: true, tournament: data };
     }
 
     async logActivity(type, metadata) {
-        const user = await this.client.auth.getUser();
+        const user = await this.app.auth.getUser();
+        if (!user || !user.academy_id) return;
+
         await this.client.from('activity_logs').insert({
-            user_id: user.data.user?.id,
+            user_id: user.id,
             type,
             metadata,
-            academy_id: this.academyId
+            academy_id: user.academy_id
         });
     }
 }
