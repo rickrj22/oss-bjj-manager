@@ -632,51 +632,6 @@ export class TUFPage {
         this.renderTournament();
     }
 
-    renderTournament() {
-        const container = document.getElementById('tuf-container');
-        if (!container || !this.tournament) return;
-
-        container.innerHTML = `
-            <div class="card" style="padding: 2rem; border-radius: 24px; background: var(--bg-surface); border: 1px solid var(--border);">
-                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 3rem;">
-                    <div>
-                        <h2 class="font-heading" style="font-size: 1.75rem;">${this.tournament.name}</h2>
-                        <p class="text-dim">Clique em "Definir Vencedor" para avançar o atleta no chaveamento.</p>
-                    </div>
-                    <button class="btn-secondary" onclick="window.App.currentPage.resetTuf()" style="height: 40px; font-size: 0.7rem; font-weight: 800;">REINICIAR</button>
-                </div>
-
-                <div class="tuf-bracket-wrapper">
-                    ${this.tournament.rounds.map((round, rIndex) => `
-                        <div class="round-column">
-                            <h4 class="round-title">${round.name}</h4>
-                            ${round.matches.map((match, mIndex) => `
-                                <div class="match-card" id="match-${rIndex}-${mIndex}">
-                                    <div class="match-participant ${match.winner && match.winner.id === match.p1?.id ? 'winner' : ''}">
-                                        ${match.p1 ? `
-                                            ${this.renderAvatarWithStripes(match.p1, 32)}
-                                            <span class="participant-name">${match.p1.full_name}</span>
-                                            ${!match.winner && (this.user.is_admin || this.user.role === 'professor') ? `<button class="btn-winner" onclick="window.App.currentPage.setWinner(${rIndex}, ${mIndex}, 1)">VENCEU</button>` : ''}
-                                        ` : `<div style="width: 32px; height: 32px; border-radius: 50%; background: var(--bg-elevated); border: 1px dashed var(--border);"></div><span class="text-dim" style="font-size: 0.8rem; font-style: italic;">Aguardando...</span>`}
-                                    </div>
-                                    <div class="match-participant ${match.winner && match.winner.id === match.p2?.id ? 'winner' : ''}">
-                                        ${match.p2 ? `
-                                            ${this.renderAvatarWithStripes(match.p2, 32)}
-                                            <span class="participant-name">${match.p2.full_name}</span>
-                                            ${!match.winner && (this.user.is_admin || this.user.role === 'professor') ? `<button class="btn-winner" onclick="window.App.currentPage.setWinner(${rIndex}, ${mIndex}, 2)">VENCEU</button>` : ''}
-                                        ` : `<div style="width: 32px; height: 32px; border-radius: 50%; background: var(--bg-elevated); border: 1px dashed var(--border);"></div><span class="text-dim" style="font-size: 0.8rem; font-style: italic;">Aguardando...</span>`}
-                                    </div>
-                                </div>
-                            `).join('')}
-                        </div>
-                    `).join('')}
-                </div>
-            </div>
-        `;
-
-        if (window.lucide) window.lucide.createIcons();
-    }
-
     async setWinner(roundIndex, matchIndex, participantNum) {
         const match = this.tournament.rounds[roundIndex].matches[matchIndex];
         const winner = participantNum === 1 ? match.p1 : match.p2;
@@ -703,10 +658,334 @@ export class TUFPage {
         } else {
             // This was the final!
             this.app.academy.incrementTufChampionships(winner.id);
-            alert(`🎉 ${winner.full_name} é o grande campeão do TUF!`);
+            this.tournament.champion = winner;
+            this.celebrateChampion();
         }
 
         this.renderTournament();
+    }
+
+    celebrateChampion() {
+        // Load confetti if not present
+        if (!window.confetti) {
+            const script = document.createElement('script');
+            script.src = 'https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js';
+            script.onload = () => this.fireConfetti();
+            document.head.appendChild(script);
+        } else {
+            this.fireConfetti();
+        }
+    }
+
+    fireConfetti() {
+        const duration = 3 * 1000;
+        const end = Date.now() + duration;
+
+        const frame = () => {
+            window.confetti({
+                particleCount: 5,
+                angle: 60,
+                spread: 55,
+                origin: { x: 0 },
+                colors: ['#FFD700', '#B8860B', '#000000']
+            });
+            window.confetti({
+                particleCount: 5,
+                angle: 120,
+                spread: 55,
+                origin: { x: 1 },
+                colors: ['#FFD700', '#B8860B', '#000000']
+            });
+
+            if (Date.now() < end) {
+                requestAnimationFrame(frame);
+            }
+        };
+        frame();
+    }
+
+    renderTournament() {
+        const container = document.getElementById('tuf-container');
+        if (!container || !this.tournament) return;
+
+        container.innerHTML = `
+            <div class="card" style="padding: 2.5rem; border-radius: 24px; background: var(--bg-surface); border: 1px solid var(--border); box-shadow: var(--shadow-lg);">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 4rem;">
+                    <div>
+                        <h2 class="font-heading" style="font-size: 2rem; letter-spacing: -0.02em; margin-bottom: 0.5rem;">${this.tournament.name}</h2>
+                        <p style="color: var(--text-dim); font-size: 0.9rem;">Gerencie o progresso e defina os vencedores para avançar no chaveamento.</p>
+                    </div>
+                    <button class="btn-reset" onclick="window.App.currentPage.resetTuf()">
+                        <i data-lucide="rotate-ccw" size="14"></i> REINICIAR
+                    </button>
+                </div>
+
+                <div class="tuf-bracket-wrapper">
+                    ${this.tournament.rounds.map((round, rIndex) => `
+                        <div class="round-column">
+                            <h4 class="round-title">${round.name}</h4>
+                            <div class="matches-list">
+                                ${round.matches.map((match, mIndex) => `
+                                    <div class="match-card ${match.winner ? 'match-completed' : ''}" id="match-${rIndex}-${mIndex}">
+                                        <div class="match-participant ${match.winner && match.winner.id === match.p1?.id ? 'winner' : (match.winner ? 'loser' : '')}">
+                                            ${match.p1 ? `
+                                                ${this.renderAvatarWithStripes(match.p1, 36)}
+                                                <span class="participant-name">${match.p1.full_name}</span>
+                                                ${!match.winner && (this.user.is_admin || this.user.role === 'professor') ? `<button class="btn-winner" onclick="window.App.currentPage.setWinner(${rIndex}, ${mIndex}, 1)">VENCEU</button>` : ''}
+                                                ${match.winner && match.winner.id === match.p1.id ? '<i data-lucide="trophy" class="win-icon"></i>' : ''}
+                                            ` : `<div class="empty-slot"><i data-lucide="help-circle" size="14"></i></div><span class="text-dim italic">Aguardando...</span>`}
+                                        </div>
+                                        <div class="match-participant ${match.winner && match.winner.id === match.p2?.id ? 'winner' : (match.winner ? 'loser' : '')}">
+                                            ${match.p2 ? `
+                                                ${this.renderAvatarWithStripes(match.p2, 36)}
+                                                <span class="participant-name">${match.p2.full_name}</span>
+                                                ${!match.winner && (this.user.is_admin || this.user.role === 'professor') ? `<button class="btn-winner" onclick="window.App.currentPage.setWinner(${rIndex}, ${mIndex}, 2)">VENCEU</button>` : ''}
+                                                ${match.winner && match.winner.id === match.p2.id ? '<i data-lucide="trophy" class="win-icon"></i>' : ''}
+                                            ` : `<div class="empty-slot"><i data-lucide="help-circle" size="14"></i></div><span class="text-dim italic">Aguardando...</span>`}
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    `).join('')}
+
+                    <!-- CAMPEÃO SPOTLIGHT -->
+                    <div class="round-column champion-column">
+                        <h4 class="round-title" style="color: var(--primary);">CAMPEÃO</h4>
+                        <div class="champion-spotlight ${this.tournament.champion ? 'is-active' : ''}">
+                            ${this.tournament.champion ? `
+                                <div class="champion-card animate-in">
+                                    <div class="trophy-badge">
+                                        <i data-lucide="trophy" size="32"></i>
+                                    </div>
+                                    ${this.renderAvatarWithStripes(this.tournament.champion, 80)}
+                                    <h3 class="champion-name">${this.tournament.champion.full_name}</h3>
+                                    <p class="champion-title">GRANDE CAMPEÃO</p>
+                                </div>
+                            ` : `
+                                <div class="champion-placeholder">
+                                    <i data-lucide="crown" size="48" style="opacity: 0.1; margin-bottom: 1rem;"></i>
+                                    <p>Aguardando Final</p>
+                                </div>
+                            `}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <style>
+                .tuf-bracket-wrapper {
+                    display: flex;
+                    gap: 3rem;
+                    overflow-x: auto;
+                    padding: 1rem 0 3rem 0;
+                    align-items: flex-start;
+                }
+
+                .round-column {
+                    flex-shrink: 0;
+                    width: 320px;
+                }
+
+                .round-title {
+                    font-size: 0.7rem;
+                    text-transform: uppercase;
+                    letter-spacing: 0.2em;
+                    font-weight: 800;
+                    color: var(--text-dim);
+                    margin-bottom: 2.5rem;
+                    text-align: center;
+                }
+
+                .matches-list {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 2rem;
+                    justify-content: space-around;
+                    height: 100%;
+                }
+
+                .match-card {
+                    background: var(--bg-surface);
+                    border: 1px solid var(--border);
+                    border-radius: 16px;
+                    overflow: hidden;
+                    box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+                    transition: all 0.3s;
+                }
+
+                .match-completed {
+                    opacity: 0.9;
+                }
+
+                .match-participant {
+                    display: flex;
+                    align-items: center;
+                    gap: 1rem;
+                    padding: 1.25rem;
+                    position: relative;
+                    transition: all 0.3s;
+                }
+
+                .match-participant:first-child {
+                    border-bottom: 1px solid var(--border);
+                }
+
+                .participant-name {
+                    font-size: 0.85rem;
+                    font-weight: 700;
+                    flex: 1;
+                    color: var(--text-primary);
+                }
+
+                .winner {
+                    background: rgba(255, 215, 0, 0.05);
+                }
+
+                .winner .participant-name {
+                    color: var(--primary);
+                }
+
+                .loser {
+                    opacity: 0.4;
+                    filter: grayscale(1);
+                }
+
+                .btn-winner {
+                    font-size: 0.6rem;
+                    font-weight: 800;
+                    background: #000;
+                    color: #fff;
+                    border: none;
+                    padding: 0.5rem 0.75rem;
+                    border-radius: 6px;
+                    cursor: pointer;
+                    opacity: 0;
+                    transition: all 0.2s;
+                }
+
+                .match-participant:hover .btn-winner {
+                    opacity: 1;
+                }
+
+                .win-icon {
+                    color: #FFD700;
+                    width: 16px;
+                    height: 16px;
+                }
+
+                .empty-slot {
+                    width: 36px;
+                    height: 36px;
+                    border-radius: 50%;
+                    border: 2px dashed var(--border);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    color: var(--text-dim);
+                }
+
+                .btn-reset {
+                    background: var(--bg-surface);
+                    border: 1px solid var(--border);
+                    padding: 0.6rem 1.2rem;
+                    border-radius: 8px;
+                    font-size: 0.7rem;
+                    font-weight: 800;
+                    display: flex;
+                    align-items: center;
+                    gap: 0.5rem;
+                    cursor: pointer;
+                    transition: all 0.2s;
+                }
+
+                .btn-reset:hover {
+                    background: var(--bg-elevated);
+                    color: #ef4444;
+                }
+
+                /* CHAMPION SPOTLIGHT */
+                .champion-column {
+                    width: 380px;
+                }
+
+                .champion-spotlight {
+                    height: 100%;
+                    min-height: 400px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    border: 2px dashed var(--border);
+                    border-radius: 24px;
+                    transition: all 0.5s;
+                }
+
+                .champion-spotlight.is-active {
+                    background: linear-gradient(135deg, rgba(255,215,0,0.1) 0%, rgba(255,255,255,0) 100%);
+                    border: 2px solid #FFD700;
+                    box-shadow: 0 0 40px rgba(255,215,0,0.1);
+                }
+
+                .champion-card {
+                    text-align: center;
+                    padding: 3rem;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    gap: 1.5rem;
+                }
+
+                .trophy-badge {
+                    background: #FFD700;
+                    color: #000;
+                    width: 70px;
+                    height: 70px;
+                    border-radius: 50%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    box-shadow: 0 8px 24px rgba(255,215,0,0.4);
+                    margin-bottom: 1rem;
+                    animation: trophy-bounce 1s infinite alternate;
+                }
+
+                @keyframes trophy-bounce {
+                    from { transform: translateY(0); }
+                    to { transform: translateY(-10px); }
+                }
+
+                .champion-name {
+                    font-size: 1.5rem;
+                    font-weight: 900;
+                    letter-spacing: -0.03em;
+                    margin: 0;
+                }
+
+                .champion-title {
+                    font-size: 0.7rem;
+                    text-transform: uppercase;
+                    letter-spacing: 0.4em;
+                    font-weight: 800;
+                    color: #FFD700;
+                }
+
+                .champion-placeholder {
+                    text-align: center;
+                    color: var(--text-dim);
+                }
+
+                .animate-in {
+                    animation: scale-up 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+                }
+
+                @keyframes scale-up {
+                    from { transform: scale(0.8); opacity: 0; }
+                    to { transform: scale(1); opacity: 1; }
+                }
+            </style>
+        `;
+
+        if (window.lucide) window.lucide.createIcons();
     }
 
     resetTuf() {
