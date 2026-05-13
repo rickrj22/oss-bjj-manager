@@ -1115,16 +1115,62 @@ export class AcademyService {
     async getAcademyActiveMembersWithPhone(academyId) {
         const { data, error } = await this.client
             .from('profiles')
-            .select('full_name, phone')
+            .select('full_name, phone, email')
             .eq('academy_id', academyId)
             .eq('is_active', true)
             .not('phone', 'is', null);
+        return data || [];
+    }
 
-        if (error) {
-            console.error('Error fetching members with phone:', error);
-            return [];
+    async getAcademyActiveMembersWithEmail(academyId) {
+        const { data, error } = await this.client
+            .from('profiles')
+            .select('full_name, email')
+            .eq('academy_id', academyId)
+            .eq('is_active', true)
+            .not('email', 'is', null);
+        return data || [];
+    }
+
+    async sendBulkEmail(recipients, subject, content) {
+        const apiKey = 're_KXptT7v5_Gofv9qEvuNfkwpye7wn1RCX9';
+        
+        try {
+            // Para privacidade, enviamos para um e-mail fixo e colocamos todos em BCC
+            // Se o domínio não estiver verificado no Resend, ele só enviará para o e-mail da conta.
+            const response = await fetch('https://api.resend.com/emails', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${apiKey}`
+                },
+                body: JSON.stringify({
+                    from: 'OSS BJJ Manager <onboarding@resend.dev>',
+                    to: ['rickrj22@gmail.com'], // E-mail de controle/teste
+                    bcc: recipients,
+                    subject: subject,
+                    html: `
+                        <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #eee; border-radius: 12px; overflow: hidden;">
+                            <div style="background: #1a1a1a; padding: 2rem; text-align: center;">
+                                <h1 style="color: #fff; margin: 0; letter-spacing: 0.2em;">OSS</h1>
+                                <p style="color: #888; font-size: 0.8rem; text-transform: uppercase; margin-top: 0.5rem;">Comunicado Oficial</p>
+                            </div>
+                            <div style="padding: 2rem; background: #fff; line-height: 1.6; color: #333;">
+                                ${content.replace(/\n/g, '<br>')}
+                            </div>
+                            <div style="padding: 1.5rem; background: #f9f9f9; text-align: center; border-top: 1px solid #eee;">
+                                <p style="font-size: 0.75rem; color: #999; margin: 0;">OSS BJJ Manager - Gestão Inteligente para Academias</p>
+                            </div>
+                        </div>
+                    `
+                })
+            });
+
+            const result = await response.json();
+            if (response.ok) return { success: true, id: result.id };
+            else return { success: false, error: result.message || 'Erro ao enviar e-mail' };
+        } catch (e) {
+            return { success: false, error: e.message };
         }
-
-        return data.filter(m => m.phone && m.phone.trim().length >= 8);
     }
 }

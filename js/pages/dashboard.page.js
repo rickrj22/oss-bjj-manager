@@ -644,85 +644,100 @@ ${c.attendees.length === 0 ? '<p class="text-dim" style="font-size: 0.8125rem; f
         if (window.lucide) window.lucide.createIcons();
     }
 
-    async showWhatsAppDispatcher(message) {
-        const members = await this.app.academy.getAcademyActiveMembersWithPhone(this.app.dashboardState.selectedAcademyId);
+    async showAnnouncementDispatcher(message) {
+        const membersEmail = await this.app.academy.getAcademyActiveMembersWithEmail(this.app.dashboardState.selectedAcademyId);
         
-        if (members.length === 0) {
-            alert('Comunicado publicado! (Nenhum aluno com telefone cadastrado para envio via WhatsApp)');
-            return;
-        }
-
-        const encodedMessage = encodeURIComponent(message);
-        
-        this.app.showModal('Enviar via WhatsApp', `
+        this.app.showModal('Centro de Transmissão', `
             <div style="display: flex; flex-direction: column; gap: 1.5rem;">
-                <div style="padding: 1rem; background: var(--bg-elevated); border-radius: 8px; border: 1px solid var(--border);">
-                    <p style="font-size: 0.75rem; color: var(--text-dim); text-transform: uppercase; font-weight: 800; margin-bottom: 0.5rem;">Mensagem</p>
-                    <p style="font-size: 0.9375rem; line-height: 1.5;">${message}</p>
+                <!-- Mensagem -->
+                <div style="padding: 1.25rem; background: var(--bg-elevated); border-radius: 12px; border: 1px solid var(--border); box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);">
+                    <p style="font-size: 0.65rem; color: var(--primary); text-transform: uppercase; font-weight: 800; margin-bottom: 0.75rem; letter-spacing: 0.1em;">Mensagem do Comunicado</p>
+                    <p style="font-size: 0.9375rem; line-height: 1.6; color: var(--text-primary);">${message}</p>
                 </div>
 
-                <div style="display: flex; justify-content: space-between; align-items: center;">
-                    <h4 class="font-heading" style="font-size: 1rem;">Alunos Encontrados (${members.length})</h4>
-                    <button class="btn btn-primary" id="btn-whatsapp-all" style="height: 36px; font-size: 0.75rem;">
-                        <i data-lucide="send" size="14"></i> ABRIR LISTA DE ENVIO
-                    </button>
+                <!-- Canal: E-mail -->
+                <div style="background: hsla(var(--h), 100%, 65%, 0.05); padding: 1.5rem; border-radius: 12px; border: 1px solid hsla(var(--h), 100%, 65%, 0.2);">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+                        <div>
+                            <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.25rem;">
+                                <i data-lucide="mail" size="18" style="color: var(--primary);"></i>
+                                <h4 style="font-size: 1rem; font-weight: 800;">Disparo via E-mail</h4>
+                            </div>
+                            <p style="font-size: 0.75rem; color: var(--text-dim);">${membersEmail.length} alunos cadastrados receberão este comunicado.</p>
+                        </div>
+                        <button class="btn btn-primary" id="btn-send-email-all" style="height: 46px; padding: 0 2rem; font-weight: 700; gap: 0.75rem; box-shadow: var(--shadow-sm);">
+                            <i data-lucide="send" size="18"></i> DISPARAR AGORA
+                        </button>
+                    </div>
+                    
+                    <div style="display: flex; gap: 1rem; padding-top: 1rem; border-top: 1px solid hsla(var(--h), 100%, 65%, 0.1);">
+                        <p style="font-size: 0.7rem; color: var(--primary); font-weight: 600; display: flex; align-items: center; gap: 0.35rem;">
+                            <i data-lucide="shield-check" size="14"></i> Cópia Oculta (BCC)
+                        </p>
+                        <p style="font-size: 0.7rem; color: var(--primary); font-weight: 600; display: flex; align-items: center; gap: 0.35rem;">
+                            <i data-lucide="zap" size="14"></i> Entrega Imediata
+                        </p>
+                    </div>
                 </div>
 
-                <div style="max-height: 300px; overflow-y: auto; border: 1px solid var(--border); border-radius: 8px;">
+                <!-- Lista de Destinatários -->
+                <div style="max-height: 200px; overflow-y: auto; border: 1px solid var(--border); border-radius: 12px; background: var(--bg-surface);">
                     <table style="width: 100%; border-collapse: collapse;">
-                        <tbody id="whatsapp-list">
-                            ${members.map((m, i) => `
-                                <tr style="border-bottom: 1px solid var(--border);">
-                                    <td style="padding: 0.75rem 1rem;">
-                                        <p style="font-weight: 600; font-size: 0.875rem;">${m.full_name}</p>
-                                        <p style="font-size: 0.75rem; color: var(--text-dim);">${m.phone}</p>
-                                    </td>
-                                    <td style="padding: 0.75rem 1rem; text-align: right;">
-                                        <a href="https://api.whatsapp.com/send?phone=${(() => {
-                                            let p = m.phone.replace(/\D/g, '');
-                                            if (p.length >= 10 && p.length <= 11 && !p.startsWith('55')) p = '55' + p;
-                                            return p;
-                                        })()}&text=${encodedMessage}" 
-                                           target="_blank" 
-                                           class="btn btn-outline whatsapp-single-btn" 
-                                           style="height: 32px; font-size: 0.7rem; gap: 0.5rem; display: inline-flex; align-items: center;">
-                                            <i data-lucide="message-circle" size="14"></i> ENVIAR
-                                        </a>
-                                    </td>
+                        <thead>
+                            <tr style="background: var(--bg-elevated); border-bottom: 1px solid var(--border);">
+                                <th style="padding: 0.75rem 1rem; text-align: left; font-size: 0.65rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.05em;">Aluno</th>
+                                <th style="padding: 0.75rem 1rem; text-align: left; font-size: 0.65rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.05em;">E-mail</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${membersEmail.map(m => `
+                                <tr style="border-bottom: 1px solid var(--border); font-size: 0.8125rem;">
+                                    <td style="padding: 0.75rem 1rem; font-weight: 600;">${m.full_name}</td>
+                                    <td style="padding: 0.75rem 1rem; color: var(--text-dim);">${m.email}</td>
                                 </tr>
                             `).join('')}
                         </tbody>
                     </table>
                 </div>
 
-                <div style="background: hsla(var(--h), 100%, 65%, 0.1); padding: 1rem; border-radius: 8px; border: 1px solid hsla(var(--h), 100%, 65%, 0.2);">
-                    <p style="font-size: 0.75rem; color: var(--primary); font-weight: 600;">
-                        <i data-lucide="info" size="14" style="vertical-align: middle; margin-right: 0.25rem;"></i>
-                        Devido às políticas do WhatsApp, os envios devem ser feitos individualmente para evitar bloqueios.
-                    </p>
-                </div>
-
-                <div style="display: flex; justify-content: flex-end; gap: 1rem;">
-                    <button class="btn btn-secondary" onclick="window.App.closeModal()">CONCLUIR</button>
+                <div style="display: flex; justify-content: flex-end; gap: 1rem; padding-top: 1rem; border-top: 1px solid var(--border);">
+                    <button class="btn btn-secondary" onclick="window.App.closeModal()" style="font-weight: 700;">CANCELAR</button>
                 </div>
             </div>
         `, 'modal-large');
 
         if (window.lucide) window.lucide.createIcons();
 
-        const allBtns = document.querySelectorAll('.whatsapp-single-btn');
-        allBtns.forEach(btn => {
-            btn.onclick = () => {
-                btn.style.opacity = '0.5';
-                btn.style.background = 'var(--bg-elevated)';
-                btn.innerHTML = '<i data-lucide="check" size="14"></i> ENVIADO';
-                if (window.lucide) window.lucide.createIcons();
-            };
-        });
+        // Email Dispatch Logic
+        const sendEmailBtn = document.getElementById('btn-send-email-all');
+        if (sendEmailBtn) {
+            sendEmailBtn.onclick = async () => {
+                const recipients = membersEmail.map(m => m.email);
+                if (recipients.length === 0) {
+                    alert('Nenhum aluno com e-mail cadastrado.');
+                    return;
+                }
 
-        document.getElementById('btn-whatsapp-all').onclick = () => {
-            alert('Para sua segurança, abriremos os contatos um a um. Clique no botão "ENVIAR" ao lado de cada aluno.');
-        };
+                sendEmailBtn.disabled = true;
+                sendEmailBtn.innerHTML = '<i data-lucide="loader-2" class="animate-spin" size="18"></i> ENVIANDO...';
+                if (window.lucide) window.lucide.createIcons();
+
+                const res = await this.app.academy.sendBulkEmail(recipients, 'Comunicado Academia OSS', message);
+                
+                if (res.success) {
+                    sendEmailBtn.style.background = 'var(--success)';
+                    sendEmailBtn.style.borderColor = 'var(--success)';
+                    sendEmailBtn.innerHTML = '<i data-lucide="check-circle" size="18"></i> ENVIADO COM SUCESSO!';
+                    if (window.lucide) window.lucide.createIcons();
+                    setTimeout(() => this.app.closeModal(), 2000);
+                } else {
+                    alert('Erro ao enviar e-mails: ' + res.error);
+                    sendEmailBtn.disabled = false;
+                    sendEmailBtn.innerHTML = '<i data-lucide="send" size="18"></i> DISPARAR NOVAMENTE';
+                    if (window.lucide) window.lucide.createIcons();
+                }
+            };
+        }
     }
 
     renderAvatarWithStripes(data, size, isStacked = false) {
