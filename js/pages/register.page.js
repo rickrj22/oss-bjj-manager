@@ -56,13 +56,62 @@ export class RegisterPage {
         const form = document.getElementById('register-form');
         const registerBtn = document.getElementById('register-btn');
 
+        // --- CPF Utilities ---
+        const maskCPF = (value) => {
+            return value
+                .replace(/\D/g, '')
+                .slice(0, 11)
+                .replace(/(\d{3})(\d)/, '$1.$2')
+                .replace(/(\d{3})(\d)/, '$1.$2')
+                .replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+        };
+
+        const validateCPF = (cpf) => {
+            cpf = cpf.replace(/[^\d]/g, '');
+            if (cpf.length !== 11 || /^(\d)\1{10}$/.test(cpf)) return false;
+            for (let t = 9; t < 11; t++) {
+                let d = 0;
+                for (let i = 0; i < t; i++) d += cpf[t - i - 1] * ((t + 1) - i);
+                d = ((10 * d) % 11) % 10;
+                if (parseInt(cpf[t]) !== d) return false;
+            }
+            return true;
+        };
+
+        const cpfInput = document.getElementById('cpf');
+        if (cpfInput) {
+            cpfInput.maxLength = 14;
+            cpfInput.addEventListener('input', (e) => {
+                e.target.value = maskCPF(e.target.value);
+            });
+            cpfInput.addEventListener('blur', (e) => {
+                const val = e.target.value;
+                if (val && !validateCPF(val)) {
+                    cpfInput.style.borderColor = 'var(--error, #ef4444)';
+                    cpfInput.setCustomValidity('CPF inválido');
+                    cpfInput.reportValidity();
+                } else {
+                    cpfInput.style.borderColor = '';
+                    cpfInput.setCustomValidity('');
+                }
+            });
+        }
+        // --- Fim CPF ---
+
         if (form) {
             form.addEventListener('submit', async (e) => {
                 e.preventDefault();
-                
+
+                const cpfVal = document.getElementById('cpf').value;
+                if (!validateCPF(cpfVal)) {
+                    alert('CPF inválido! Por favor, verifique o número digitado.');
+                    document.getElementById('cpf').focus();
+                    return;
+                }
+
                 const fullName = document.getElementById('full-name').value;
                 const email = document.getElementById('email').value;
-                const cpf = document.getElementById('cpf').value;
+                const cpf = cpfVal;
                 const phone = document.getElementById('phone').value;
                 const password = document.getElementById('password').value;
 

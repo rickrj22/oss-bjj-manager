@@ -416,6 +416,46 @@ export class ProfilePage {
     afterRender() {
         if (window.lucide) window.lucide.createIcons();
 
+        // --- CPF Utilities ---
+        const maskCPF = (value) => value
+            .replace(/\D/g, '').slice(0, 11)
+            .replace(/(\d{3})(\d)/, '$1.$2')
+            .replace(/(\d{3})(\d)/, '$1.$2')
+            .replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+
+        const validateCPF = (cpf) => {
+            cpf = cpf.replace(/[^\d]/g, '');
+            if (cpf.length !== 11 || /^(\d)\1{10}$/.test(cpf)) return false;
+            for (let t = 9; t < 11; t++) {
+                let d = 0;
+                for (let i = 0; i < t; i++) d += cpf[t - i - 1] * ((t + 1) - i);
+                d = ((10 * d) % 11) % 10;
+                if (parseInt(cpf[t]) !== d) return false;
+            }
+            return true;
+        };
+
+        const cpfInput = document.getElementById('prof-cpf');
+        if (cpfInput) {
+            cpfInput.maxLength = 14;
+            cpfInput.placeholder = '000.000.000-00';
+            cpfInput.addEventListener('input', (e) => {
+                e.target.value = maskCPF(e.target.value);
+            });
+            cpfInput.addEventListener('blur', (e) => {
+                const val = e.target.value;
+                if (val && !validateCPF(val)) {
+                    cpfInput.style.borderColor = '#ef4444';
+                    cpfInput.setCustomValidity('CPF inválido');
+                    cpfInput.reportValidity();
+                } else {
+                    cpfInput.style.borderColor = '';
+                    cpfInput.setCustomValidity('');
+                }
+            });
+        }
+        // --- Fim CPF ---
+
         // Logout
         document.getElementById('logout-btn').onclick = () => this.app.auth.logout();
 
@@ -439,6 +479,14 @@ export class ProfilePage {
         if (saveBtn) {
             saveBtn.onclick = async (e) => {
                 e.preventDefault();
+
+                const cpfVal = document.getElementById('prof-cpf').value;
+                if (cpfVal && !validateCPF(cpfVal)) {
+                    this.showMessage('❌ CPF inválido! Verifique o número digitado.', 'error');
+                    document.getElementById('prof-cpf').focus();
+                    return;
+                }
+
                 const originalContent = saveBtn.innerHTML;
                 saveBtn.innerHTML = '<div class="spinner-small" style="border-top-color: white;"></div>';
                 saveBtn.style.pointerEvents = 'none';
@@ -448,7 +496,7 @@ export class ProfilePage {
                     email: document.getElementById('prof-email').value,
                     birth_date: document.getElementById('prof-birth').value,
                     phone: document.getElementById('prof-phone').value,
-                    cpf: document.getElementById('prof-cpf').value,
+                    cpf: cpfVal,
                     avatar_url: document.getElementById('prof-avatar').value
                 };
 
@@ -488,6 +536,7 @@ export class ProfilePage {
             };
         }
     }
+
 
     showMessage(text, type) {
         const msg = document.getElementById('status-message');

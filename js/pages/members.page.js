@@ -526,12 +526,23 @@ export class MembersPage {
             `).join('');
         });
 
+        // Bind CPF mask and validation on the edit form
+        this._bindCpfField('edit-cpf');
+
         document.getElementById('edit-member-form').onsubmit = async (e) => {
             e.preventDefault();
+
+            const cpfVal = document.getElementById('edit-cpf').value;
+            if (!this._validateCPF(cpfVal)) {
+                alert('CPF inválido! Por favor, verifique o número digitado.');
+                document.getElementById('edit-cpf').focus();
+                return;
+            }
+
             const updates = {
                 full_name: document.getElementById('edit-name').value,
                 email: document.getElementById('edit-email').value,
-                cpf: document.getElementById('edit-cpf').value,
+                cpf: cpfVal,
                 phone: document.getElementById('edit-phone').value,
                 current_belt: document.getElementById('edit-belt').value,
                 current_stripes: parseInt(document.getElementById('edit-stripes').value),
@@ -712,12 +723,23 @@ export class MembersPage {
         `;
         
         this.app.showModal('Novo Membro', content, 'modal-large');
+
+        // Bind CPF mask and validation on the new member form
+        this._bindCpfField('new-cpf');
         
         document.getElementById('add-member-form').onsubmit = async (e) => {
             e.preventDefault();
             const submitBtn = document.getElementById('btn-submit-member');
             const errorDiv = document.getElementById('add-member-error');
             errorDiv.style.display = 'none';
+
+            const cpfVal = document.getElementById('new-cpf').value;
+            if (!this._validateCPF(cpfVal)) {
+                errorDiv.textContent = '❌ CPF inválido! Por favor, verifique o número digitado.';
+                errorDiv.style.display = 'block';
+                document.getElementById('new-cpf').focus();
+                return;
+            }
             
             submitBtn.innerHTML = '<div class="spinner-small" style="border-top-color: white;"></div>';
             submitBtn.style.pointerEvents = 'none';
@@ -725,7 +747,7 @@ export class MembersPage {
             const data = {
                 full_name: document.getElementById('new-name').value,
                 email: document.getElementById('new-email').value,
-                cpf: document.getElementById('new-cpf').value,
+                cpf: cpfVal,
                 phone: document.getElementById('new-phone').value,
                 password: document.getElementById('new-password').value,
                 academy_id: this.user.academy_id,
@@ -745,5 +767,48 @@ export class MembersPage {
                 submitBtn.style.pointerEvents = 'auto';
             }
         };
+    }
+
+    // --- CPF Helpers ---
+    _maskCPF(value) {
+        return value
+            .replace(/\D/g, '')
+            .slice(0, 11)
+            .replace(/(\d{3})(\d)/, '$1.$2')
+            .replace(/(\d{3})(\d)/, '$1.$2')
+            .replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+    }
+
+    _validateCPF(cpf) {
+        cpf = cpf.replace(/[^\d]/g, '');
+        if (cpf.length !== 11 || /^(\d)\1{10}$/.test(cpf)) return false;
+        for (let t = 9; t < 11; t++) {
+            let d = 0;
+            for (let i = 0; i < t; i++) d += cpf[t - i - 1] * ((t + 1) - i);
+            d = ((10 * d) % 11) % 10;
+            if (parseInt(cpf[t]) !== d) return false;
+        }
+        return true;
+    }
+
+    _bindCpfField(inputId) {
+        const el = document.getElementById(inputId);
+        if (!el) return;
+        el.maxLength = 14;
+        el.placeholder = '000.000.000-00';
+        el.addEventListener('input', (e) => {
+            e.target.value = this._maskCPF(e.target.value);
+        });
+        el.addEventListener('blur', (e) => {
+            const val = e.target.value;
+            if (val && !this._validateCPF(val)) {
+                el.style.borderColor = '#ef4444';
+                el.setCustomValidity('CPF inválido');
+                el.reportValidity();
+            } else {
+                el.style.borderColor = '';
+                el.setCustomValidity('');
+            }
+        });
     }
 }
