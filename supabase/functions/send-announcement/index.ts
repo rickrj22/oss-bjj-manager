@@ -1,6 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
 
-const RESEND_API_KEY = Deno.env.get('RESEND_API_KEY')
+const BREVO_API_KEY = Deno.env.get('BREVO_API_KEY')
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -8,7 +8,6 @@ const corsHeaders = {
 }
 
 serve(async (req) => {
-  // Handle CORS
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders })
   }
@@ -16,18 +15,23 @@ serve(async (req) => {
   try {
     const { recipients, subject, content } = await req.json()
 
-    const res = await fetch('https://api.resend.com/emails', {
+    // Preparando os destinatários para o formato do Brevo
+    // recipients vem como um array de strings ['email1', 'email2']
+    const bccList = recipients.map(email => ({ email }))
+
+    const res = await fetch('https://api.brevo.com/v3/smtp/email', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${RESEND_API_KEY}`
+        'accept': 'application/json',
+        'api-key': BREVO_API_KEY,
+        'content-type': 'application/json'
       },
       body: JSON.stringify({
-        from: 'OSS BJJ Manager <onboarding@resend.dev>',
-        to: ['rickrj22@gmail.com'],
-        bcc: recipients,
+        sender: { name: "Academia Edson França", email: "rickcgrj@gmail.com" },
+        to: [{ email: "rickcgrj@gmail.com", name: "Professor Edson" }],
+        bcc: bccList,
         subject: subject,
-        html: `
+        htmlContent: `
           <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #eee; border-radius: 12px; overflow: hidden;">
               <div style="background: #1a1a1a; padding: 2rem; text-align: center;">
                   <h1 style="color: #fff; margin: 0; letter-spacing: 0.2em;">OSS</h1>
@@ -45,6 +49,10 @@ serve(async (req) => {
     })
 
     const data = await res.json()
+
+    if (!res.ok) {
+      throw new Error(data.message || JSON.stringify(data))
+    }
 
     return new Response(JSON.stringify(data), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
