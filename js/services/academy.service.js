@@ -403,7 +403,9 @@ export class AcademyService {
     }
 
     async confirmAttendance(classId, userId, customDate = null, attendanceId = null) {
-        let query = this.client.from('attendance').update({ status: 'confirmed' });
+        console.log('📋 confirmAttendance chamado:', { classId, userId, customDate, attendanceId });
+
+        let query = this.client.from('attendance').update({ status: 'confirmed' }).select();
         
         if (attendanceId) {
             query = query.eq('id', attendanceId);
@@ -412,8 +414,20 @@ export class AcademyService {
             query = query.eq('class_id', classId).eq('user_id', userId).eq('check_in_date', date);
         }
 
-        const { error } = await query;
-        return { success: !error, error: error?.message };
+        const { data, error } = await query;
+        console.log('📋 confirmAttendance resultado:', { data, error });
+
+        if (error) {
+            console.error('❌ Erro ao confirmar presença:', error);
+            return { success: false, error: error.message };
+        }
+
+        if (!data || data.length === 0) {
+            console.warn('⚠️ Nenhuma linha atualizada. Verifique as políticas RLS ou o attendanceId.');
+            return { success: false, error: 'Nenhuma presença encontrada para confirmar. Verifique as permissões do banco.' };
+        }
+
+        return { success: true };
     }
 
     // Admin/professor cancels a pending check-in — deletes the row entirely
