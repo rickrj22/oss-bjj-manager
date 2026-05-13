@@ -552,7 +552,7 @@ export class TUFPage {
         this.app.showModal('Configurar Novo TUF', content, 'modal-large');
         if (window.lucide) window.lucide.createIcons();
 
-        document.getElementById('btn-create-bracket').onclick = () => {
+        document.getElementById('btn-create-bracket').onclick = async () => {
             const name = document.getElementById('tuf-name').value;
             const selected = Array.from(document.querySelectorAll('.tuf-participant-checkbox:checked')).map(cb => ({
                 id: cb.value,
