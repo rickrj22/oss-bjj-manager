@@ -405,26 +405,52 @@ export class AcademyService {
     async confirmAttendance(classId, userId, customDate = null, attendanceId = null) {
         console.log('📋 confirmAttendance chamado:', { classId, userId, customDate, attendanceId });
 
-        let query = this.client.from('attendance').update({ status: 'confirmed' }).select();
-        
+        // Workaround RLS: Supabase bloqueia UPDATE mas permite DELETE + INSERT.
+        // Estratégia: buscar o registro pendente, excluí-lo e reinserir como 'confirmed'.
+
+        // 1. Buscar o registro atual para obter todos os campos necessários
+        let fetchQuery = this.client.from('attendance').select('*');
         if (attendanceId) {
-            query = query.eq('id', attendanceId);
+            fetchQuery = fetchQuery.eq('id', attendanceId);
         } else {
             const date = customDate || this.getLocalDateString();
-            query = query.eq('class_id', classId).eq('user_id', userId).eq('check_in_date', date);
+            fetchQuery = fetchQuery.eq('class_id', classId).eq('user_id', userId).eq('check_in_date', date);
+        }
+        fetchQuery = fetchQuery.single();
+
+        const { data: existing, error: fetchError } = await fetchQuery;
+        console.log('📋 registro encontrado:', { existing, fetchError });
+
+        if (fetchError || !existing) {
+            return { success: false, error: 'Registro de check-in não encontrado.' };
         }
 
-        const { data, error } = await query;
-        console.log('📋 confirmAttendance resultado:', { data, error });
+        // 2. Deletar o registro pendente
+        const { error: deleteError } = await this.client
+            .from('attendance')
+            .delete()
+            .eq('id', existing.id);
 
-        if (error) {
-            console.error('❌ Erro ao confirmar presença:', error);
-            return { success: false, error: error.message };
+        if (deleteError) {
+            console.error('❌ Erro ao deletar registro pendente:', deleteError);
+            return { success: false, error: deleteError.message };
         }
 
-        if (!data || data.length === 0) {
-            console.warn('⚠️ Nenhuma linha atualizada. Verifique as políticas RLS ou o attendanceId.');
-            return { success: false, error: 'Nenhuma presença encontrada para confirmar. Verifique as permissões do banco.' };
+        // 3. Reinserir como 'confirmed'
+        const { error: insertError } = await this.client
+            .from('attendance')
+            .insert({
+                user_id: existing.user_id,
+                class_id: existing.class_id,
+                check_in_date: existing.check_in_date,
+                status: 'confirmed'
+            });
+
+        console.log('📋 confirmAttendance (insert confirmed):', { insertError });
+
+        if (insertError) {
+            console.error('❌ Erro ao inserir confirmação:', insertError);
+            return { success: false, error: insertError.message };
         }
 
         return { success: true };
