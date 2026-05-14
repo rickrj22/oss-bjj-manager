@@ -614,6 +614,10 @@ export class TUFPage {
 
                     const res = await this.app.academy.saveTournament(name, participants, this.user.id);
                     if (res.success) {
+                        // Increment participations for all involved athletes
+                        const athleteIds = participants.all.map(a => a.id);
+                        await this.app.academy.incrementTufParticipations(athleteIds);
+                        
                         this.app.closeModal();
                         await this.loadActiveTournament();
                     } else {

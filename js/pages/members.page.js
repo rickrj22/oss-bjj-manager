@@ -458,6 +458,10 @@ export class MembersPage {
                         <input type="text" id="edit-cpf" class="input" style="${inp}" value="${member.cpf || ''}" required>
                     </div>
                     <div>
+                        <label style="${lbl}">Data de Nascimento</label>
+                        <input type="date" id="edit-birth-date" class="input" style="${inp}" value="${member.birth_date || ''}">
+                    </div>
+                    <div>
                         <label style="${lbl}">Telefone</label>
                         <input type="tel" id="edit-phone" class="input" style="${inp}" value="${member.phone || ''}">
                     </div>
@@ -557,7 +561,8 @@ export class MembersPage {
                 role: document.getElementById('edit-role').value,
                 is_admin: document.getElementById('edit-admin').checked,
                 plan_id: document.getElementById('edit-plan').value || null,
-                payment_due_date: parseInt(document.getElementById('edit-due-date').value) || null
+                payment_due_date: parseInt(document.getElementById('edit-due-date').value) || null,
+                birth_date: document.getElementById('edit-birth-date').value || null
             };
 
             const res = await this.app.academy.updateMember(memberId, updates);
@@ -694,6 +699,10 @@ export class MembersPage {
                         <input type="text" id="new-cpf" class="input" style="${inp}" placeholder="000.000.000-00" required>
                     </div>
                     <div>
+                        <label style="${lbl}">Data de Nascimento</label>
+                        <input type="date" id="new-birth-date" class="input" style="${inp}">
+                    </div>
+                    <div>
                         <label style="${lbl}">Telefone</label>
                         <input type="tel" id="new-phone" class="input" style="${inp}" placeholder="(00) 00000-0000">
                     </div>
@@ -761,7 +770,8 @@ export class MembersPage {
                 academy_id: this.user.academy_id,
                 current_belt: document.getElementById('new-belt').value,
                 role: document.getElementById('new-role').value,
-                is_admin: document.getElementById('new-admin').checked
+                is_admin: document.getElementById('new-admin').checked,
+                birth_date: document.getElementById('new-birth-date').value || null
             };
 
             const res = await this.app.academy.createNewMember(data);
