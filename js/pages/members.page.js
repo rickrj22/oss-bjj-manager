@@ -661,8 +661,14 @@ export class MembersPage {
                         <input type="text" id="edit-name" class="input" style="${inp}" value="${member.full_name}" required>
                     </div>
                     <div>
-                        <label style="${lbl}">E-mail</label>
-                        <input type="email" id="edit-email" class="input" style="${inp}" value="${member.email || ''}" required>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                            <label style="${lbl} margin-bottom: 0;">E-mail *</label>
+                            <div style="display: flex; align-items: center; gap: 0.4rem;">
+                                <input type="checkbox" id="edit-no-email" ${member.email?.endsWith('@ossbjj.com.br') ? 'checked' : ''} style="width: 14px; height: 14px; accent-color: var(--primary);">
+                                <label for="edit-no-email" style="font-size: 0.65rem; color: var(--text-dim); cursor: pointer; font-weight: 700; text-transform: uppercase;">Não possui</label>
+                            </div>
+                        </div>
+                        <input type="email" id="edit-email" class="input" style="${inp}" value="${member.email?.endsWith('@ossbjj.com.br') ? '' : (member.email || '')}" required ${member.email?.endsWith('@ossbjj.com.br') ? 'disabled' : ''}>
                     </div>
                     <div>
                         <label style="${lbl}">CPF</label>
@@ -752,6 +758,22 @@ export class MembersPage {
         // Bind CPF mask and validation on the edit form
         this._bindCpfField('edit-cpf');
 
+        // Logic for "No Email" checkbox
+        const editNoEmailCheck = document.getElementById('edit-no-email');
+        const editEmailInp = document.getElementById('edit-email');
+        editNoEmailCheck.addEventListener('change', (e) => {
+            if (e.target.checked) {
+                editEmailInp.value = '';
+                editEmailInp.required = false;
+                editEmailInp.disabled = true;
+                editEmailInp.placeholder = 'Gerado via CPF';
+            } else {
+                editEmailInp.required = true;
+                editEmailInp.disabled = false;
+                editEmailInp.placeholder = 'email@exemplo.com';
+            }
+        });
+
         document.getElementById('edit-member-form').onsubmit = async (e) => {
             e.preventDefault();
 
@@ -762,9 +784,15 @@ export class MembersPage {
                 return;
             }
 
+            let email = document.getElementById('edit-email').value;
+            if (editNoEmailCheck.checked) {
+                const cleanCpf = cpfVal.replace(/\D/g, '');
+                email = `${cleanCpf}@ossbjj.com.br`;
+            }
+
             const updates = {
                 full_name: document.getElementById('edit-name').value,
-                email: document.getElementById('edit-email').value,
+                email: email,
                 cpf: cpfVal,
                 phone: document.getElementById('edit-phone').value,
                 current_belt: document.getElementById('edit-belt').value,
@@ -897,7 +925,13 @@ export class MembersPage {
                         <input type="text" id="new-name" class="input" style="${inp}" placeholder="Ex: Jean Jacques Machado" required>
                     </div>
                     <div>
-                        <label style="${lbl}">E-mail *</label>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                            <label style="${lbl} margin-bottom: 0;">E-mail *</label>
+                            <div style="display: flex; align-items: center; gap: 0.4rem;">
+                                <input type="checkbox" id="new-no-email" style="width: 14px; height: 14px; accent-color: var(--primary);">
+                                <label for="new-no-email" style="font-size: 0.65rem; color: var(--text-dim); cursor: pointer; font-weight: 700; text-transform: uppercase;">Não possui</label>
+                            </div>
+                        </div>
                         <input type="email" id="new-email" class="input" style="${inp}" placeholder="email@exemplo.com" required>
                     </div>
                     <div>
@@ -949,6 +983,22 @@ export class MembersPage {
 
         // Bind CPF mask and validation on the new member form
         this._bindCpfField('new-cpf');
+
+        // Logic for "No Email" checkbox
+        const noEmailCheck = document.getElementById('new-no-email');
+        const emailInp = document.getElementById('new-email');
+        noEmailCheck.addEventListener('change', (e) => {
+            if (e.target.checked) {
+                emailInp.value = '';
+                emailInp.required = false;
+                emailInp.disabled = true;
+                emailInp.placeholder = 'Gerado via CPF';
+            } else {
+                emailInp.required = true;
+                emailInp.disabled = false;
+                emailInp.placeholder = 'email@exemplo.com';
+            }
+        });
         
         document.getElementById('add-member-form').onsubmit = async (e) => {
             e.preventDefault();
@@ -967,9 +1017,15 @@ export class MembersPage {
             submitBtn.innerHTML = '<div class="spinner-small" style="border-top-color: white;"></div>';
             submitBtn.style.pointerEvents = 'none';
 
+            let email = document.getElementById('new-email').value;
+            if (noEmailCheck.checked) {
+                const cleanCpf = cpfVal.replace(/\D/g, '');
+                email = `${cleanCpf}@ossbjj.com.br`;
+            }
+
             const data = {
                 full_name: document.getElementById('new-name').value,
-                email: document.getElementById('new-email').value,
+                email: email,
                 cpf: cpfVal,
                 phone: document.getElementById('new-phone').value,
                 password: document.getElementById('new-password').value,

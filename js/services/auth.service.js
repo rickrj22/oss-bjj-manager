@@ -122,7 +122,28 @@ export class AuthService {
         return this.currentUser;
     }
 
-    async login(email, password) {
+    async login(identifier, password) {
+        let email = identifier;
+
+        // Se o identificador não contém '@', assumimos que é um CPF
+        if (identifier && !identifier.includes('@')) {
+            const cleanCpf = identifier.replace(/\D/g, '');
+            console.log("🔍 AuthService: Tentando login via CPF...", cleanCpf);
+            
+            const { data, error } = await this.client
+                .from('profiles')
+                .select('email')
+                .eq('cpf', identifier) // Tenta com a máscara que veio
+                .or(`cpf.eq.${cleanCpf}`) // Ou sem máscara
+                .single();
+
+            if (error || !data) {
+                return { success: false, error: "CPF não encontrado ou não vinculado a uma conta." };
+            }
+            email = data.email;
+            console.log("✅ AuthService: CPF resolvido para", email);
+        }
+
         const { data, error } = await this.client.auth.signInWithPassword({
             email,
             password

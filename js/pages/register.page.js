@@ -19,13 +19,19 @@ export class RegisterPage {
                         </div>
 
                         <div class="mb-4">
-                            <label class="font-heading" style="font-size: 0.7rem; text-transform: uppercase; color: var(--text-dim); letter-spacing: 0.05em;">E-mail</label>
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.25rem;">
+                                <label class="font-heading" style="font-size: 0.7rem; text-transform: uppercase; color: var(--text-dim); letter-spacing: 0.05em;">E-mail</label>
+                                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                    <input type="checkbox" id="no-email" style="width: 14px; height: 14px; accent-color: var(--primary);">
+                                    <label for="no-email" style="font-size: 0.65rem; color: var(--text-dim); cursor: pointer;">Não possui e-mail</label>
+                                </div>
+                            </div>
                             <input type="email" id="email" class="input" placeholder="exemplo@email.com" required>
                         </div>
 
                         <div class="grid grid-cols-2" style="gap: 1rem;">
                             <div class="mb-4">
-                                <label class="font-heading" style="font-size: 0.7rem; text-transform: uppercase; color: var(--text-dim); letter-spacing: 0.05em;">CPF</label>
+                                <label class="font-heading" style="font-size: 0.7rem; text-transform: uppercase; color: var(--text-dim); letter-spacing: 0.05em;">CPF (Obrigatório)</label>
                                 <input type="text" id="cpf" class="input" placeholder="000.000.000-00" required>
                             </div>
                             <div class="mb-4">
@@ -55,6 +61,21 @@ export class RegisterPage {
     afterRender() {
         const form = document.getElementById('register-form');
         const registerBtn = document.getElementById('register-btn');
+        const noEmailCheck = document.getElementById('no-email');
+        const emailInput = document.getElementById('email');
+
+        noEmailCheck.addEventListener('change', (e) => {
+            if (e.target.checked) {
+                emailInput.value = '';
+                emailInput.required = false;
+                emailInput.disabled = true;
+                emailInput.placeholder = 'E-mail interno será gerado via CPF';
+            } else {
+                emailInput.required = true;
+                emailInput.disabled = false;
+                emailInput.placeholder = 'exemplo@email.com';
+            }
+        });
 
         // --- CPF Utilities ---
         const maskCPF = (value) => {
@@ -112,10 +133,19 @@ export class RegisterPage {
                 }
 
                 const fullName = document.getElementById('full-name').value;
-                const email = document.getElementById('email').value;
+                let email = document.getElementById('email').value;
                 const cpf = cpfVal;
                 const phone = document.getElementById('phone').value;
                 const password = document.getElementById('password').value;
+
+                if (noEmailCheck.checked) {
+                    // Gera um e-mail dummy baseado no CPF (limpo de pontos e traços)
+                    const cleanCpf = cpf.replace(/\D/g, '');
+                    email = `${cleanCpf}@ossbjj.com.br`;
+                } else if (!email) {
+                    alert('Por favor, informe seu e-mail ou marque que não possui.');
+                    return;
+                }
 
                 registerBtn.disabled = true;
                 registerBtn.innerText = 'Processando...';

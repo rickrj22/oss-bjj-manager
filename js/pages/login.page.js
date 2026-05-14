@@ -14,8 +14,8 @@ export class LoginPage {
 
                     <form id="login-form">
                         <div class="form-group">
-                            <label for="email" class="font-heading" style="font-size: 0.7rem; text-transform: uppercase; color: var(--text-dim); letter-spacing: 0.05em;">E-mail</label>
-                            <input type="email" id="email" class="input" placeholder="seu@email.com" required>
+                            <label for="identifier" class="font-heading" style="font-size: 0.7rem; text-transform: uppercase; color: var(--text-dim); letter-spacing: 0.05em;">E-mail ou CPF</label>
+                            <input type="text" id="identifier" class="input" placeholder="seu@email.com ou 000.000.000-00" required>
                         </div>
                         <div class="form-group" style="margin-top: 1.5rem;">
                             <div class="flex-between">
@@ -48,16 +48,30 @@ export class LoginPage {
         const form = document.getElementById('login-form');
         const loginBtn = document.getElementById('login-btn');
         const forgotPasswordLink = document.getElementById('forgot-password-link');
+        const identifierInput = document.getElementById('identifier');
+
+        // Adiciona máscara de CPF se o usuário digitar apenas números
+        identifierInput.addEventListener('input', (e) => {
+            let val = e.target.value;
+            // Se começar com número, aplicamos a máscara
+            if (/^\d/.test(val)) {
+                val = val.replace(/\D/g, '').slice(0, 11);
+                if (val.length > 9) val = val.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+                else if (val.length > 6) val = val.replace(/(\d{3})(\d{3})(\d{1,3})/, '$1.$2.$3');
+                else if (val.length > 3) val = val.replace(/(\d{3})(\d{1,3})/, '$1.$2');
+                e.target.value = val;
+            }
+        });
 
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
-            const email = document.getElementById('email').value;
+            const identifier = identifierInput.value;
             const password = document.getElementById('password').value;
             
             loginBtn.disabled = true;
             loginBtn.innerText = 'Autenticando...';
 
-            const result = await this.app.auth.login(email, password);
+            const result = await this.app.auth.login(identifier, password);
             if (result.success) {
                 window.location.hash = '#dashboard';
             } else {
