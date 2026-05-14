@@ -152,7 +152,7 @@ export class MembersPage {
                                         <div class="th-filter" data-col="plano">PLANO <i data-lucide="chevron-down" size="14"></i></div>
                                         <input type="text" class="column-filter-input" data-col="plano" placeholder="Filtrar...">
                                     </th>
-                                    <th style="text-align: center; width: 80px;">EDITAR</th>
+                                    <th style="text-align: center; width: 80px;">EXCLUIR</th>
                                 </tr>
                             </thead>
                             <tbody id="members-list">
@@ -305,7 +305,112 @@ export class MembersPage {
                     from { opacity: 0; transform: translateY(-10px); }
                     to { opacity: 1; transform: translateY(0); }
                 }
+
+                /* SIDE DRAWER STYLES */
+                .drawer-overlay {
+                    position: fixed;
+                    top: 0;
+                    right: 0;
+                    width: 100%;
+                    height: 100%;
+                    background: rgba(0,0,0,0.5);
+                    backdrop-filter: blur(4px);
+                    z-index: 1000;
+                    opacity: 0;
+                    visibility: hidden;
+                    transition: all 0.3s ease;
+                }
+                .drawer-overlay.active {
+                    opacity: 1;
+                    visibility: visible;
+                }
+                .side-drawer {
+                    position: fixed;
+                    top: 0;
+                    right: -450px;
+                    width: 450px;
+                    height: 100%;
+                    background: var(--bg-surface);
+                    box-shadow: -10px 0 30px rgba(0,0,0,0.2);
+                    z-index: 1001;
+                    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+                    display: flex;
+                    flex-direction: column;
+                    overflow: hidden;
+                }
+                .side-drawer.active {
+                    right: 0;
+                }
+                .drawer-header {
+                    padding: 2rem;
+                    background: var(--bg-elevated);
+                    border-bottom: 1px solid var(--border);
+                    position: relative;
+                }
+                .drawer-close {
+                    position: absolute;
+                    top: 1.5rem;
+                    right: 1.5rem;
+                    cursor: pointer;
+                    color: var(--text-dim);
+                    transition: color 0.2s;
+                }
+                .drawer-close:hover { color: var(--primary); }
+                .drawer-content {
+                    flex: 1;
+                    overflow-y: auto;
+                    padding: 2rem;
+                }
+                .drawer-section {
+                    margin-bottom: 2.5rem;
+                }
+                .drawer-section-title {
+                    font-size: 0.7rem;
+                    text-transform: uppercase;
+                    letter-spacing: 0.15em;
+                    font-weight: 900;
+                    color: var(--primary);
+                    margin-bottom: 1.25rem;
+                    display: flex;
+                    align-items: center;
+                    gap: 0.5rem;
+                }
+                .drawer-info-grid {
+                    display: grid;
+                    grid-template-columns: 1fr;
+                    gap: 1rem;
+                }
+                .info-item {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 0.25rem;
+                }
+                .info-label {
+                    font-size: 0.65rem;
+                    text-transform: uppercase;
+                    color: var(--text-dim);
+                    font-weight: 800;
+                }
+                .info-value {
+                    font-size: 0.9rem;
+                    font-weight: 600;
+                    color: var(--text-primary);
+                }
+                
+                @media (max-width: 500px) {
+                    .side-drawer { width: 100%; right: -100%; }
+                }
+
+                .clickable-row {
+                    cursor: pointer;
+                }
             </style>
+
+            <div id="drawer-overlay" class="drawer-overlay"></div>
+            <div id="side-drawer" class="side-drawer">
+                <div class="drawer-header" id="drawer-header-content"></div>
+                <div class="drawer-content" id="drawer-body-content"></div>
+            </div>
         `;
     }
 
@@ -313,7 +418,7 @@ export class MembersPage {
         const canEdit = currentUser.is_admin || (currentUser.role === 'professor' && member.role === 'student');
         
         return `
-            <tr id="row-${member.id}" class="grid-row">
+            <tr id="row-${member.id}" class="grid-row clickable-row" onclick="window.App.currentPage.showMemberDrawer('${member.id}')">
                 <td>
                     <div style="display: flex; align-items: center; gap: 1rem;">
                         ${this.renderAvatarWithStripes(member, 40)}
@@ -358,10 +463,7 @@ export class MembersPage {
                 </td>
                 <td style="text-align: center;">
                     <div style="display: flex; justify-content: center; gap: 0.5rem;">
-                        <div class="btn-edit-member" data-id="${member.id}" title="Editar Membro">
-                            <i data-lucide="edit-3" size="18"></i>
-                        </div>
-                        <div class="btn-delete-member" data-id="${member.id}" data-name="${member.full_name}" title="Excluir Membro">
+                        <div class="btn-delete-member" data-id="${member.id}" data-name="${member.full_name}" title="Excluir Membro" onclick="event.stopPropagation()">
                             <i data-lucide="trash-2" size="18"></i>
                         </div>
                     </div>
@@ -425,6 +527,115 @@ export class MembersPage {
                 </div>
             </div>
         `;
+    }
+
+    async showMemberDrawer(memberId) {
+        const member = this.members.find(m => m.id === memberId);
+        if (!member) return;
+
+        const overlay = document.getElementById('drawer-overlay');
+        const drawer = document.getElementById('side-drawer');
+        const header = document.getElementById('drawer-header-content');
+        const body = document.getElementById('drawer-body-content');
+
+        header.innerHTML = `
+            <div class="drawer-close" onclick="window.App.currentPage.closeDrawer()">
+                <i data-lucide="x" size="24"></i>
+            </div>
+            <div style="display: flex; align-items: center; gap: 1.5rem;">
+                ${this.renderAvatarWithStripes(member, 80)}
+                <div>
+                    <h2 class="font-heading" style="font-size: 1.5rem; margin-bottom: 0.5rem;">${member.full_name}</h2>
+                    <div style="display: flex; gap: 0.5rem;">
+                        <span class="badge-admin ${member.is_active ? 'sim' : 'nao'}" style="font-size: 0.55rem;">${member.is_active ? 'ATIVO' : 'INATIVO'}</span>
+                        ${member.is_admin ? '<span class="badge-admin sim" style="font-size: 0.55rem;">ADMIN</span>' : ''}
+                    </div>
+                </div>
+            </div>
+        `;
+
+        body.innerHTML = `
+            <div class="drawer-section">
+                <div class="drawer-section-title"><i data-lucide="user" size="14"></i> Dados Pessoais</div>
+                <div class="drawer-info-grid">
+                    <div class="info-item">
+                        <span class="info-label">E-mail</span>
+                        <span class="info-value">${member.email || '-'}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">CPF</span>
+                        <span class="info-value">${member.cpf || '-'}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Telefone</span>
+                        <span class="info-value">${member.phone || '-'}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Data de Nascimento</span>
+                        <span class="info-value">${member.birth_date ? new Date(member.birth_date).toLocaleDateString() : '-'}</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="drawer-section">
+                <div class="drawer-section-title"><i data-lucide="award" size="14"></i> Graduação</div>
+                <div class="drawer-info-grid" style="grid-template-columns: 1fr 1fr;">
+                    <div class="info-item">
+                        <span class="info-label">Faixa Atual</span>
+                        <span class="info-value">${(member.current_belt || 'white belt').toUpperCase()}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Graus</span>
+                        <span class="info-value">${member.current_stripes || 0}º Grau</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Treinos no Grau</span>
+                        <span class="info-value">${member.trainingsSinceGrad || 0} aulas</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Status</span>
+                        <span class="info-value" style="color: ${member.isReadyForBelt ? 'var(--primary)' : (member.isReadyForStripe ? '#22c55e' : 'var(--text-dim)')}">
+                            ${member.isReadyForBelt ? 'PRONTO P/ FAIXA' : (member.isReadyForStripe ? 'PRONTO P/ GRAU' : 'Em evolução')}
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="drawer-section">
+                <div class="drawer-section-title"><i data-lucide="dollar-sign" size="14"></i> Financeiro</div>
+                <div class="drawer-info-grid">
+                    <div class="info-item">
+                        <span class="info-label">Plano Atual</span>
+                        <span class="info-value">${(this.plans.find(p => p.id === member.plan_id)?.name || 'Sem Plano').toUpperCase()}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Vencimento</span>
+                        <span class="info-value">Todo dia ${member.payment_due_date || '-'}</span>
+                    </div>
+                </div>
+            </div>
+
+            <div style="margin-top: 3rem; display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                <button class="btn btn-primary" onclick="window.App.currentPage.closeDrawer(); window.App.currentPage.showEditMemberModal('${member.id}')" style="height: 48px; background: var(--inverse-bg); color: var(--inverse-text); border: none; font-weight: 700; border-radius: 8px;">
+                    <i data-lucide="edit-3" size="18"></i> EDITAR
+                </button>
+                <button class="btn-secondary" onclick="window.App.currentPage.closeDrawer()" style="height: 48px; border-radius: 8px; font-weight: 700;">FECHAR</button>
+            </div>
+        `;
+
+        if (window.lucide) window.lucide.createIcons();
+        
+        overlay.classList.add('active');
+        drawer.classList.add('active');
+
+        overlay.onclick = () => this.closeDrawer();
+    }
+
+    closeDrawer() {
+        const overlay = document.getElementById('drawer-overlay');
+        const drawer = document.getElementById('side-drawer');
+        if (overlay) overlay.classList.remove('active');
+        if (drawer) drawer.classList.remove('active');
     }
 
     async showEditMemberModal(memberId) {
@@ -603,11 +814,6 @@ export class MembersPage {
                 this.filters[col] = e.target.value.toLowerCase();
                 this.applyFilters();
             };
-        });
-
-        // Edit Button Logic
-        document.querySelectorAll('.btn-edit-member').forEach(btn => {
-            btn.onclick = () => this.showEditMemberModal(btn.dataset.id);
         });
 
         // Delete Button Logic
