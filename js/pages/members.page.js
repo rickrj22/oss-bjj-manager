@@ -1008,7 +1008,9 @@ export class MembersPage {
         if (cpf.length !== 11 || /^(\d)\1{10}$/.test(cpf)) return false;
         for (let t = 9; t < 11; t++) {
             let d = 0;
-            for (let i = 0; i < t; i++) d += cpf[t - i - 1] * ((t + 1) - i);
+            for (let i = 0; i < t; i++) {
+                d += cpf[i] * ((t + 1) - i);
+            }
             d = ((10 * d) % 11) % 10;
             if (parseInt(cpf[t]) !== d) return false;
         }
