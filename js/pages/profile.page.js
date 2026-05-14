@@ -64,40 +64,40 @@ export class ProfilePage {
                         ${user.is_admin ? `
                             <a href="#dashboard" class="nav-item animate-in stagger-1">
                                 <i data-lucide="layout-dashboard" size="18"></i> 
-                                <span>Dashboard</span>
+                                <span>${this.app.i18n.t('menu_dashboard')}</span>
                             </a>
                         ` : ''}
                         ${user.role === 'professor' || user.is_admin ? `
                             <a href="#membros" class="nav-item animate-in stagger-2">
                                 <i data-lucide="users" size="18"></i> 
-                                <span>Membros</span>
+                                <span>${this.app.i18n.t('menu_members')}</span>
                             </a>
                         ` : ''}
                         <a href="#aulas" class="nav-item animate-in stagger-3">
                             <i data-lucide="calendar" size="18"></i> 
-                            <span>Minhas Aulas</span>
+                            <span>${this.app.i18n.t('menu_classes')}</span>
                         </a>
                         ${user.is_admin ? `
                             <a href="#financeiro" class="nav-item animate-in stagger-1">
                                 <i data-lucide="dollar-sign" size="18"></i> 
-                                <span>Financeiro</span>
+                                <span>${this.app.i18n.t('menu_finance')}</span>
                             </a>
                             <a href="#configuracoes" class="nav-item animate-in stagger-2">
                                 <i data-lucide="settings" size="18"></i> 
-                                <span>Configurações</span>
+                                <span>${this.app.i18n.t('menu_settings')}</span>
                             </a>
                         ` : ''}
                         <a href="#perfil" class="nav-item active animate-in stagger-3">
                             <i data-lucide="user" size="18"></i> 
-                            <span>Perfil</span>
+                            <span>${this.app.i18n.t('menu_profile')}</span>
                         </a>
                         <a href="#instrutores" class="nav-item animate-in stagger-1">
                             <i data-lucide="graduation-cap" size="18"></i> 
-                            <span>Instrutores</span>
+                            <span>${this.app.i18n.t('menu_instructors')}</span>
                         </a>
                         <a href="#tuf" class="nav-item animate-in stagger-2">
                             <i data-lucide="swords" size="18"></i> 
-                            <span>TUF</span>
+                            <span>${this.app.i18n.t('menu_tuf')}</span>
                         </a>
                     </nav>
 
@@ -113,7 +113,7 @@ export class ProfilePage {
                         </div>
                         <button id="logout-btn" class="btn-secondary btn-full" style="height: 42px; gap: 0.75rem;">
                             <i data-lucide="log-out" size="18"></i> 
-                            <span>Sair</span>
+                            <span>${this.app.i18n.t('menu_logout')}</span>
                         </button>
                     </div>
                 </aside>
@@ -141,8 +141,8 @@ export class ProfilePage {
                 <main class="main-content" style="padding: 2rem;">
                     <header class="flex-between mb-8 animate-in" style="align-items: flex-start; max-width: 1200px; margin: 0 auto 2rem;">
                         <div>
-                            <h1 class="font-heading font-xl">Meu Perfil</h1>
-                            <p class="text-graphite hide-mobile">Gerencie seus dados e acompanhe sua evolução.</p>
+                            <h1 class="font-heading font-xl">${this.app.i18n.t('profile_title')}</h1>
+                            <p class="text-graphite hide-mobile">${this.app.i18n.t('profile_subtitle')}</p>
                         </div>
                         <div class="hide-mobile">
                             ${this.app.renderLanguageAndThemeControls()}
@@ -155,31 +155,31 @@ export class ProfilePage {
                             
                             <!-- Identidade e Contato -->
                             <div>
-                                <h3 class="font-heading mb-3" style="font-size: 1.15rem;">Identidade e Contato</h3>
+                                <h3 class="font-heading mb-3" style="font-size: 1.15rem;">${this.app.i18n.t('profile_identity_title')}</h3>
                                 <form id="profile-form">
                                     <div class="grid grid-cols-2" style="gap: 0.75rem 1rem;">
                                         <div class="form-group" style="grid-column: span 2;">
-                                            <label style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700; color: var(--text-dim); margin-bottom: 0.25rem; display: block;">Nome Completo</label>
+                                            <label style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700; color: var(--text-dim); margin-bottom: 0.25rem; display: block;">${this.app.i18n.t('full_name')}</label>
                                             <input type="text" class="input editable-field" id="prof-name" value="${user.full_name || ''}" style="height: 42px; font-size: 0.85rem;">
                                         </div>
                                         <div class="form-group" style="grid-column: span var(--span-all, 1);">
-                                            <label style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700; color: var(--text-dim); margin-bottom: 0.25rem; display: block;">E-mail (Login Oficial)</label>
+                                            <label style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700; color: var(--text-dim); margin-bottom: 0.25rem; display: block;">${this.app.i18n.t('profile_email_label')}</label>
                                             <input type="email" class="input editable-field" id="prof-email" value="${user.email || ''}" style="height: 42px; font-size: 0.85rem;">
                                         </div>
                                         <div class="form-group" style="grid-column: span var(--span-all, 1);">
-                                            <label style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700; color: var(--text-dim); margin-bottom: 0.25rem; display: block;">Telefone</label>
+                                            <label style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700; color: var(--text-dim); margin-bottom: 0.25rem; display: block;">${this.app.i18n.t('phone')}</label>
                                             <input type="tel" class="input editable-field" id="prof-phone" value="${user.phone || ''}" style="height: 42px; font-size: 0.85rem;">
                                         </div>
                                         <div class="form-group" style="grid-column: span var(--span-all, 1);">
-                                            <label style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700; color: var(--text-dim); margin-bottom: 0.25rem; display: block;">CPF</label>
+                                            <label style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700; color: var(--text-dim); margin-bottom: 0.25rem; display: block;">${this.app.i18n.t('table_cpf')}</label>
                                             <input type="text" class="input editable-field" id="prof-cpf" value="${user.cpf || ''}" style="height: 42px; font-size: 0.85rem;">
                                         </div>
                                         <div class="form-group" style="grid-column: span var(--span-all, 1);">
-                                            <label style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700; color: var(--text-dim); margin-bottom: 0.25rem; display: block;">Data de Nascimento</label>
+                                            <label style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700; color: var(--text-dim); margin-bottom: 0.25rem; display: block;">${this.app.i18n.t('member_drawer_birth_date')}</label>
                                             <input type="date" class="input editable-field" id="prof-birth" value="${user.birth_date || ''}" style="height: 42px; font-size: 0.85rem;">
                                         </div>
                                         <div class="form-group" style="grid-column: span var(--span-all, 1);">
-                                            <label style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700; color: var(--text-dim); margin-bottom: 0.25rem; display: block;">Foto de Perfil</label>
+                                            <label style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700; color: var(--text-dim); margin-bottom: 0.25rem; display: block;">${this.app.i18n.t('profile_avatar_label')}</label>
                                             <div style="display: flex; align-items: center; gap: 1rem;">
                                                 <div id="avatar-preview-container" style="width: 60px; height: 60px; border-radius: 50%; overflow: hidden; background: var(--bg-elevated); border: 2px solid var(--border); display: flex; align-items: center; justify-content: center;">
                                                     ${user.avatar_url ? `<img src="${user.avatar_url}" style="width: 100%; height: 100%; object-fit: cover;">` : `<i data-lucide="user" style="color: var(--text-dim);"></i>`}
@@ -187,7 +187,7 @@ export class ProfilePage {
                                                 <div style="flex: 1;">
                                                     <input type="file" id="prof-avatar-upload" accept="image/*" style="display: none;" onchange="window.App.currentPage.handleAvatarUpload(this)">
                                                     <button type="button" class="btn" onclick="document.getElementById('prof-avatar-upload').click()" style="height: 36px; padding: 0 1rem; font-size: 0.75rem; background: var(--bg-surface); color: var(--text-primary); border: 1px solid var(--border);">
-                                                        <i data-lucide="upload" size="14" style="margin-right: 0.5rem;"></i>Selecionar
+                                                        <i data-lucide="upload" size="14" style="margin-right: 0.5rem;"></i>${this.app.i18n.t('profile_select_btn')}
                                                     </button>
                                                     <input type="hidden" id="prof-avatar" value="${user.avatar_url || ''}">
                                                     <p id="avatar-upload-status" style="font-size: 0.65rem; color: var(--text-dim); margin-top: 0.25rem;"></p>
@@ -195,13 +195,13 @@ export class ProfilePage {
                                             </div>
                                         </div>
                                         <div class="form-group" style="grid-column: span var(--span-all, 1);">
-                                            <label style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700; color: var(--text-dim); margin-bottom: 0.25rem; display: block;">Dia de Vencimento</label>
-                                            <input type="text" class="input readonly-field" value="${user.payment_due_date ? 'Dia ' + user.payment_due_date : 'Não definido'}" readonly style="height: 42px; font-size: 0.85rem;">
+                                            <label style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700; color: var(--text-dim); margin-bottom: 0.25rem; display: block;">${this.app.i18n.t('profile_due_date_label')}</label>
+                                            <input type="text" class="input readonly-field" value="${user.payment_due_date ? this.app.i18n.t('member_due_date_label') + ' ' + user.payment_due_date : this.app.i18n.t('profile_no_due_date')}" readonly style="height: 42px; font-size: 0.85rem;">
                                         </div>
                                     </div>
                                     <div class="mt-3">
                                         <button type="submit" id="btn-save-profile" class="btn" style="background: black; color: white; border-radius: 4px; padding: 0.6rem 1.5rem; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700; border: none; display: none;">
-                                            Salvar Alterações
+                                            ${this.app.i18n.t('save_changes_btn')}
                                         </button>
                                     </div>
                                 </form>
@@ -209,35 +209,35 @@ export class ProfilePage {
 
                             <!-- Graduação Oficial -->
                             <div>
-                                <h3 class="font-heading mb-3" style="font-size: 1.15rem;">Graduação Oficial</h3>
+                                <h3 class="font-heading mb-3" style="font-size: 1.15rem;">${this.app.i18n.t('profile_graduation_title')}</h3>
                                 <form id="graduation-form">
                                     <div class="grid grid-cols-2" style="gap: 0.75rem 1rem;">
                                         <div class="form-group" style="grid-column: span 2;">
-                                            <label style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700; color: var(--text-dim); margin-bottom: 0.25rem; display: block;">Cor da Faixa</label>
+                                            <label style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700; color: var(--text-dim); margin-bottom: 0.25rem; display: block;">${this.app.i18n.t('profile_belt_color')}</label>
                                             <select class="input ${canEditGraduation ? 'editable-field' : 'readonly-field'}" id="prof-belt" ${!canEditGraduation ? 'disabled' : ''} style="height: 42px; font-size: 0.85rem; padding: 0 1rem;">
                                                 ${allBelts.map(b => `<option value="${b}" ${user.current_belt === b ? 'selected' : ''}>${b.toUpperCase()}</option>`).join('')}
                                             </select>
                                         </div>
                                         <div class="form-group" style="grid-column: span 2;">
-                                            <label style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700; color: var(--text-dim); margin-bottom: 0.25rem; display: block;">Graus Atuais</label>
+                                            <label style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700; color: var(--text-dim); margin-bottom: 0.25rem; display: block;">${this.app.i18n.t('profile_stripes_label')}</label>
                                             <select class="input ${canEditGraduation ? 'editable-field' : 'readonly-field'}" id="prof-stripes" ${!canEditGraduation ? 'disabled' : ''} style="height: 42px; font-size: 0.85rem; padding: 0 1rem;">
-                                                ${[0, 1, 2, 3, 4].map(s => `<option value="${s}" ${user.current_stripes == s ? 'selected' : ''}>${s}º GRAU</option>`).join('')}
+                                                ${[0, 1, 2, 3, 4].map(s => `<option value="${s}" ${user.current_stripes == s ? 'selected' : ''}>${s}º ${this.app.i18n.t('degree_label')}</option>`).join('')}
                                             </select>
                                         </div>
                                     </div>
                                     ${canEditGraduation ? `
                                         <div class="mt-4">
                                             <button type="submit" class="btn" style="background: black; color: white; border-radius: 4px; padding: 0.6rem 1.5rem; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700; border: none;">
-                                                Confirmar Graduação
+                                                ${this.app.i18n.t('profile_confirm_graduation')}
                                             </button>
                                         </div>
                                     ` : ''}
                                 </form>
                                                   <!-- Timeline -->
                             <div style="margin-top: 1.5rem; background: var(--bg-surface); padding: 2.5rem 1.5rem; border-radius: 12px; border: 1px solid var(--border); overflow-x: auto;">
-                                <h4 class="font-heading mb-10" style="font-size: 0.85rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.15em;">Histórico (Timeline)</h4>
+                                <h4 class="font-heading mb-10" style="font-size: 0.85rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.15em;">${this.app.i18n.t('profile_timeline_title')}</h4>
                                 
-                                ${history.length === 0 ? '<p class="text-dim" style="font-size: 0.85rem; font-style: italic;">Nenhum histórico de graduação registrado no sistema.</p>' : `
+                                ${history.length === 0 ? `<p class="text-dim" style="font-size: 0.85rem; font-style: italic;">${this.app.i18n.t('profile_no_history')}</p>` : `
                                     <div class="timeline-wrapper" style="position: relative; min-width: 600px; padding: 4rem 1rem;">
                                         <!-- Linha Base -->
                                         <div style="position: absolute; top: 50%; left: 0; right: 0; height: 4px; background: var(--border); transform: translateY(-50%); z-index: 1;"></div>
@@ -280,8 +280,8 @@ export class ProfilePage {
                                                         <div style="position: absolute; top: 100%; margin-top: 1.5rem; text-align: center; width: 150px;">
                                                             <p style="font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 800; color: ${beltColor};">${log.belt}</p>
                                                             <div style="margin-top: 0.5rem; background: var(--bg-elevated); padding: 0.5rem; border-radius: 6px; border: 1px solid var(--border);">
-                                                                <p style="font-size: 0.65rem; color: var(--text-dim); font-weight: 600;">TREINOS: ${log.count}</p>
-                                                                <p style="font-size: 0.65rem; color: var(--text-dim); font-weight: 600;">HORAS: ${log.hours.toFixed(1)}</p>
+                                                                <p style="font-size: 0.65rem; color: var(--text-dim); font-weight: 600;">${this.app.i18n.t('profile_trainings_count')}: ${log.count}</p>
+                                                                <p style="font-size: 0.65rem; color: var(--text-dim); font-weight: 600;">${this.app.i18n.t('profile_hours_count')}: ${log.hours.toFixed(1)}</p>
                                                             </div>
                                                         </div>
                                                     </div>

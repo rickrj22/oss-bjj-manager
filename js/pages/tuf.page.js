@@ -39,40 +39,40 @@ export class TUFPage {
                         ${this.user.is_admin ? `
                             <a href="#dashboard" class="nav-item">
                                 <i data-lucide="layout-dashboard" size="18"></i> 
-                                <span>Dashboard</span>
+                                <span>${this.app.i18n.t('menu_dashboard')}</span>
                             </a>
                         ` : ''}
                         ${this.user.role === 'professor' || this.user.is_admin ? `
                             <a href="#membros" class="nav-item">
                                 <i data-lucide="users" size="18"></i> 
-                                <span>Membros</span>
+                                <span>${this.app.i18n.t('menu_members')}</span>
                             </a>
                         ` : ''}
                         <a href="#aulas" class="nav-item">
                             <i data-lucide="calendar" size="18"></i> 
-                            <span>Minhas Aulas</span>
+                            <span>${this.app.i18n.t('menu_classes')}</span>
                         </a>
                         ${this.user.is_admin ? `
                             <a href="#financeiro" class="nav-item">
                                 <i data-lucide="dollar-sign" size="18"></i> 
-                                <span>Financeiro</span>
+                                <span>${this.app.i18n.t('menu_finance')}</span>
                             </a>
                             <a href="#configuracoes" class="nav-item">
                                 <i data-lucide="settings" size="18"></i> 
-                                <span>Configurações</span>
+                                <span>${this.app.i18n.t('menu_settings')}</span>
                             </a>
                         ` : ''}
                         <a href="#perfil" class="nav-item">
                             <i data-lucide="user" size="18"></i> 
-                            <span>Perfil</span>
+                            <span>${this.app.i18n.t('menu_profile')}</span>
                         </a>
                         <a href="#instrutores" class="nav-item">
                             <i data-lucide="graduation-cap" size="18"></i> 
-                            <span>Instrutores</span>
+                            <span>${this.app.i18n.t('menu_instructors')}</span>
                         </a>
                         <a href="#tuf" class="nav-item active">
                             <i data-lucide="swords" size="18"></i> 
-                            <span>TUF</span>
+                            <span>${this.app.i18n.t('menu_tuf')}</span>
                         </a>
                     </nav>
 
@@ -88,7 +88,7 @@ export class TUFPage {
                         </div>
                         <button id="logout-btn" class="btn-secondary btn-full" style="height: 42px; gap: 0.75rem;">
                             <i data-lucide="log-out" size="18"></i> 
-                            <span>Sair</span>
+                            <span>${this.app.i18n.t('menu_logout')}</span>
                         </button>
                     </div>
                 </aside>
@@ -96,8 +96,8 @@ export class TUFPage {
                 <main class="main-content">
                     <header class="flex-between mb-12 animate-in" style="align-items: flex-start;">
                         <div>
-                            <h1 class="font-heading font-xl">TUF Tournament</h1>
-                            <p class="text-graphite">Chaveamento de lutas e gestão de competições internas.</p>
+                            <h1 class="font-heading font-xl">${this.app.i18n.t('tuf_tournament_title')}</h1>
+                            <p class="text-graphite">${this.app.i18n.t('tuf_tournament_subtitle')}</p>
                         </div>
                         <div style="display: flex; align-items: center; gap: 1.5rem;">
                             <div class="hide-mobile">
@@ -105,7 +105,7 @@ export class TUFPage {
                             </div>
                             ${this.user.is_admin || this.user.role === 'professor' ? `
                                 <button class="btn btn-primary" id="btn-new-tuf" style="height: 48px; gap: 0.75rem; background: var(--inverse-bg); color: var(--inverse-text); border: none; font-weight: 700; border-radius: 8px;">
-                                    <i data-lucide="plus-circle" size="20"></i> NOVO EVENTO
+                                    <i data-lucide="plus-circle" size="20"></i> ${this.app.i18n.t('tuf_new_event_btn')}
                                 </button>
                             ` : ''}
                         </div>
@@ -116,7 +116,7 @@ export class TUFPage {
                             <div style="width: 80px; height: 80px; background: var(--bg-elevated); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem;">
                                 <i data-lucide="loader-2" size="40" class="text-dim animate-spin" style="opacity: 0.5;"></i>
                             </div>
-                            <h3 class="font-heading" style="font-size: 1.5rem; margin-bottom: 0.5rem;">Carregando...</h3>
+                            <h3 class="font-heading" style="font-size: 1.5rem; margin-bottom: 0.5rem;">${this.app.i18n.t('tuf_loading')}</h3>
                         </div>
                     </div>
                 </main>
@@ -125,15 +125,15 @@ export class TUFPage {
                 <nav class="bottom-nav">
                     <a href="#dashboard" class="bottom-nav-item">
                         <i data-lucide="layout-dashboard"></i>
-                        <span>Início</span>
+                        <span>${this.app.i18n.t('menu_home')}</span>
                     </a>
                     <a href="#tuf" class="bottom-nav-item active">
                         <i data-lucide="swords"></i>
-                        <span>TUF</span>
+                        <span>${this.app.i18n.t('menu_tuf_short')}</span>
                     </a>
                     <a href="#perfil" class="bottom-nav-item">
                         <i data-lucide="user"></i>
-                        <span>Perfil</span>
+                        <span>${this.app.i18n.t('menu_profile_short')}</span>
                     </a>
                 </nav>
             </div>
@@ -255,8 +255,8 @@ export class TUFPage {
                 <div style="width: 80px; height: 80px; background: var(--bg-elevated); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem;">
                     <i data-lucide="swords" size="40" class="text-dim" style="opacity: 0.5;"></i>
                 </div>
-                <h3 class="font-heading" style="font-size: 1.5rem; margin-bottom: 0.5rem;">Nenhum TUF Ativo</h3>
-                <p class="text-dim" style="max-width: 400px; margin: 0 auto 2rem;">Inicie um novo evento para começar a gerenciar as lutas da academia.</p>
+                <h3 class="font-heading" style="font-size: 1.5rem; margin-bottom: 0.5rem;">${this.app.i18n.t('tuf_no_active')}</h3>
+                <p class="text-dim" style="max-width: 400px; margin: 0 auto 2rem;">${this.app.i18n.t('tuf_no_active_desc')}</p>
             </div>
         `;
         if (window.lucide) window.lucide.createIcons();
@@ -273,11 +273,11 @@ export class TUFPage {
                 <div class="tuf-creation-layout">
                     <div class="tuf-creation-sidebar">
                         <div class="form-group mb-6">
-                            <label class="tuf-label">NOME DO EVENTO</label>
-                            <input type="text" id="tuf-name-input" class="tuf-input" placeholder="Ex: TUF #01" value="${this.lastTournamentName || ''}">
+                            <label class="tuf-label">${this.app.i18n.t('tuf_event_name_label')}</label>
+                            <input type="text" id="tuf-name-input" class="tuf-input" placeholder="${this.app.i18n.t('tuf_event_placeholder')}" value="${this.lastTournamentName || ''}">
                         </div>
 
-                        <label class="tuf-label">ATLETAS DISPONÍVEIS (${availableMembers.length})</label>
+                        <label class="tuf-label">${this.app.i18n.t('tuf_available_athletes')} (${availableMembers.length})</label>
                         <div class="tuf-members-list">
                             ${availableMembers.map(m => `
                                 <div class="tuf-member-card ${selectedForMatch.find(s => s.id === m.id) ? 'selected' : ''}" 
@@ -294,16 +294,16 @@ export class TUFPage {
                     </div>
 
                     <div class="tuf-creation-main">
-                        <label class="tuf-label">LUTAS CASADAS (${createdMatches.length})</label>
+                        <label class="tuf-label">${this.app.i18n.t('tuf_matches_label')} (${createdMatches.length})</label>
                         <div class="tuf-matches-builder">
                             ${createdMatches.length === 0 ? `
                                 <div class="empty-builder">
                                     <i data-lucide="swords" size="32"></i>
-                                    <p>Selecione 2 atletas ao lado para criar uma luta.</p>
+                                    <p>${this.app.i18n.t('tuf_select_fighters_desc')}</p>
                                 </div>
                             ` : createdMatches.map((match, idx) => `
                                 <div class="builder-match-card">
-                                    <div class="match-idx">LUTA ${idx + 1}</div>
+                                    <div class="match-idx">${this.app.i18n.t('tuf_match_label')} ${idx + 1}</div>
                                     <div class="match-pair">
                                         <div class="athlete">
                                             ${this.renderAvatarWithStripes(match.p1, 32)}
@@ -323,8 +323,8 @@ export class TUFPage {
                         </div>
 
                         <div class="tuf-modal-actions mt-8">
-                            <button class="tuf-btn btn-secondary" onclick="window.App.closeModal()">CANCELAR</button>
-                            <button class="tuf-btn btn-primary" id="btn-save-tuf">INICIAR EVENTO</button>
+                            <button class="tuf-btn btn-secondary" onclick="window.App.closeModal()">${this.app.i18n.t('tuf_cancel_btn')}</button>
+                            <button class="tuf-btn btn-primary" id="btn-save-tuf">${this.app.i18n.t('tuf_start_event_btn')}</button>
                         </div>
                     </div>
                 </div>

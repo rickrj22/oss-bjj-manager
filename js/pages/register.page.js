@@ -20,7 +20,7 @@ export class RegisterPage {
                     <form id="register-form">
                         <div class="mb-4">
                             <label class="font-heading" style="font-size: 0.7rem; text-transform: uppercase; color: var(--text-dim); letter-spacing: 0.05em;">${t('full_name')}</label>
-                            <input type="text" id="full-name" class="input" placeholder="Seu nome" required>
+                            <input type="text" id="full-name" class="input" placeholder="${t('name_placeholder')}" required>
                         </div>
 
                         <div class="mb-4">
@@ -31,17 +31,17 @@ export class RegisterPage {
                                     <label for="no-email" style="font-size: 0.65rem; color: var(--text-dim); cursor: pointer;">${t('no_email')}</label>
                                 </div>
                             </div>
-                            <input type="email" id="email" class="input" placeholder="exemplo@email.com" required>
+                            <input type="email" id="email" class="input" placeholder="${t('email_placeholder')}" required>
                         </div>
 
                         <div class="grid grid-cols-2" style="gap: 1rem;">
                             <div class="mb-4">
-                                <label class="font-heading" style="font-size: 0.7rem; text-transform: uppercase; color: var(--text-dim); letter-spacing: 0.05em;">CPF (Obrigatório)</label>
+                                <label class="font-heading" style="font-size: 0.7rem; text-transform: uppercase; color: var(--text-dim); letter-spacing: 0.05em;">${t('cpf_label_required')}</label>
                                 <input type="text" id="cpf" class="input" placeholder="000.000.000-00" required>
                             </div>
                             <div class="mb-4">
                                 <label class="font-heading" style="font-size: 0.7rem; text-transform: uppercase; color: var(--text-dim); letter-spacing: 0.05em;">${t('phone')}</label>
-                                <input type="tel" id="phone" class="input" placeholder="(00) 00000-0000" required>
+                                <input type="tel" id="phone" class="input" placeholder="${t('phone_placeholder')}" required>
                             </div>
                         </div>
 
@@ -84,11 +84,11 @@ export class RegisterPage {
                 emailInput.value = '';
                 emailInput.required = false;
                 emailInput.disabled = true;
-                emailInput.placeholder = 'E-mail interno será gerado via CPF';
+                emailInput.placeholder = t('internal_email_notice');
             } else {
                 emailInput.required = true;
                 emailInput.disabled = false;
-                emailInput.placeholder = 'exemplo@email.com';
+                emailInput.placeholder = t('email_placeholder');
             }
         });
 

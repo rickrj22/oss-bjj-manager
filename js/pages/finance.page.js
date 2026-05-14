@@ -37,19 +37,19 @@ export class FinancePage {
                         </div>
                         <h2 class="font-heading" style="font-size: 1rem; letter-spacing: 0.1em; color: var(--text-primary); text-transform: uppercase;">${this.sidebarAcad.name || 'Academia Edson França'}</h2>
                         <nav class="nav-list" style="flex: 1;">
-                            <a href="#dashboard" class="nav-item"><i data-lucide="layout-dashboard" size="18"></i> <span>Dashboard</span></a>
-                            <a href="#membros" class="nav-item"><i data-lucide="users" size="18"></i> <span>Membros</span></a>
-                            <a href="#aulas" class="nav-item"><i data-lucide="calendar" size="18"></i> <span>Minhas Aulas</span></a>
-                            <a href="#financeiro" class="nav-item active"><i data-lucide="dollar-sign" size="18"></i> <span>Financeiro</span></a>
-                            <a href="#configuracoes" class="nav-item"><i data-lucide="settings" size="18"></i> <span>Configurações</span></a>
-                            <a href="#perfil" class="nav-item"><i data-lucide="user" size="18"></i> <span>Perfil</span></a>
-                            <a href="#instrutores" class="nav-item"><i data-lucide="graduation-cap" size="18"></i> <span>Instrutores</span></a>
-                            <a href="#tuf" class="nav-item"><i data-lucide="swords" size="18"></i> <span>TUF</span></a>
+                            <a href="#dashboard" class="nav-item"><i data-lucide="layout-dashboard" size="18"></i> <span>${this.app.i18n.t('menu_dashboard')}</span></a>
+                            <a href="#membros" class="nav-item"><i data-lucide="users" size="18"></i> <span>${this.app.i18n.t('menu_members')}</span></a>
+                            <a href="#aulas" class="nav-item"><i data-lucide="calendar" size="18"></i> <span>${this.app.i18n.t('menu_classes')}</span></a>
+                            <a href="#financeiro" class="nav-item active"><i data-lucide="dollar-sign" size="18"></i> <span>${this.app.i18n.t('menu_finance')}</span></a>
+                            <a href="#configuracoes" class="nav-item"><i data-lucide="settings" size="18"></i> <span>${this.app.i18n.t('menu_settings')}</span></a>
+                            <a href="#perfil" class="nav-item"><i data-lucide="user" size="18"></i> <span>${this.app.i18n.t('menu_profile')}</span></a>
+                            <a href="#instrutores" class="nav-item"><i data-lucide="graduation-cap" size="18"></i> <span>${this.app.i18n.t('menu_instructors')}</span></a>
+                            <a href="#tuf" class="nav-item"><i data-lucide="swords" size="18"></i> <span>${this.app.i18n.t('menu_tuf')}</span></a>
                         </nav>
                         </nav>
                         <div style="border-top: 1px solid var(--border); padding-top: 1.5rem; margin-top: 1.5rem;">
                             <button id="logout-btn" class="btn-secondary btn-full" style="height: 42px; gap: 0.75rem;">
-                                <i data-lucide="log-out" size="18"></i> <span>Sair</span>
+                                <i data-lucide="log-out" size="18"></i> <span>${this.app.i18n.t('menu_logout')}</span>
                             </button>
                         </div>
                     </aside>
@@ -57,8 +57,8 @@ export class FinancePage {
                     <main class="main-content">
                         <header class="flex-between mb-8 animate-in">
                             <div>
-                                <h1 class="font-heading font-xl" style="font-weight: 800; font-size: 2.5rem; margin-bottom: 0.5rem;">Gestão Financeira</h1>
-                                <p class="text-graphite" style="font-size: 1.1rem; opacity: 0.8;">Visão geral de recebimentos, inadimplência e saúde financeira da unidade.</p>
+                                <h1 class="font-heading font-xl" style="font-weight: 800; font-size: 2.5rem; margin-bottom: 0.5rem;">${this.app.i18n.t('finance_title')}</h1>
+                                <p class="text-graphite" style="font-size: 1.1rem; opacity: 0.8;">${this.app.i18n.t('finance_subtitle')}</p>
                             </div>
                             <div style="display: flex; align-items: center; gap: 1.5rem;">
                                 <div class="hide-mobile">
@@ -66,10 +66,10 @@ export class FinancePage {
                                 </div>
                                 <div style="display: flex; gap: 1rem;">
                                     <button class="btn btn-secondary" id="btn-report" style="height: 48px; gap: 0.75rem; font-weight: 700; border-radius: 8px;">
-                                        <i data-lucide="file-text" size="20"></i> RELATÓRIO
+                                        <i data-lucide="file-text" size="20"></i> ${this.app.i18n.t('finance_report_btn')}
                                     </button>
                                     <button class="btn btn-primary" id="btn-inform-payment" style="height: 48px; gap: 0.75rem; background: var(--inverse-bg); color: var(--inverse-text); border: none; font-weight: 700; border-radius: 8px; min-width: 220px;">
-                                        <i data-lucide="plus-circle" size="20"></i> INFORMAR PAGAMENTO
+                                        <i data-lucide="plus-circle" size="20"></i> ${this.app.i18n.t('finance_payment_btn')}
                                     </button>
                                 </div>
                             </div>
@@ -82,10 +82,10 @@ export class FinancePage {
                                     <div style="background: rgba(34, 197, 94, 0.1); color: #22c55e; padding: 0.75rem; border-radius: 10px;">
                                         <i data-lucide="users" size="24"></i>
                                     </div>
-                                    <span style="font-size: 0.7rem; font-weight: 800; color: #22c55e; background: rgba(34, 197, 94, 0.1); padding: 0.25rem 0.5rem; border-radius: 4px;">ATIVOS</span>
+                                    <span style="font-size: 0.7rem; font-weight: 800; color: #22c55e; background: rgba(34, 197, 94, 0.1); padding: 0.25rem 0.5rem; border-radius: 4px;">${this.app.i18n.t('finance_active_label')}</span>
                                 </div>
                                 <h3 style="font-size: 2.25rem; font-weight: 800; margin-bottom: 0.25rem;">${stats.activeMembers.length}</h3>
-                                <p style="font-size: 0.8rem; color: var(--text-dim);">Alunos com mensalidades em dia ou atraso < 30 dias.</p>
+                                <p style="font-size: 0.8rem; color: var(--text-dim);">${this.app.i18n.t('finance_active_desc')}</p>
                             </div>
 
                             <div class="card" style="padding: 1.5rem; border: 1px solid var(--border); background: var(--bg-surface); border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.05);">
@@ -93,10 +93,10 @@ export class FinancePage {
                                     <div style="background: rgba(239, 68, 68, 0.1); color: #ef4444; padding: 0.75rem; border-radius: 10px;">
                                         <i data-lucide="user-x" size="24"></i>
                                     </div>
-                                    <span style="font-size: 0.7rem; font-weight: 800; color: #ef4444; background: rgba(239, 68, 68, 0.1); padding: 0.25rem 0.5rem; border-radius: 4px;">INATIVOS/PENDENTES</span>
+                                    <span style="font-size: 0.7rem; font-weight: 800; color: #ef4444; background: rgba(239, 68, 68, 0.1); padding: 0.25rem 0.5rem; border-radius: 4px;">${this.app.i18n.t('finance_inactive_label')}</span>
                                 </div>
                                 <h3 style="font-size: 2.25rem; font-weight: 800; margin-bottom: 0.25rem;">${stats.inactiveMembers.length}</h3>
-                                <p style="font-size: 0.8rem; color: var(--text-dim);">Alunos sem plano ou com atraso > 30 dias.</p>
+                                <p style="font-size: 0.8rem; color: var(--text-dim);">${this.app.i18n.t('finance_inactive_desc')}</p>
                             </div>
 
                             <div class="card" style="padding: 1.5rem; border: 1px solid var(--border); background: var(--bg-surface); border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.05);">
@@ -104,10 +104,10 @@ export class FinancePage {
                                     <div style="background: rgba(59, 130, 246, 0.1); color: #3b82f6; padding: 0.75rem; border-radius: 10px;">
                                         <i data-lucide="trending-up" size="24"></i>
                                     </div>
-                                    <span style="font-size: 0.7rem; font-weight: 800; color: #3b82f6; background: rgba(59, 130, 246, 0.1); padding: 0.25rem 0.5rem; border-radius: 4px;">PREVISÃO (15 DIAS)</span>
+                                    <span style="font-size: 0.7rem; font-weight: 800; color: #3b82f6; background: rgba(59, 130, 246, 0.1); padding: 0.25rem 0.5rem; border-radius: 4px;">${this.app.i18n.t('finance_forecast_label')}</span>
                                 </div>
-                                <h3 style="font-size: 2.25rem; font-weight: 800; margin-bottom: 0.25rem;">R$ ${stats.revenueForecast.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</h3>
-                                <p style="font-size: 0.8rem; color: var(--text-dim);">Pagamentos programados para vencer em breve.</p>
+                                <h3 style="font-size: 2.25rem; font-weight: 800; margin-bottom: 0.25rem;">R$ ${stats.revenueForecast.toLocaleString(this.app.i18n.currentLang === 'pt' ? 'pt-BR' : 'en-US', { minimumFractionDigits: 2 })}</h3>
+                                <p style="font-size: 0.8rem; color: var(--text-dim);">${this.app.i18n.t('finance_forecast_desc')}</p>
                             </div>
                         </div>
 
@@ -116,7 +116,7 @@ export class FinancePage {
                             <!-- Upcoming Payments -->
                             <div class="card" style="padding: 2rem; border-radius: 12px; border: 1px solid var(--border); background: var(--bg-surface);">
                                 <h3 class="font-heading mb-6" style="font-size: 1.25rem; display: flex; align-items: center; gap: 0.75rem;">
-                                    <i data-lucide="clock" size="20" style="color: #3b82f6;"></i> À Vencer (Próximos 15 dias)
+                                    <i data-lucide="clock" size="20" style="color: #3b82f6;"></i> ${this.app.i18n.t('finance_due_soon_title')}
                                 </h3>
                                 <div style="max-height: 400px; overflow-y: auto;">
                                     ${stats.upcomingPayments.length > 0 ? stats.upcomingPayments.map(p => `
@@ -127,14 +127,14 @@ export class FinancePage {
                                             </div>
                                             <p style="font-weight: 800; color: var(--text-primary);">R$ ${p.amount.toFixed(2)}</p>
                                         </div>
-                                    `).join('') : '<p class="text-dim" style="padding: 2rem; text-align: center; font-style: italic;">Nenhum pagamento programado.</p>'}
+                                    `).join('') : `<p class="text-dim" style="padding: 2rem; text-align: center; font-style: italic;">${this.app.i18n.t('finance_due_soon_empty')}</p>`}
                                 </div>
                             </div>
 
                             <!-- Overdue/Inactive Members -->
                             <div class="card" style="padding: 2rem; border-radius: 12px; border: 1px solid var(--border); background: var(--bg-surface);">
                                 <h3 class="font-heading mb-6" style="font-size: 1.25rem; display: flex; align-items: center; gap: 0.75rem;">
-                                    <i data-lucide="alert-circle" size="20" style="color: #ef4444;"></i> Alunos Inativos / Pendentes
+                                    <i data-lucide="alert-circle" size="20" style="color: #ef4444;"></i> ${this.app.i18n.t('finance_inactive_list_title')}
                                 </h3>
                                 <div style="max-height: 400px; overflow-y: auto;">
                                     ${stats.inactiveMembers.length > 0 ? stats.inactiveMembers.map(m => `
@@ -143,24 +143,24 @@ export class FinancePage {
                                                 <p style="font-weight: 700; font-size: 0.9rem;">${m.full_name}</p>
                                                 <p style="font-size: 0.75rem; color: var(--text-dim);">${m.plan_name}</p>
                                             </div>
-                                            <span style="font-size: 0.65rem; font-weight: 800; color: #ef4444; background: rgba(239, 68, 68, 0.1); padding: 0.25rem 0.5rem; border-radius: 4px;">${m.reason || 'Pendente'}</span>
+                                            <span style="font-size: 0.65rem; font-weight: 800; color: #ef4444; background: rgba(239, 68, 68, 0.1); padding: 0.25rem 0.5rem; border-radius: 4px;">${m.reason || (this.app.i18n.currentLang === 'pt' ? 'Pendente' : (this.app.i18n.currentLang === 'es' ? 'Pendiente' : 'Pending'))}</span>
                                         </div>
-                                    `).join('') : '<p class="text-dim" style="padding: 2rem; text-align: center; font-style: italic;">Nenhum aluno inativo detectado.</p>'}
+                                    `).join('') : `<p class="text-dim" style="padding: 2rem; text-align: center; font-style: italic;">${this.app.i18n.t('finance_no_inactive')}</p>`}
                                 </div>
                             </div>
                         </div>
 
                         <!-- All History -->
                         <div class="card mt-8" style="padding: 2rem; border-radius: 12px; border: 1px solid var(--border); background: var(--bg-surface);">
-                            <h3 class="font-heading mb-8" style="font-size: 1.25rem;">Histórico Geral de Recebimentos</h3>
+                            <h3 class="font-heading mb-8" style="font-size: 1.25rem;">${this.app.i18n.t('finance_history_title')}</h3>
                             <div style="overflow-x: auto;">
                                 <table style="width: 100%; border-collapse: collapse;">
                                     <thead>
                                         <tr style="border-bottom: 2px solid var(--border); text-align: left;">
-                                            <th style="padding: 1rem 0; font-size: 0.75rem; text-transform: uppercase; font-weight: 800;" class="text-dim">DATA DO PAGAMENTO</th>
-                                            <th style="padding: 1rem 0; font-size: 0.75rem; text-transform: uppercase; font-weight: 800;" class="text-dim">MEMBRO</th>
-                                            <th style="padding: 1rem 0; font-size: 0.75rem; text-transform: uppercase; font-weight: 800;" class="text-dim">VALOR</th>
-                                            <th style="padding: 1rem 0; font-size: 0.75rem; text-transform: uppercase; font-weight: 800; text-align: right;" class="text-dim">STATUS</th>
+                                            <th style="padding: 1rem 0; font-size: 0.75rem; text-transform: uppercase; font-weight: 800;" class="text-dim">${this.app.i18n.t('table_payment_date')}</th>
+                                            <th style="padding: 1rem 0; font-size: 0.75rem; text-transform: uppercase; font-weight: 800;" class="text-dim">${this.app.i18n.t('table_member')}</th>
+                                            <th style="padding: 1rem 0; font-size: 0.75rem; text-transform: uppercase; font-weight: 800;" class="text-dim">${this.app.i18n.t('table_amount')}</th>
+                                            <th style="padding: 1rem 0; font-size: 0.75rem; text-transform: uppercase; font-weight: 800; text-align: right;" class="text-dim">${this.app.i18n.t('table_status')}</th>
                                         </tr>
                                     </thead>
                                     <tbody>

@@ -20,7 +20,7 @@ export class LoginPage {
                     <form id="login-form">
                         <div class="form-group">
                             <label for="identifier" class="font-heading" style="font-size: 0.7rem; text-transform: uppercase; color: var(--text-dim); letter-spacing: 0.05em;">${t('email_or_cpf')}</label>
-                            <input type="text" id="identifier" class="input" placeholder="seu@email.com ou 000.000.000-00" required>
+                            <input type="text" id="identifier" class="input" placeholder="${t('email_cpf_placeholder')}" required>
                         </div>
                         <div class="form-group" style="margin-top: 1.5rem;">
                             <div class="flex-between">
@@ -84,7 +84,7 @@ export class LoginPage {
             const password = document.getElementById('password').value;
             
             loginBtn.disabled = true;
-            loginBtn.innerText = 'Autenticando...';
+            loginBtn.innerText = t('authenticating');
 
             const result = await this.app.auth.login(identifier, password);
             if (result.success) {
@@ -92,7 +92,7 @@ export class LoginPage {
             } else {
                 alert('Erro na autenticação: ' + result.error);
                 loginBtn.disabled = false;
-                loginBtn.innerText = 'Entrar no Tatame';
+                loginBtn.innerText = t('login_btn');
             }
         });
 

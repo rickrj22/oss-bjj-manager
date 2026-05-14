@@ -42,35 +42,35 @@ export class SettingsPage {
                     <nav class="nav-list" style="flex: 1;">
                         <a href="#dashboard" class="nav-item animate-in stagger-1">
                             <i data-lucide="layout-dashboard" size="18"></i> 
-                            <span>Dashboard</span>
+                            <span>${this.app.i18n.t('menu_dashboard')}</span>
                         </a>
                         <a href="#membros" class="nav-item animate-in stagger-2">
                             <i data-lucide="users" size="18"></i> 
-                            <span>Membros</span>
+                            <span>${this.app.i18n.t('menu_members')}</span>
                         </a>
                         <a href="#aulas" class="nav-item animate-in stagger-3">
                             <i data-lucide="calendar" size="18"></i> 
-                            <span>Minhas Aulas</span>
+                            <span>${this.app.i18n.t('menu_classes')}</span>
                         </a>
                         <a href="#financeiro" class="nav-item animate-in stagger-1">
                             <i data-lucide="dollar-sign" size="18"></i> 
-                            <span>Financeiro</span>
+                            <span>${this.app.i18n.t('menu_finance')}</span>
                         </a>
                         <a href="#configuracoes" class="nav-item active animate-in stagger-2">
                             <i data-lucide="settings" size="18"></i> 
-                            <span>Configurações</span>
+                            <span>${this.app.i18n.t('menu_settings')}</span>
                         </a>
                         <a href="#perfil" class="nav-item animate-in stagger-3">
                             <i data-lucide="user" size="18"></i> 
-                            <span>Perfil</span>
+                            <span>${this.app.i18n.t('menu_profile')}</span>
                         </a>
                         <a href="#instrutores" class="nav-item">
                             <i data-lucide="graduation-cap" size="18"></i> 
-                            <span>Instrutores</span>
+                            <span>${this.app.i18n.t('menu_instructors')}</span>
                         </a>
                         <a href="#tuf" class="nav-item">
                             <i data-lucide="swords" size="18"></i> 
-                            <span>TUF</span>
+                            <span>${this.app.i18n.t('menu_tuf')}</span>
                         </a>
                     </nav>
 
@@ -88,7 +88,7 @@ export class SettingsPage {
                         </div>
                         <button id="logout-btn" class="btn-secondary btn-full" style="height: 42px; gap: 0.75rem;">
                             <i data-lucide="log-out" size="18"></i> 
-                            <span>Sair</span>
+                            <span>${this.app.i18n.t('menu_logout')}</span>
                         </button>
                     </div>
                 </aside>
@@ -96,8 +96,8 @@ export class SettingsPage {
                 <main class="main-content" style="max-width: 100%;">
                     <header class="flex-between mb-8 animate-in" style="align-items: flex-start;">
                         <div>
-                            <h1 class="font-heading font-xl">Configurações</h1>
-                            <p class="text-graphite hide-mobile">Gerencie as informações principais da sua unidade.</p>
+                            <h1 class="font-heading font-xl">${this.app.i18n.t('settings_title')}</h1>
+                            <p class="text-graphite hide-mobile">${this.app.i18n.t('settings_subtitle')}</p>
                         </div>
                         <div class="hide-mobile">
                             ${this.app.renderLanguageAndThemeControls()}
@@ -109,30 +109,30 @@ export class SettingsPage {
                         <div class="card animate-in stagger-1" style="padding: 2rem; border-radius: 16px; background: var(--bg-surface); border: 1px solid var(--border); box-shadow: var(--shadow-sm);">
                             <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1.5rem; margin-bottom: 2.5rem;">
                                 <div>
-                                    <h3 class="font-heading" style="font-size: 1rem; text-transform: uppercase; letter-spacing: 0.15em; font-weight: 800; color: var(--text-primary);">Informações Gerais</h3>
-                                    <p class="text-dim" style="font-size: 0.8125rem; margin-top: 0.25rem;">Dados cadastrais da unidade.</p>
+                                    <h3 class="font-heading" style="font-size: 1rem; text-transform: uppercase; letter-spacing: 0.15em; font-weight: 800; color: var(--text-primary);">${this.app.i18n.t('settings_general_info')}</h3>
+                                    <p class="text-dim" style="font-size: 0.8125rem; margin-top: 0.25rem;">${this.app.i18n.t('settings_general_info_desc') || 'Dados cadastrais da unidade.'}</p>
                                 </div>
                                 <button class="btn btn-primary btn-save-row" data-id="${academy.id}" style="height: 44px; padding: 0 1.75rem; background: var(--inverse-bg); color: var(--inverse-text); font-weight: 700; font-size: 0.8rem; letter-spacing: 0.05em; border: none; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); transition: all 0.2s;">
-                                    SALVAR
+                                    ${this.app.i18n.t('settings_save_btn')}
                                 </button>
                             </div>
 
                             <form id="academy-details-form" data-id="${academy.id}" style="display: flex; flex-direction: column; gap: 1.5rem;">
                                 <div class="form-group">
-                                    <label style="font-size: 0.65rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.75rem; display: block; color: var(--text-dim);">Nome da Academia</label>
+                                    <label style="font-size: 0.65rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.75rem; display: block; color: var(--text-dim);">${this.app.i18n.t('settings_academy_name')}</label>
                                     <input type="text" class="grid-input font-bold" value="${academy.name || 'Academia Edson França'}" data-field="name" style="height: 52px; font-size: 1rem; padding: 0 1.25rem; border-radius: 10px;">
                                 </div>
                                 <div class="form-group">
-                                    <label style="font-size: 0.65rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.75rem; display: block; color: var(--text-dim);">Endereço Completo</label>
+                                    <label style="font-size: 0.65rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.75rem; display: block; color: var(--text-dim);">${this.app.i18n.t('settings_address')}</label>
                                     <input type="text" class="grid-input" value="${academy.address || ''}" data-field="address" placeholder="Rua, Número, Bairro, Cidade..." style="height: 52px; padding: 0 1.25rem; border-radius: 10px;">
                                 </div>
                                 <div class="grid" style="grid-template-columns: var(--grid-cols-mobile, 1fr 1fr); gap: 1.5rem;">
                                     <div class="form-group">
-                                        <label style="font-size: 0.65rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.75rem; display: block; color: var(--text-dim);">Contato</label>
+                                        <label style="font-size: 0.65rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.75rem; display: block; color: var(--text-dim);">${this.app.i18n.t('settings_contact')}</label>
                                         <input type="text" class="grid-input" value="${academy.phone || ''}" data-field="phone" placeholder="(00) 00000-0000" style="height: 52px; padding: 0 1.25rem; border-radius: 10px;">
                                     </div>
                                     <div class="form-group">
-                                        <label style="font-size: 0.65rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.75rem; display: block; color: var(--text-dim);">Logo da Academia</label>
+                                        <label style="font-size: 0.65rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.75rem; display: block; color: var(--text-dim);">${this.app.i18n.t('settings_logo')}</label>
                                         <div style="display: flex; align-items: center; gap: 1rem;">
                                             <div id="logo-preview-container" style="width: 60px; height: 60px; border-radius: 8px; overflow: hidden; background: var(--bg-elevated); border: 2px solid var(--border); display: flex; align-items: center; justify-content: center;">
                                                 ${academy.logo_url ? `<img src="${academy.logo_url}" style="width: 100%; height: 100%; object-fit: contain;">` : `<i data-lucide="image" style="color: var(--text-dim);"></i>`}
@@ -140,7 +140,7 @@ export class SettingsPage {
                                             <div style="flex: 1;">
                                                 <input type="file" id="academy-logo-upload" accept="image/*" style="display: none;" onchange="window.App.currentPage.handleLogoUpload(this)">
                                                 <button type="button" class="btn" onclick="document.getElementById('academy-logo-upload').click()" style="height: 44px; padding: 0 1.5rem; font-size: 0.8rem; background: var(--bg-surface); color: var(--text-primary); border: 1px solid var(--border); border-radius: 10px;">
-                                                    <i data-lucide="upload" size="16" style="margin-right: 0.5rem;"></i>Selecionar Imagem
+                                                    <i data-lucide="upload" size="16" style="margin-right: 0.5rem;"></i>${this.app.i18n.t('settings_select_image')}
                                                 </button>
                                                 <input type="hidden" id="logo-url-hidden" data-field="logo_url" value="${academy.logo_url || ''}">
                                                 <p id="logo-upload-status" style="font-size: 0.75rem; color: var(--text-dim); margin-top: 0.5rem;"></p>

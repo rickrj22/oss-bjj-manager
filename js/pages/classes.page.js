@@ -51,40 +51,40 @@ export class ClassesPage {
                         ${this.user.is_admin ? `
                             <a href="#dashboard" class="nav-item animate-in stagger-1">
                                 <i data-lucide="layout-dashboard" size="18"></i> 
-                                <span>Dashboard</span>
+                                <span>${this.app.i18n.t('menu_dashboard')}</span>
                             </a>
                         ` : ''}
                         ${this.user.role === 'professor' || this.user.is_admin ? `
                             <a href="#membros" class="nav-item animate-in stagger-2">
                                 <i data-lucide="users" size="18"></i> 
-                                <span>Membros</span>
+                                <span>${this.app.i18n.t('menu_members')}</span>
                             </a>
                         ` : ''}
                         <a href="#aulas" class="nav-item active animate-in stagger-3">
                             <i data-lucide="calendar" size="18"></i> 
-                            <span>Minhas Aulas</span>
+                            <span>${this.app.i18n.t('menu_classes')}</span>
                         </a>
                         ${this.user.is_admin ? `
                             <a href="#financeiro" class="nav-item animate-in stagger-1">
                                 <i data-lucide="dollar-sign" size="18"></i> 
-                                <span>Financeiro</span>
+                                <span>${this.app.i18n.t('menu_finance')}</span>
                             </a>
                             <a href="#configuracoes" class="nav-item animate-in stagger-2">
                                 <i data-lucide="settings" size="18"></i> 
-                                <span>Configurações</span>
+                                <span>${this.app.i18n.t('menu_settings')}</span>
                             </a>
                         ` : ''}
                         <a href="#perfil" class="nav-item animate-in stagger-3">
                             <i data-lucide="user" size="18"></i> 
-                            <span>Perfil</span>
+                            <span>${this.app.i18n.t('menu_profile')}</span>
                         </a>
                         <a href="#instrutores" class="nav-item animate-in stagger-1">
                             <i data-lucide="graduation-cap" size="18"></i> 
-                            <span>Instrutores</span>
+                            <span>${this.app.i18n.t('menu_instructors')}</span>
                         </a>
                         <a href="#tuf" class="nav-item animate-in stagger-2">
                             <i data-lucide="swords" size="18"></i> 
-                            <span>TUF</span>
+                            <span>${this.app.i18n.t('menu_tuf')}</span>
                         </a>
                     </nav>
 
@@ -98,7 +98,7 @@ export class ClassesPage {
                         </div>
                         <button id="logout-btn" class="btn-secondary btn-full" style="height: 42px; gap: 0.75rem;">
                             <i data-lucide="log-out" size="18"></i> 
-                            <span>Sair</span>
+                            <span>${this.app.i18n.t('menu_logout')}</span>
                         </button>
                     </div>
                 </aside>
@@ -106,8 +106,8 @@ export class ClassesPage {
                 <main class="main-content">
                     <header class="mb-8 animate-in" style="display: flex; justify-content: space-between; align-items: flex-start;">
                         <div>
-                            <h1 class="font-heading font-xl">Minhas Aulas</h1>
-                            <p class="text-graphite">Agenda aqui sua aula</p>
+                            <h1 class="font-heading font-xl">${this.app.i18n.t('menu_classes')}</h1>
+                            <p class="text-graphite">${this.app.i18n.t('classes_subtitle')}</p>
                         </div>
                         <div class="hide-mobile">
                             ${this.app.renderLanguageAndThemeControls()}
@@ -120,16 +120,16 @@ export class ClassesPage {
                             <div class="card animate-in stagger-1">
                                 <div class="flex-between mb-8" style="border-bottom: 1px solid var(--border); padding-bottom: 1.25rem;">
                                     <div>
-                                        <h3 class="font-heading font-large">Agenda de Hoje</h3>
-                                        <p class="text-dim" style="font-size: 0.85rem; text-transform: capitalize;">${new Date().toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' })}</p>
+                                        <h3 class="font-heading font-large">${this.app.i18n.t('today_schedule')}</h3>
+                                        <p class="text-dim" style="font-size: 0.85rem; text-transform: capitalize;">${new Date().toLocaleDateString(this.app.i18n.currentLang, { weekday: 'long', day: 'numeric', month: 'long' })}</p>
                                     </div>
                                     <div style="display: flex; gap: 0.75rem; align-items: center;">
                                         <button class="btn btn-outline" id="btn-global-checkin">
-                                            <i data-lucide="check-square" size="16"></i> <span class="hide-mobile">Realizar Check-in</span>
+                                            <i data-lucide="check-square" size="16"></i> <span class="hide-mobile">${this.app.i18n.t('realize_checkin')}</span>
                                         </button>
                                         ${this.user.is_admin || this.user.role === 'professor' ? `
                                             <button class="btn btn-primary" id="btn-add-technique">
-                                                <i data-lucide="plus" size="16"></i> <span class="hide-mobile">Definir Técnica</span>
+                                                <i data-lucide="plus" size="16"></i> <span class="hide-mobile">${this.app.i18n.t('define_technique')}</span>
                                             </button>
                                         ` : ''}
                                     </div>
@@ -147,7 +147,7 @@ export class ClassesPage {
 
                             <!-- History Summary Section -->
                             <div class="card animate-in stagger-2">
-                                <h3 class="font-heading mb-6" style="font-size: 1rem;">Histórico de aulas na atual faixa:</h3>
+                                <h3 class="font-heading mb-6" style="font-size: 1rem;">${this.app.i18n.t('history_belt_title')}</h3>
                                 <div class="grid ${this.user.is_admin || this.user.role === 'professor' ? 'grid-cols-3' : 'grid-cols-2'}" style="text-align: center; gap: 1rem;">
                                     <div style="padding: 1.5rem 1rem; background: var(--bg-elevated); border-radius: 12px; border: 1px solid var(--border);">
                                         <p class="text-dim mb-2" style="font-size: 0.6rem; font-weight: 700; text-transform: uppercase;">Horas concluídas</p>

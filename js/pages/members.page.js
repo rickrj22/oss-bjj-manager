@@ -45,40 +45,40 @@ export class MembersPage {
                         ${user.is_admin ? `
                             <a href="#dashboard" class="nav-item">
                                 <i data-lucide="layout-dashboard" size="18"></i> 
-                                <span>Dashboard</span>
+                                <span>${this.app.i18n.t('menu_dashboard')}</span>
                             </a>
                         ` : ''}
                         ${user.role === 'professor' || user.is_admin ? `
                             <a href="#membros" class="nav-item active">
                                 <i data-lucide="users" size="18"></i> 
-                                <span>Membros</span>
+                                <span>${this.app.i18n.t('menu_members')}</span>
                             </a>
                         ` : ''}
                         <a href="#aulas" class="nav-item">
                             <i data-lucide="calendar" size="18"></i> 
-                            <span>Minhas Aulas</span>
+                            <span>${this.app.i18n.t('menu_classes')}</span>
                         </a>
                         ${user.is_admin ? `
                             <a href="#financeiro" class="nav-item">
                                 <i data-lucide="dollar-sign" size="18"></i> 
-                                <span>Financeiro</span>
+                                <span>${this.app.i18n.t('menu_finance')}</span>
                             </a>
                             <a href="#configuracoes" class="nav-item">
                                 <i data-lucide="settings" size="18"></i> 
-                                <span>Configurações</span>
+                                <span>${this.app.i18n.t('menu_settings')}</span>
                             </a>
                         ` : ''}
                         <a href="#perfil" class="nav-item">
                             <i data-lucide="user" size="18"></i> 
-                            <span>Perfil</span>
+                            <span>${this.app.i18n.t('menu_profile')}</span>
                         </a>
                         <a href="#instrutores" class="nav-item">
                             <i data-lucide="graduation-cap" size="18"></i> 
-                            <span>Instrutores</span>
+                            <span>${this.app.i18n.t('menu_instructors')}</span>
                         </a>
                         <a href="#tuf" class="nav-item">
                             <i data-lucide="swords" size="18"></i> 
-                            <span>TUF</span>
+                            <span>${this.app.i18n.t('menu_tuf')}</span>
                         </a>
                     </nav>
 
@@ -93,7 +93,7 @@ export class MembersPage {
                             </div>
                         </div>
                         <button id="logout-btn" class="btn-secondary btn-full" style="height: 42px; gap: 0.75rem;">
-                            <i data-lucide="log-out" size="18"></i> <span>Sair</span>
+                            <i data-lucide="log-out" size="18"></i> <span>${this.app.i18n.t('menu_logout')}</span>
                         </button>
                     </div>
                 </aside>
@@ -101,15 +101,15 @@ export class MembersPage {
                 <main class="main-content" style="max-width: 100%;">
                     <header class="flex-between mb-8 animate-in" style="align-items: flex-start;">
                         <div>
-                            <h1 class="font-heading font-xl" style="font-weight: 800; font-size: 2.25rem; margin-bottom: 0.5rem;">Membros</h1>
-                            <p class="text-graphite hide-mobile" style="font-size: 1.1rem; opacity: 0.8;">Gestão de membros da sua academia.</p>
+                            <h1 class="font-heading font-xl" style="font-weight: 800; font-size: 2.25rem; margin-bottom: 0.5rem;">${this.app.i18n.t('members_title')}</h1>
+                            <p class="text-graphite hide-mobile" style="font-size: 1.1rem; opacity: 0.8;">${this.app.i18n.t('members_subtitle')}</p>
                         </div>
                         <div style="display: flex; align-items: center; gap: 1.5rem;">
                             <div class="hide-mobile">
                                 ${this.app.renderLanguageAndThemeControls()}
                             </div>
                             <button class="btn btn-primary" id="btn-add-member" style="height: 48px; gap: 0.75rem; background: var(--inverse-bg); color: var(--inverse-text); border: none; font-weight: 700; border-radius: 8px; min-width: auto; padding: 0 1.5rem;">
-                                <i data-lucide="user-plus" size="20"></i> <span class="hide-mobile">NOVO MEMBRO</span>
+                                <i data-lucide="user-plus" size="20"></i> <span class="hide-mobile">${this.app.i18n.t('new_member_btn')}</span>
                             </button>
                         </div>
                     </header>
@@ -119,42 +119,42 @@ export class MembersPage {
                             <thead>
                                 <tr style="background: var(--bg-elevated); border-bottom: 2px solid var(--border);">
                                     <th style="width: 280px; padding: 1.25rem 1rem;">
-                                        <div class="th-filter" data-col="membro">MEMBRO <i data-lucide="chevron-down" size="14"></i></div>
-                                        <input type="text" class="column-filter-input" data-col="membro" placeholder="Filtrar...">
+                                        <div class="th-filter" data-col="membro">${this.app.i18n.t('table_member')} <i data-lucide="chevron-down" size="14"></i></div>
+                                        <input type="text" class="column-filter-input" data-col="membro" placeholder="${this.app.i18n.t('filter_placeholder')}">
                                     </th>
                                     <th style="width: 220px;">
-                                        <div class="th-filter" data-col="email">EMAIL <i data-lucide="chevron-down" size="14"></i></div>
-                                        <input type="text" class="column-filter-input" data-col="email" placeholder="Filtrar...">
+                                        <div class="th-filter" data-col="email">${this.app.i18n.t('table_email')} <i data-lucide="chevron-down" size="14"></i></div>
+                                        <input type="text" class="column-filter-input" data-col="email" placeholder="${this.app.i18n.t('filter_placeholder')}">
                                     </th>
                                     <th style="width: 150px;" class="hide-mobile">
-                                        <div class="th-filter" data-col="cpf">CPF <i data-lucide="chevron-down" size="14"></i></div>
-                                        <input type="text" class="column-filter-input" data-col="cpf" placeholder="Filtrar...">
+                                        <div class="th-filter" data-col="cpf">${this.app.i18n.t('table_cpf')} <i data-lucide="chevron-down" size="14"></i></div>
+                                        <input type="text" class="column-filter-input" data-col="cpf" placeholder="${this.app.i18n.t('filter_placeholder')}">
                                     </th>
                                     <th style="width: 150px;" class="hide-mobile">
-                                        <div class="th-filter" data-col="telefone">TELEFONE <i data-lucide="chevron-down" size="14"></i></div>
-                                        <input type="text" class="column-filter-input" data-col="telefone" placeholder="Filtrar...">
+                                        <div class="th-filter" data-col="telefone">${this.app.i18n.t('table_phone')} <i data-lucide="chevron-down" size="14"></i></div>
+                                        <input type="text" class="column-filter-input" data-col="telefone" placeholder="${this.app.i18n.t('filter_placeholder')}">
                                     </th>
                                     <th style="width: 200px;">
-                                        <div class="th-filter" data-col="faixa">FAIXA <i data-lucide="chevron-down" size="14"></i></div>
-                                        <input type="text" class="column-filter-input" data-col="faixa" placeholder="Filtrar...">
+                                        <div class="th-filter" data-col="faixa">${this.app.i18n.t('table_belt')} <i data-lucide="chevron-down" size="14"></i></div>
+                                        <input type="text" class="column-filter-input" data-col="faixa" placeholder="${this.app.i18n.t('filter_placeholder')}">
                                     </th>
                                     <th style="width: 100px;">
-                                        <div class="th-filter" data-col="graus">GRAUS <i data-lucide="chevron-down" size="14"></i></div>
-                                        <input type="text" class="column-filter-input" data-col="graus" placeholder="Filtrar...">
+                                        <div class="th-filter" data-col="graus">${this.app.i18n.t('table_stripes')} <i data-lucide="chevron-down" size="14"></i></div>
+                                        <input type="text" class="column-filter-input" data-col="graus" placeholder="${this.app.i18n.t('filter_placeholder')}">
                                     </th>
                                     <th style="width: 130px;">
-                                        <div class="th-filter" data-col="cargo">CARGO <i data-lucide="chevron-down" size="14"></i></div>
-                                        <input type="text" class="column-filter-input" data-col="cargo" placeholder="Filtrar...">
+                                        <div class="th-filter" data-col="cargo">${this.app.i18n.t('table_role')} <i data-lucide="chevron-down" size="14"></i></div>
+                                        <input type="text" class="column-filter-input" data-col="cargo" placeholder="${this.app.i18n.t('filter_placeholder')}">
                                     </th>
                                     <th style="width: 100px;">
-                                        <div class="th-filter" data-col="admin">ADMIN <i data-lucide="chevron-down" size="14"></i></div>
-                                        <input type="text" class="column-filter-input" data-col="admin" placeholder="Filtrar...">
+                                        <div class="th-filter" data-col="admin">${this.app.i18n.t('table_admin')} <i data-lucide="chevron-down" size="14"></i></div>
+                                        <input type="text" class="column-filter-input" data-col="admin" placeholder="${this.app.i18n.t('filter_placeholder')}">
                                     </th>
                                     <th style="width: 200px;">
-                                        <div class="th-filter" data-col="plano">PLANO <i data-lucide="chevron-down" size="14"></i></div>
-                                        <input type="text" class="column-filter-input" data-col="plano" placeholder="Filtrar...">
+                                        <div class="th-filter" data-col="plano">${this.app.i18n.t('table_plan')} <i data-lucide="chevron-down" size="14"></i></div>
+                                        <input type="text" class="column-filter-input" data-col="plano" placeholder="${this.app.i18n.t('filter_placeholder')}">
                                     </th>
-                                    <th style="text-align: center; width: 80px;">EXCLUIR</th>
+                                    <th style="text-align: center; width: 80px;">${this.app.i18n.t('table_delete')}</th>
                                 </tr>
                             </thead>
                             <tbody id="members-list">
@@ -427,8 +427,8 @@ export class MembersPage {
                         <div>
                             <p style="font-weight: 700; color: var(--text-primary);">${member.full_name}</p>
                             <div style="display: flex; gap: 0.25rem; margin-top: 0.2rem;">
-                                ${member.isReadyForStripe ? `<span style="font-size: 0.6rem; color: #22c55e; font-weight: 800;">• APTO GRAU</span>` : ''}
-                                ${member.isReadyForBelt ? `<span style="font-size: 0.6rem; color: var(--primary); font-weight: 800;">• APTO FAIXA</span>` : ''}
+                                ${member.isReadyForStripe ? `<span style="font-size: 0.6rem; color: #22c55e; font-weight: 800;">• ${this.app.i18n.t('member_ready_for_stripe')}</span>` : ''}
+                                ${member.isReadyForBelt ? `<span style="font-size: 0.6rem; color: var(--primary); font-weight: 800;">• ${this.app.i18n.t('member_ready_for_belt')}</span>` : ''}
                             </div>
                         </div>
                     </div>
@@ -454,13 +454,13 @@ export class MembersPage {
                     <div class="spreadsheet-cell" style="background: transparent; font-weight: 800; letter-spacing: 0.05em;">${(member.role || 'student').toUpperCase()}</div>
                 </td>
                 <td>
-                    <span class="badge-admin ${member.is_admin ? 'sim' : 'nao'}">${member.is_admin ? 'SIM' : 'NÃO'}</span>
+                    <span class="badge-admin ${member.is_admin ? 'sim' : 'nao'}">${member.is_admin ? this.app.i18n.t('member_status_sim') : this.app.i18n.t('member_status_nao')}</span>
                 </td>
 
                 <td>
                     <div style="display: flex; flex-direction: column; gap: 0.2rem;">
-                        <span style="font-weight: 800; font-size: 0.75rem; color: var(--primary);">${(this.plans.find(p => p.id === member.plan_id)?.name || 'S/ PLANO').toUpperCase()}</span>
-                        <span style="font-size: 0.65rem; color: var(--text-dim); text-transform: uppercase;">Vencimento: Dia ${member.payment_due_date || '-'}</span>
+                        <span style="font-weight: 800; font-size: 0.75rem; color: var(--primary);">${(this.plans.find(p => p.id === member.plan_id)?.name || this.app.i18n.t('member_no_plan')).toUpperCase()}</span>
+                        <span style="font-size: 0.65rem; color: var(--text-dim); text-transform: uppercase;">${this.app.i18n.t('member_due_date_label')} ${member.payment_due_date || '-'}</span>
                     </div>
                 </td>
                 <td style="text-align: center;">
@@ -549,7 +549,7 @@ export class MembersPage {
                 <div>
                     <h2 class="font-heading" style="font-size: 1.5rem; margin-bottom: 0.5rem;">${member.full_name}</h2>
                     <div style="display: flex; gap: 0.5rem;">
-                        <span class="badge-admin ${member.is_active ? 'sim' : 'nao'}" style="font-size: 0.55rem;">${member.is_active ? 'ATIVO' : 'INATIVO'}</span>
+                        <span class="badge-admin ${member.is_active ? 'sim' : 'nao'}" style="font-size: 0.55rem;">${member.is_active ? (this.app.i18n.currentLang === 'pt' ? 'ATIVO' : (this.app.i18n.currentLang === 'es' ? 'ACTIVO' : 'ACTIVE')) : (this.app.i18n.currentLang === 'pt' ? 'INATIVO' : (this.app.i18n.currentLang === 'es' ? 'INACTIVO' : 'INACTIVE'))}</span>
                         ${member.is_admin ? '<span class="badge-admin sim" style="font-size: 0.55rem;">ADMIN</span>' : ''}
                     </div>
                 </div>
@@ -558,7 +558,7 @@ export class MembersPage {
 
         body.innerHTML = `
             <div class="drawer-section">
-                <div class="drawer-section-title"><i data-lucide="user" size="14"></i> Dados Pessoais</div>
+                <div class="drawer-section-title"><i data-lucide="user" size="14"></i> ${this.app.i18n.t('member_drawer_personal_data')}</div>
                 <div class="drawer-info-grid">
                     <div class="info-item">
                         <span class="info-label">E-mail</span>
@@ -573,31 +573,31 @@ export class MembersPage {
                         <span class="info-value">${member.phone || '-'}</span>
                     </div>
                     <div class="info-item">
-                        <span class="info-label">Data de Nascimento</span>
-                        <span class="info-value">${member.birth_date ? new Date(member.birth_date).toLocaleDateString() : '-'}</span>
+                        <span class="info-label">${this.app.i18n.t('member_drawer_birth_date')}</span>
+                        <span class="info-value">${member.birth_date ? new Date(member.birth_date).toLocaleDateString(this.app.i18n.currentLang) : '-'}</span>
                     </div>
                 </div>
             </div>
 
             <div class="drawer-section">
-                <div class="drawer-section-title"><i data-lucide="award" size="14"></i> Graduação</div>
+                <div class="drawer-section-title"><i data-lucide="award" size="14"></i> ${this.app.i18n.t('member_drawer_graduation')}</div>
                 <div class="drawer-info-grid" style="grid-template-columns: 1fr 1fr;">
                     <div class="info-item">
-                        <span class="info-label">Faixa Atual</span>
+                        <span class="info-label">${this.app.i18n.t('member_drawer_current_belt')}</span>
                         <span class="info-value">${(member.current_belt || 'white belt').toUpperCase()}</span>
                     </div>
                     <div class="info-item">
-                        <span class="info-label">Graus</span>
-                        <span class="info-value">${member.current_stripes || 0}º Grau</span>
+                        <span class="info-label">${this.app.i18n.t('member_drawer_stripes')}</span>
+                        <span class="info-value">${member.current_stripes || 0}º ${this.app.i18n.t('degree_label')}</span>
                     </div>
                     <div class="info-item">
-                        <span class="info-label">Treinos no Grau</span>
-                        <span class="info-value">${member.trainingsSinceGrad || 0} aulas</span>
+                        <span class="info-label">${this.app.i18n.t('member_drawer_trainings')}</span>
+                        <span class="info-value">${member.trainingsSinceGrad || 0} ${this.app.i18n.t('member_drawer_classes')}</span>
                     </div>
                     <div class="info-item">
-                        <span class="info-label">Status</span>
+                        <span class="info-label">${this.app.i18n.t('member_drawer_status')}</span>
                         <span class="info-value" style="color: ${member.isReadyForBelt ? 'var(--primary)' : (member.isReadyForStripe ? '#22c55e' : 'var(--text-dim)')}">
-                            ${member.isReadyForBelt ? 'PRONTO P/ FAIXA' : (member.isReadyForStripe ? 'PRONTO P/ GRAU' : 'Em evolução')}
+                            ${member.isReadyForBelt ? this.app.i18n.t('member_drawer_ready_belt') : (member.isReadyForStripe ? this.app.i18n.t('member_drawer_ready_stripe') : this.app.i18n.t('member_drawer_evolution'))}
                         </span>
                     </div>
                 </div>

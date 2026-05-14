@@ -39,40 +39,40 @@ export class InstructorsPage {
                         ${this.user.is_admin ? `
                             <a href="#dashboard" class="nav-item animate-in stagger-1">
                                 <i data-lucide="layout-dashboard" size="18"></i> 
-                                <span>Dashboard</span>
+                                <span>${this.app.i18n.t('menu_dashboard')}</span>
                             </a>
                         ` : ''}
                         ${this.user.role === 'professor' || this.user.is_admin ? `
                             <a href="#membros" class="nav-item animate-in stagger-2">
                                 <i data-lucide="users" size="18"></i> 
-                                <span>Membros</span>
+                                <span>${this.app.i18n.t('menu_members')}</span>
                             </a>
                         ` : ''}
                         <a href="#aulas" class="nav-item animate-in stagger-3">
                             <i data-lucide="calendar" size="18"></i> 
-                            <span>Minhas Aulas</span>
+                            <span>${this.app.i18n.t('menu_classes')}</span>
                         </a>
                         ${this.user.is_admin ? `
                             <a href="#financeiro" class="nav-item animate-in stagger-1">
                                 <i data-lucide="dollar-sign" size="18"></i> 
-                                <span>Financeiro</span>
+                                <span>${this.app.i18n.t('menu_finance')}</span>
                             </a>
                             <a href="#configuracoes" class="nav-item animate-in stagger-2">
                                 <i data-lucide="settings" size="18"></i> 
-                                <span>Configurações</span>
+                                <span>${this.app.i18n.t('menu_settings')}</span>
                             </a>
                         ` : ''}
                         <a href="#perfil" class="nav-item animate-in stagger-3">
                             <i data-lucide="user" size="18"></i> 
-                            <span>Perfil</span>
+                            <span>${this.app.i18n.t('menu_profile')}</span>
                         </a>
                         <a href="#instrutores" class="nav-item active animate-in stagger-1">
                             <i data-lucide="graduation-cap" size="18"></i> 
-                            <span>Instrutores</span>
+                            <span>${this.app.i18n.t('menu_instructors')}</span>
                         </a>
                         <a href="#tuf" class="nav-item animate-in stagger-2">
                             <i data-lucide="swords" size="18"></i> 
-                            <span>TUF</span>
+                            <span>${this.app.i18n.t('menu_tuf')}</span>
                         </a>
                     </nav>
 
@@ -88,7 +88,7 @@ export class InstructorsPage {
                         </div>
                         <button id="logout-btn" class="btn-secondary btn-full" style="height: 42px; gap: 0.75rem;">
                             <i data-lucide="log-out" size="18"></i> 
-                            <span>Sair</span>
+                            <span>${this.app.i18n.t('menu_logout')}</span>
                         </button>
                     </div>
                 </aside>
@@ -96,8 +96,8 @@ export class InstructorsPage {
                 <main class="main-content">
                     <header class="flex-between mb-12 animate-in" style="align-items: flex-start;">
                         <div>
-                            <h1 class="font-heading font-xl">Instrutores</h1>
-                            <p class="text-graphite">Conheça os responsáveis pela evolução técnica da nossa academia.</p>
+                            <h1 class="font-heading font-xl">${this.app.i18n.t('instructors_title')}</h1>
+                            <p class="text-graphite">${this.app.i18n.t('instructors_subtitle')}</p>
                         </div>
                         <div class="hide-mobile">
                             ${this.app.renderLanguageAndThemeControls()}
@@ -117,7 +117,7 @@ export class InstructorsPage {
                                     <h3 class="instructor-name">${instructor.full_name}</h3>
                                     <div class="instructor-belt-info">
                                         <span class="instructor-belt">${(instructor.current_belt || 'black belt').toUpperCase()}</span>
-                                        ${instructor.current_stripes ? `<span class="instructor-stripes">${instructor.current_stripes}º GRAU</span>` : ''}
+                                        ${instructor.current_stripes ? `<span class="instructor-stripes">${instructor.current_stripes}º ${this.app.i18n.t('degree_label')}</span>` : ''}
                                     </div>
                                 </div>
                             </div>
@@ -125,7 +125,7 @@ export class InstructorsPage {
                         ${instructors.length === 0 ? `
                             <div style="grid-column: 1 / -1; text-align: center; padding: 4rem; background: var(--bg-surface); border-radius: 12px; border: 1px dashed var(--border);">
                                 <i data-lucide="users" size="48" class="text-dim mb-4" style="opacity: 0.3;"></i>
-                                <p class="text-dim">Nenhum instrutor cadastrado no momento.</p>
+                                <p class="text-dim">${this.app.i18n.t('no_instructors')}</p>
                             </div>
                         ` : ''}
                     </div>
@@ -136,16 +136,16 @@ export class InstructorsPage {
                     ${this.user.is_admin ? `
                         <a href="#dashboard" class="bottom-nav-item">
                             <i data-lucide="layout-dashboard"></i>
-                            <span>Início</span>
+                            <span>${this.app.i18n.t('menu_home')}</span>
                         </a>
                     ` : ''}
                     <a href="#aulas" class="bottom-nav-item">
                         <i data-lucide="calendar"></i>
-                        <span>Aulas</span>
+                        <span>${this.app.i18n.t('menu_classes_short')}</span>
                     </a>
                     <a href="#instrutores" class="bottom-nav-item active">
                         <i data-lucide="graduation-cap"></i>
-                        <span>Professores</span>
+                        <span>${this.app.i18n.t('menu_professors_short')}</span>
                     </a>
                     <a href="#perfil" class="bottom-nav-item">
                         <i data-lucide="user"></i>

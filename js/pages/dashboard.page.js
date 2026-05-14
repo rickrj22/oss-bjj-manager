@@ -52,40 +52,40 @@ export class DashboardPage {
                         ${this.user.is_admin ? `
                             <a href="#dashboard" class="nav-item active animate-in stagger-1">
                                 <i data-lucide="layout-dashboard" size="18"></i> 
-                                <span>Dashboard</span>
+                                <span>${this.app.i18n.t('menu_dashboard')}</span>
                             </a>
                         ` : ''}
                         ${this.user.role === 'professor' || this.user.is_admin ? `
                             <a href="#membros" class="nav-item animate-in stagger-2">
                                 <i data-lucide="users" size="18"></i> 
-                                <span>Membros</span>
+                                <span>${this.app.i18n.t('menu_members')}</span>
                             </a>
                         ` : ''}
                         <a href="#aulas" class="nav-item animate-in stagger-3">
                             <i data-lucide="calendar" size="18"></i> 
-                            <span>Minhas Aulas</span>
+                            <span>${this.app.i18n.t('menu_classes')}</span>
                         </a>
                         ${this.user.is_admin ? `
                             <a href="#financeiro" class="nav-item animate-in stagger-1">
                                 <i data-lucide="dollar-sign" size="18"></i> 
-                                <span>Financeiro</span>
+                                <span>${this.app.i18n.t('menu_finance')}</span>
                             </a>
                             <a href="#configuracoes" class="nav-item animate-in stagger-2">
                                 <i data-lucide="settings" size="18"></i> 
-                                <span>Configurações</span>
+                                <span>${this.app.i18n.t('menu_settings')}</span>
                             </a>
                         ` : ''}
                         <a href="#perfil" class="nav-item animate-in stagger-3">
                             <i data-lucide="user" size="18"></i> 
-                            <span>Perfil</span>
+                            <span>${this.app.i18n.t('menu_profile')}</span>
                         </a>
                         <a href="#instrutores" class="nav-item animate-in stagger-1">
                             <i data-lucide="graduation-cap" size="18"></i> 
-                            <span>Instrutores</span>
+                            <span>${this.app.i18n.t('menu_instructors')}</span>
                         </a>
                         <a href="#tuf" class="nav-item animate-in stagger-2">
                             <i data-lucide="swords" size="18"></i> 
-                            <span>TUF</span>
+                            <span>${this.app.i18n.t('menu_tuf')}</span>
                         </a>
                     </nav>
 
@@ -99,7 +99,7 @@ export class DashboardPage {
                         </div>
                         <button id="logout-btn" class="btn-secondary btn-full" style="height: 42px; gap: 0.75rem;">
                             <i data-lucide="log-out" size="18"></i> 
-                            <span>Sair</span>
+                            <span>${this.app.i18n.t('menu_logout')}</span>
                         </button>
                     </div>
                 </aside>
@@ -108,8 +108,8 @@ export class DashboardPage {
                     <header class="page-header animate-in stagger-1">
                         <div style="display: flex; justify-content: space-between; align-items: flex-start; width: 100%;">
                             <div>
-                                <h1 class="font-heading">Dashboard</h1>
-                                <p class="text-dim">Bem-vindo ao centro de comando da sua Academia.</p>
+                                <h1 class="font-heading">${this.app.i18n.t('menu_dashboard')}</h1>
+                                <p class="text-dim">${this.app.i18n.t('welcome_title')}</p>
                             </div>
                             <div style="display: flex; align-items: center; gap: 1rem;">
                                 <div class="hide-mobile">
@@ -126,33 +126,33 @@ export class DashboardPage {
                     <div class="grid grid-cols-3 mb-8">
                         <!-- Alunos -->
                         <div class="card animate-in stagger-1">
-                            <p class="text-dim" style="font-size: 0.7rem; text-transform: uppercase; font-weight: 800; letter-spacing: 0.05em;">Alunos Ativos</p>
+                            <p class="text-dim" style="font-size: 0.7rem; text-transform: uppercase; font-weight: 800; letter-spacing: 0.05em;">${this.app.i18n.t('active_students')}</p>
                             <div class="flex-between mt-3">
                                 <h2 class="font-heading font-xl" style="font-size: 2.25rem; line-height: 1;">${stats.students.active}</h2>
                                 <div style="display: flex; flex-direction: column; gap: 6px;">
-                                    <button class="stat-btn active-list-btn">Ativos: ${stats.students.active}</button>
-                                    <button class="stat-btn inactive-list-btn">Inativos: ${stats.students.inactive}</button>
+                                    <button class="stat-btn active-list-btn">${this.app.i18n.t('active_label')}: ${stats.students.active}</button>
+                                    <button class="stat-btn inactive-list-btn">${this.app.i18n.t('inactive_label')}: ${stats.students.inactive}</button>
                                 </div>
                             </div>
                         </div>
 
                         <!-- Frequência -->
                         <div class="card animate-in stagger-2">
-                            <p class="text-dim" style="font-size: 0.7rem; text-transform: uppercase; font-weight: 800; letter-spacing: 0.05em;">Frequência Média</p>
+                            <p class="text-dim" style="font-size: 0.7rem; text-transform: uppercase; font-weight: 800; letter-spacing: 0.05em;">${this.app.i18n.t('avg_frequency')}</p>
                             <div class="avatar-stack" style="margin-top: 1.5rem;">
                                  ${topStudents.map(s => this.renderAvatarWithStripes(s, 36, true)).join('')}
-                                ${topStudents.length === 0 ? '<span class="text-dim" style="font-size: 0.8rem;">Sem dados...</span>' : ''}
+                                ${topStudents.length === 0 ? `<span class="text-dim" style="font-size: 0.8rem;">${this.app.i18n.t('no_data')}</span>` : ''}
                             </div>
-                            <p class="text-dim mt-4" style="font-size: 0.6rem; font-weight: 500;">Top 5 frequentes</p>
+                            <p class="text-dim mt-4" style="font-size: 0.6rem; font-weight: 500;">${this.app.i18n.t('top_frequent')}</p>
                         </div>
 
                         <!-- Financeiro -->
                         <div class="card animate-in stagger-3">
-                            <p class="text-dim" style="font-size: 0.7rem; text-transform: uppercase; font-weight: 800; letter-spacing: 0.05em;">Receita Mensal</p>
+                            <p class="text-dim" style="font-size: 0.7rem; text-transform: uppercase; font-weight: 800; letter-spacing: 0.05em;">${this.app.i18n.t('monthly_revenue')}</p>
                             <div class="flex-between mt-3">
                                 <div>
                                     <p style="font-size: 1rem; font-weight: 800; color: var(--success);">R$ ${stats.finance.paid.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</p>
-                                    <p style="font-size: 0.65rem; color: var(--error); font-weight: 600;">Pendente: R$ ${stats.finance.pending.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</p>
+                                    <p style="font-size: 0.65rem; color: var(--error); font-weight: 600;">${this.app.i18n.t('pending_label')}: R$ ${stats.finance.pending.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</p>
                                 </div>
                                 <h2 class="font-heading" style="font-size: 1.5rem;">${stats.finance.percent}%</h2>
                             </div>
@@ -167,16 +167,16 @@ export class DashboardPage {
                         <div class="card animate-in stagger-2">
                             <div class="flex-between mb-8" style="border-bottom: 1px solid var(--border); padding-bottom: 1.25rem;">
                                 <div>
-                                    <h3 class="font-heading font-large">Agenda de Hoje</h3>
-                                    <p class="text-dim" style="font-size: 0.85rem; text-transform: capitalize;">${new Date().toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' })}</p>
+                                    <h3 class="font-heading font-large">${this.app.i18n.t('today_schedule')}</h3>
+                                    <p class="text-dim" style="font-size: 0.85rem; text-transform: capitalize;">${new Date().toLocaleDateString(this.app.i18n.currentLang, { weekday: 'long', day: 'numeric', month: 'long' })}</p>
                                 </div>
                                 <div style="display: flex; gap: 0.75rem; align-items: center;">
                                     <button class="btn btn-outline" id="btn-global-checkin">
-                                        <i data-lucide="check-square" size="16"></i> <span class="hide-mobile">REALIZAR CHECK-IN</span>
+                                        <i data-lucide="check-square" size="16"></i> <span class="hide-mobile">${this.app.i18n.t('realize_checkin')}</span>
                                     </button>
                                     ${this.user.is_admin || this.user.role === 'professor' ? `
                                         <button class="btn btn-primary" id="btn-add-technique">
-                                            <i data-lucide="plus" size="16"></i> <span class="hide-mobile">DEFINIR TÉCNICA</span>
+                                            <i data-lucide="plus" size="16"></i> <span class="hide-mobile">${this.app.i18n.t('define_technique')}</span>
                                         </button>
                                     ` : ''}
                                 </div>
@@ -187,7 +187,7 @@ export class DashboardPage {
                                     : `
                                         <div style="text-align: center; padding: 3rem; background: var(--bg-elevated); border-radius: 12px; border: 1px dashed var(--border);">
                                             <i data-lucide="calendar-off" size="48" class="text-dim mb-4"></i>
-                                            <p class="text-dim">Nenhuma aula agendada para hoje.</p>
+                                            <p class="text-dim">${this.app.i18n.t('no_classes_today')}</p>
                                         </div>
                                     `
                                 }
@@ -197,9 +197,9 @@ export class DashboardPage {
                         <!-- Comunicados -->
                         <div class="card animate-in stagger-3">
                             <div class="flex-between mb-6">
-                                <h3 class="font-heading font-large">Comunicados</h3>
+                                <h3 class="font-heading font-large">${this.app.i18n.t('announcements')}</h3>
                                 ${this.user.is_admin || this.user.role === 'professor' ? `
-                                    <button class="btn" id="btn-new-announcement" style="min-width: 80px; height: 36px; font-size: 0.75rem;">Novo</button>
+                                    <button class="btn" id="btn-new-announcement" style="min-width: 80px; height: 36px; font-size: 0.75rem;">${this.app.i18n.t('new_btn')}</button>
                                 ` : ''}
                             </div>
                             <div style="display: flex; flex-direction: column; gap: 1.5rem;">
@@ -235,20 +235,20 @@ export class DashboardPage {
                     ${this.user.is_admin ? `
                         <a href="#dashboard" class="bottom-nav-item active">
                             <i data-lucide="layout-dashboard"></i>
-                            <span>Início</span>
+                            <span>${this.app.i18n.t('menu_dashboard')}</span>
                         </a>
                         <a href="#membros" class="bottom-nav-item">
                             <i data-lucide="users"></i>
-                            <span>Membros</span>
+                            <span>${this.app.i18n.t('menu_members')}</span>
                         </a>
                     ` : ''}
                     <a href="#aulas" class="bottom-nav-item">
                         <i data-lucide="calendar"></i>
-                        <span>Aulas</span>
+                        <span>${this.app.i18n.t('menu_classes')}</span>
                     </a>
                     <a href="#perfil" class="bottom-nav-item">
                         <i data-lucide="user"></i>
-                        <span>Perfil</span>
+                        <span>${this.app.i18n.t('menu_profile')}</span>
                     </a>
                     ${this.user.is_admin ? `
                         <a href="#configuracoes" class="bottom-nav-item">
