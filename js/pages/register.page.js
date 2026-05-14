@@ -46,6 +46,11 @@ export class RegisterPage {
                         </div>
 
                         <div class="mb-4">
+                            <label class="font-heading" style="font-size: 0.7rem; text-transform: uppercase; color: var(--text-dim); letter-spacing: 0.05em;">${t('birth_date_label')}</label>
+                            <input type="date" id="birth-date" class="input" required>
+                        </div>
+
+                        <div class="mb-4">
                             <label class="font-heading" style="font-size: 0.7rem; text-transform: uppercase; color: var(--text-dim); letter-spacing: 0.05em;">${t('password')}</label>
                             <input type="password" id="password" class="input" placeholder="••••••••" required>
                         </div>
@@ -151,6 +156,7 @@ export class RegisterPage {
                 let email = document.getElementById('email').value;
                 const cpf = cpfVal;
                 const phone = document.getElementById('phone').value;
+                const birthDate = document.getElementById('birth-date').value;
                 const password = document.getElementById('password').value;
 
                 if (noEmailCheck.checked) {
@@ -185,6 +191,7 @@ export class RegisterPage {
                 const result = await this.app.auth.signUp(email, password, fullName, academyId, { 
                     cpf, 
                     phone,
+                    birth_date: birthDate,
                     current_belt: 'white belt',
                     current_stripes: 0
                 });

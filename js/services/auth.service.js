@@ -168,6 +168,37 @@ export class AuthService {
         });
 
         if (error) return { success: false, error: error.message };
+
+        // Se houver uma sessão imediata (auto-confirm ligado), tentamos atualizar o profile explicitamente
+        // para garantir que campos extras (cpf, phone, birth_date) sejam gravados.
+        if (data.session || data.user) {
+            const userId = data.user.id;
+            try {
+                // Pequeno delay para garantir que o trigger de criação do profile (se existir) tenha rodado
+                await new Promise(resolve => setTimeout(resolve, 500));
+                
+                const updates = {
+                    full_name: fullName,
+                    academy_id: academyId,
+                    is_active: true,
+                    ...metadata
+                };
+
+                const { error: updateError } = await this.client
+                    .from('profiles')
+                    .update(updates)
+                    .eq('id', userId);
+
+                if (updateError) {
+                    console.warn("⚠️ Falha ao atualizar profile após signup (pode ser restrição de RLS ou trigger pendente):", updateError.message);
+                } else {
+                    console.log("✅ Profile atualizado com sucesso após signup.");
+                }
+            } catch (e) {
+                console.warn("⚠️ Erro na tentativa de atualização pós-signup:", e);
+            }
+        }
+
         return { success: true, data };
     }
 
