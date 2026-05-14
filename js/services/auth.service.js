@@ -133,8 +133,7 @@ export class AuthService {
             const { data, error } = await this.client
                 .from('profiles')
                 .select('email')
-                .eq('cpf', identifier) // Tenta com a máscara que veio
-                .or(`cpf.eq.${cleanCpf}`) // Ou sem máscara
+                .in('cpf', [identifier, cleanCpf]) // Busca por qualquer uma das versões (com ou sem máscara)
                 .single();
 
             if (error || !data) {
