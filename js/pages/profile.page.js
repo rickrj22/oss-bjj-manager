@@ -178,6 +178,10 @@ export class ProfilePage {
                                             <label style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700; color: var(--text-dim); margin-bottom: 0.25rem; display: block;">${this.app.i18n.t('member_drawer_birth_date')}</label>
                                             <input type="date" class="input editable-field" id="prof-birth" value="${user.birth_date || ''}" style="height: 42px; font-size: 0.85rem;">
                                         </div>
+                                        <div class="form-group" id="prof-responsible-group" style="grid-column: span var(--span-all, 1); display: none;">
+                                            <label style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700; color: var(--text-dim); margin-bottom: 0.25rem; display: block;">${this.app.i18n.t('responsible_name_label')}</label>
+                                            <input type="text" class="input editable-field" id="prof-responsible" value="${user.responsible_name || ''}" style="height: 42px; font-size: 0.85rem;">
+                                        </div>
                                         <div class="form-group" style="grid-column: span var(--span-all, 1);">
                                             <label style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700; color: var(--text-dim); margin-bottom: 0.25rem; display: block;">${this.app.i18n.t('profile_avatar_label')}</label>
                                             <div style="display: flex; align-items: center; gap: 1rem;">
@@ -456,6 +460,38 @@ export class ProfilePage {
     afterRender() {
         if (window.lucide) window.lucide.createIcons();
 
+        // --- Responsável ---
+        const birthInput = document.getElementById('prof-birth');
+        const responsibleGroup = document.getElementById('prof-responsible-group');
+        const responsibleInput = document.getElementById('prof-responsible');
+
+        const checkMinorProfile = async () => {
+            const user = await this.app.auth.getUser();
+            const birthDate = birthInput?.value || user.birth_date;
+            if (!birthDate) {
+                if (responsibleGroup) responsibleGroup.style.display = 'none';
+                return;
+            }
+            const today = new Date();
+            const birth = new Date(birthDate);
+            let age = today.getFullYear() - birth.getFullYear();
+            const monthDiff = today.getMonth() - birth.getMonth();
+            if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
+                age--;
+            }
+            if (age < 18) {
+                if (responsibleGroup) responsibleGroup.style.display = 'block';
+            } else {
+                if (responsibleGroup) responsibleGroup.style.display = 'none';
+                if (responsibleInput) responsibleInput.value = '';
+            }
+        };
+
+        if (birthInput) {
+            birthInput.addEventListener('change', checkMinorProfile);
+            checkMinorProfile();
+        }
+
         // --- CPF Utilities ---
         const maskCPF = (value) => value
             .replace(/\D/g, '').slice(0, 11)
@@ -541,7 +577,8 @@ export class ProfilePage {
                     birth_date: document.getElementById('prof-birth').value,
                     phone: document.getElementById('prof-phone').value,
                     cpf: cpfVal,
-                    avatar_url: document.getElementById('prof-avatar').value
+                    avatar_url: document.getElementById('prof-avatar').value,
+                    responsible_name: document.getElementById('prof-responsible')?.value || null
                 };
 
                 const res = await this.app.auth.updateProfile(updates);
