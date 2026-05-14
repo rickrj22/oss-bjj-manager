@@ -89,11 +89,6 @@ export class DashboardPage {
                         </a>
                     </nav>
 
-                    <div id="theme-toggle" class="theme-toggle">
-                        <i data-lucide="${theme === 'dark' ? 'sun' : 'moon'}"></i>
-                        <span>${theme === 'dark' ? 'Modo Claro' : 'Modo Escuro'}</span>
-                    </div>
-
                     <div style="border-top: 1px solid var(--border); padding-top: 1.5rem; margin-top: 1.5rem;">
                         <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.5rem; padding: 0 0.5rem;">
                              ${this.renderAvatarWithStripes(this.user, 42)}
@@ -116,9 +111,14 @@ export class DashboardPage {
                                 <h1 class="font-heading">Dashboard</h1>
                                 <p class="text-dim">Bem-vindo ao centro de comando da sua Academia.</p>
                             </div>
-                            <button class="btn-icon hide-desktop" onclick="window.App.auth.signOut()" style="background: none; border: none; padding: 0.5rem; color: var(--text-primary); cursor: pointer;">
-                                <i data-lucide="log-out" size="24"></i>
-                            </button>
+                            <div style="display: flex; align-items: center; gap: 1rem;">
+                                <div class="hide-mobile">
+                                    ${this.app.renderLanguageAndThemeControls()}
+                                </div>
+                                <button class="btn-icon hide-desktop" onclick="window.App.auth.signOut()" style="background: none; border: none; padding: 0.5rem; color: var(--text-primary); cursor: pointer;">
+                                    <i data-lucide="log-out" size="24"></i>
+                                </button>
+                            </div>
                         </div>
                     </header>
 
@@ -392,12 +392,12 @@ ${c.attendees.length === 0 ? '<p class="text-dim" style="font-size: 0.8125rem; f
         const logoutBtn = document.getElementById('logout-btn');
         if (logoutBtn) logoutBtn.addEventListener('click', () => this.app.auth.logout());
 
-        const themeToggle = document.getElementById('theme-toggle');
+        const themeToggle = document.getElementById('theme-toggle-global');
         if (themeToggle) {
-            themeToggle.addEventListener('click', () => {
+            themeToggle.onclick = () => {
                 this.app.toggleTheme();
                 this.app.router.handleRouteChange(window.location.hash);
-            });
+            };
         }
 
         const academySelect = document.getElementById('dashboard-academy-select');

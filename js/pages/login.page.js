@@ -4,44 +4,44 @@ export class LoginPage {
     }
 
     async render() {
+        const t = (key) => this.app.i18n.t(key);
         return `
             <div class="auth-container">
                 <div class="auth-card">
                     <div style="margin-bottom: 3rem;">
-                        <h1 class="font-heading" style="font-size: 1.5rem; letter-spacing: 0.2em; font-weight: 800; margin-bottom: 0.5rem;">OSS</h1>
-                        <p class="text-graphite" style="font-size: 0.8125rem; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 500;">Academy Management</p>
+                        <h1 class="font-heading" style="font-size: 1.5rem; letter-spacing: 0.2em; font-weight: 800; margin-bottom: 0.5rem;">${t('login_title')}</h1>
+                        <p class="text-graphite" style="font-size: 0.8125rem; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 500;">${t('login_subtitle')}</p>
                     </div>
 
-                    <div id="theme-toggle" class="theme-toggle" style="position: absolute; top: 1.5rem; right: 1.5rem; background: var(--bg-surface); border: 1px solid var(--border); padding: 0.5rem 1rem; border-radius: 50px; cursor: pointer; display: flex; align-items: center; gap: 0.5rem; box-shadow: var(--shadow-sm); z-index: 100;">
-                        <i data-lucide="${this.app.currentTheme === 'dark' ? 'sun' : 'moon'}" size="18"></i>
-                        <span style="font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;">${this.app.currentTheme === 'dark' ? 'Modo Claro' : 'Modo Escuro'}</span>
+                    <div style="position: absolute; top: 1.5rem; right: 1.5rem; z-index: 100;">
+                        ${this.app.renderLanguageAndThemeControls()}
                     </div>
 
                     <form id="login-form">
                         <div class="form-group">
-                            <label for="identifier" class="font-heading" style="font-size: 0.7rem; text-transform: uppercase; color: var(--text-dim); letter-spacing: 0.05em;">E-mail ou CPF</label>
+                            <label for="identifier" class="font-heading" style="font-size: 0.7rem; text-transform: uppercase; color: var(--text-dim); letter-spacing: 0.05em;">${t('email_or_cpf')}</label>
                             <input type="text" id="identifier" class="input" placeholder="seu@email.com ou 000.000.000-00" required>
                         </div>
                         <div class="form-group" style="margin-top: 1.5rem;">
                             <div class="flex-between">
-                                <label for="password" class="font-heading" style="font-size: 0.7rem; text-transform: uppercase; color: var(--text-dim); letter-spacing: 0.05em;">Senha</label>
-                                <a href="#" id="forgot-password-link" style="font-size: 0.7rem; color: var(--text-dim); text-decoration: none;">Esqueci minha senha</a>
+                                <label for="password" class="font-heading" style="font-size: 0.7rem; text-transform: uppercase; color: var(--text-dim); letter-spacing: 0.05em;">${t('password')}</label>
+                                <a href="#" id="forgot-password-link" style="font-size: 0.7rem; color: var(--text-dim); text-decoration: none;">${t('forgot_password')}</a>
                             </div>
                             <input type="password" id="password" class="input" placeholder="••••••••" required>
                         </div>
                         
                         <button type="submit" class="btn btn-primary btn-full mt-8" id="login-btn">
-                            Entrar no Tatame
+                            ${t('login_btn')}
                         </button>
                     </form>
 
                     <p style="text-align: center; margin-top: 2rem; font-size: 0.875rem; color: var(--text-secondary);">
-                        Ainda não tem conta? <a href="#register" style="color: var(--text-primary); font-weight: 600; text-decoration: none;">Cadastrar-se</a>
+                        ${t('no_account')} <a href="#register" style="color: var(--text-primary); font-weight: 600; text-decoration: none;">${t('register_link')}</a>
                     </p>
 
                     <div style="margin-top: 3rem; text-align: center;">
                         <p class="text-dim" style="font-size: 0.75rem;">
-                            <a href="mailto:rickcgrj@gmail.com" style="text-decoration: none; color: var(--text-dim); transition: color 0.2s;" onmouseover="this.style.color='var(--text-primary)'" onmouseout="this.style.color='var(--text-dim)'">Gostaria de saber mais sobre o aplicativo?</a>
+                            <a href="mailto:rickcgrj@gmail.com" style="text-decoration: none; color: var(--text-dim); transition: color 0.2s;" onmouseover="this.style.color='var(--text-primary)'" onmouseout="this.style.color='var(--text-dim)'">${t('learn_more')}</a>
                         </p>
                     </div>
                 </div>
@@ -54,14 +54,16 @@ export class LoginPage {
         const loginBtn = document.getElementById('login-btn');
         const forgotPasswordLink = document.getElementById('forgot-password-link');
         const identifierInput = document.getElementById('identifier');
-        const themeToggle = document.getElementById('theme-toggle');
+        const themeToggle = document.getElementById('theme-toggle-global');
 
         if (window.lucide) window.lucide.createIcons();
 
-        themeToggle.onclick = () => {
-            this.app.toggleTheme();
-            this.app.router.handleRouteChange(window.location.hash);
-        };
+        if (themeToggle) {
+            themeToggle.onclick = () => {
+                this.app.toggleTheme();
+                this.app.router.handleRouteChange(window.location.hash);
+            };
+        }
 
         // Adiciona máscara de CPF se o usuário digitar apenas números
         identifierInput.addEventListener('input', (e) => {

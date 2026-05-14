@@ -88,11 +88,6 @@ export class ClassesPage {
                         </a>
                     </nav>
 
-                    <div id="theme-toggle" class="theme-toggle">
-                        <i data-lucide="${theme === 'dark' ? 'sun' : 'moon'}"></i>
-                        <span>${this.app.currentTheme === 'dark' ? 'Modo Claro' : 'Modo Escuro'}</span>
-                    </div>
-
                     <div style="border-top: 1px solid var(--border); padding-top: 1.5rem; margin-top: 1.5rem;">
                         <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.5rem; padding: 0 0.5rem;">
                              ${this.renderAvatarWithStripes(this.user, 42)}
@@ -109,9 +104,14 @@ export class ClassesPage {
                 </aside>
 
                 <main class="main-content">
-                    <header class="mb-8 animate-in">
-                        <h1 class="font-heading font-xl">Minhas Aulas</h1>
-                        <p class="text-graphite">Agenda aqui sua aula</p>
+                    <header class="mb-8 animate-in" style="display: flex; justify-content: space-between; align-items: flex-start;">
+                        <div>
+                            <h1 class="font-heading font-xl">Minhas Aulas</h1>
+                            <p class="text-graphite">Agenda aqui sua aula</p>
+                        </div>
+                        <div class="hide-mobile">
+                            ${this.app.renderLanguageAndThemeControls()}
+                        </div>
                     </header>
 
                     <div class="grid" style="grid-template-columns: var(--grid-main, 2fr 1fr); gap: 2rem;">
@@ -548,7 +548,7 @@ export class ClassesPage {
         document.getElementById('logout-btn').onclick = () => this.app.auth.logout();
 
         // Theme Toggle
-        const themeToggle = document.getElementById('theme-toggle');
+        const themeToggle = document.getElementById('theme-toggle-global');
         if (themeToggle) {
             themeToggle.onclick = () => {
                 this.app.toggleTheme();

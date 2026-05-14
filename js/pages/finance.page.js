@@ -46,10 +46,7 @@ export class FinancePage {
                             <a href="#instrutores" class="nav-item"><i data-lucide="graduation-cap" size="18"></i> <span>Instrutores</span></a>
                             <a href="#tuf" class="nav-item"><i data-lucide="swords" size="18"></i> <span>TUF</span></a>
                         </nav>
-                        <div id="theme-toggle" class="theme-toggle">
-                            <i data-lucide="${theme === 'dark' ? 'sun' : 'moon'}"></i>
-                            <span>${theme === 'dark' ? 'Modo Claro' : 'Modo Escuro'}</span>
-                        </div>
+                        </nav>
                         <div style="border-top: 1px solid var(--border); padding-top: 1.5rem; margin-top: 1.5rem;">
                             <button id="logout-btn" class="btn-secondary btn-full" style="height: 42px; gap: 0.75rem;">
                                 <i data-lucide="log-out" size="18"></i> <span>Sair</span>
@@ -63,13 +60,18 @@ export class FinancePage {
                                 <h1 class="font-heading font-xl" style="font-weight: 800; font-size: 2.5rem; margin-bottom: 0.5rem;">Gestão Financeira</h1>
                                 <p class="text-graphite" style="font-size: 1.1rem; opacity: 0.8;">Visão geral de recebimentos, inadimplência e saúde financeira da unidade.</p>
                             </div>
-                            <div style="display: flex; gap: 1rem;">
-                                <button class="btn btn-secondary" id="btn-report" style="height: 48px; gap: 0.75rem; font-weight: 700; border-radius: 8px;">
-                                    <i data-lucide="file-text" size="20"></i> RELATÓRIO
-                                </button>
-                                <button class="btn btn-primary" id="btn-inform-payment" style="height: 48px; gap: 0.75rem; background: var(--inverse-bg); color: var(--inverse-text); border: none; font-weight: 700; border-radius: 8px; min-width: 220px;">
-                                    <i data-lucide="plus-circle" size="20"></i> INFORMAR PAGAMENTO
-                                </button>
+                            <div style="display: flex; align-items: center; gap: 1.5rem;">
+                                <div class="hide-mobile">
+                                    ${this.app.renderLanguageAndThemeControls()}
+                                </div>
+                                <div style="display: flex; gap: 1rem;">
+                                    <button class="btn btn-secondary" id="btn-report" style="height: 48px; gap: 0.75rem; font-weight: 700; border-radius: 8px;">
+                                        <i data-lucide="file-text" size="20"></i> RELATÓRIO
+                                    </button>
+                                    <button class="btn btn-primary" id="btn-inform-payment" style="height: 48px; gap: 0.75rem; background: var(--inverse-bg); color: var(--inverse-text); border: none; font-weight: 700; border-radius: 8px; min-width: 220px;">
+                                        <i data-lucide="plus-circle" size="20"></i> INFORMAR PAGAMENTO
+                                    </button>
+                                </div>
                             </div>
                         </header>
 
@@ -243,10 +245,7 @@ export class FinancePage {
                         </a>
                     </nav>
 
-                    <div id="theme-toggle" class="theme-toggle">
-                        <i data-lucide="${theme === 'dark' ? 'sun' : 'moon'}"></i>
-                        <span>${this.app.currentTheme === 'dark' ? 'Modo Claro' : 'Modo Escuro'}</span>
-                    </div>
+                    </nav>
 
                     <div style="border-top: 1px solid var(--border); padding-top: 1.5rem; margin-top: 1.5rem;">
                         <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.5rem; padding: 0 0.5rem;">
@@ -271,9 +270,14 @@ export class FinancePage {
                             <h1 class="font-heading font-xl">Financeiro</h1>
                             <p class="text-graphite">Gerencie sua assinatura e histórico de pagamentos.</p>
                         </div>
-                        <button class="btn btn-primary" id="pix-btn" style="height: 42px; gap: 0.5rem;">
-                            <i data-lucide="qr-code" size="18"></i> PAGAR VIA PIX
-                        </button>
+                        <div style="display: flex; align-items: center; gap: 1.5rem;">
+                            <div class="hide-mobile">
+                                ${this.app.renderLanguageAndThemeControls()}
+                            </div>
+                            <button class="btn btn-primary" id="pix-btn" style="height: 42px; gap: 0.5rem;">
+                                <i data-lucide="qr-code" size="18"></i> PAGAR VIA PIX
+                            </button>
+                        </div>
                     </header>
 
                     <div class="grid" style="grid-template-columns: 1fr; gap: 2rem;">
@@ -344,10 +348,14 @@ export class FinancePage {
         if (window.lucide) window.lucide.createIcons();
 
         document.getElementById('logout-btn').onclick = () => this.app.auth.logout();
-        document.getElementById('theme-toggle').onclick = () => {
-            this.app.toggleTheme();
-            this.app.router.handleRouteChange(window.location.hash);
-        };
+        
+        const themeToggle = document.getElementById('theme-toggle-global');
+        if (themeToggle) {
+            themeToggle.onclick = () => {
+                this.app.toggleTheme();
+                this.app.router.handleRouteChange(window.location.hash);
+            };
+        }
 
         const pixBtn = document.getElementById('pix-btn');
         if (pixBtn) {

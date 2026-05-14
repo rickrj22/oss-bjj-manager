@@ -4,11 +4,13 @@
 
 import { AuthService } from './services/auth.service.js';
 import { AcademyService } from './services/academy.service.js';
+import { I18nService } from './services/i18n.service.js';
 import { Router } from './router.js';
 
 class App {
     constructor() {
         this.appElement = document.getElementById('app');
+        this.i18n = new I18nService();
         this.auth = new AuthService();
         this.academy = new AcademyService(this);
         this.router = new Router(this);
@@ -16,6 +18,53 @@ class App {
         
         this.initTheme();
         this.init();
+    }
+
+    setLanguage(lang) {
+        this.i18n.setLanguage(lang);
+        this.router.handleRouteChange(window.location.hash);
+    }
+
+    renderLanguageAndThemeControls() {
+        const t = (key) => this.i18n.t(key);
+        const currentLang = this.i18n.currentLang;
+        
+        const btnStyle = (active) => `
+            display: flex; 
+            align-items: center; 
+            gap: 0.5rem; 
+            background: var(--bg-surface); 
+            border: 1px solid ${active ? 'var(--primary)' : 'var(--border)'}; 
+            padding: 0.4rem 0.8rem; 
+            border-radius: 50px; 
+            cursor: pointer; 
+            font-size: 0.75rem; 
+            font-weight: 800; 
+            box-shadow: var(--shadow-sm);
+            transition: all 0.2s;
+            color: var(--text-primary);
+        `;
+
+        return `
+            <div class="header-controls" style="display: flex; gap: 0.75rem; align-items: center;">
+                <div style="display: flex; gap: 0.5rem;">
+                    <div class="lang-btn" onclick="window.App.setLanguage('pt')" style="${btnStyle(currentLang === 'pt')}">
+                        <img src="https://flagcdn.com/w20/br.png" width="18" style="border-radius: 2px;"> PT
+                    </div>
+                    <div class="lang-btn" onclick="window.App.setLanguage('en')" style="${btnStyle(currentLang === 'en')}">
+                        <img src="https://flagcdn.com/w20/us.png" width="18" style="border-radius: 2px;"> EN
+                    </div>
+                    <div class="lang-btn" onclick="window.App.setLanguage('es')" style="${btnStyle(currentLang === 'es')}">
+                        <img src="https://flagcdn.com/w20/es.png" width="18" style="border-radius: 2px;"> ES
+                    </div>
+                </div>
+
+                <div id="theme-toggle-global" style="${btnStyle(false)}">
+                    <i data-lucide="${this.currentTheme === 'dark' ? 'sun' : 'moon'}" size="16"></i>
+                    <span style="text-transform: uppercase;">${t(this.currentTheme === 'dark' ? 'theme_light' : 'theme_dark')}</span>
+                </div>
+            </div>
+        `;
     }
 
     initTheme() {

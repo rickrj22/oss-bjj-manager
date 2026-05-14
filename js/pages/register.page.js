@@ -4,22 +4,22 @@ export class RegisterPage {
     }
 
     async render() {
+        const t = (key) => this.app.i18n.t(key);
         return `
             <div class="auth-container">
                 <div class="auth-card">
                     <div style="margin-bottom: 2.5rem; text-align: center;">
-                        <h1 class="font-heading" style="font-size: 1.5rem; letter-spacing: 0.2em; font-weight: 800;">OSS</h1>
-                        <p class="text-graphite" style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 500; margin-top: 0.25rem;">Junte-se ao Tatame</p>
+                        <h1 class="font-heading" style="font-size: 1.5rem; letter-spacing: 0.2em; font-weight: 800;">${t('register_title')}</h1>
+                        <p class="text-graphite" style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 500; margin-top: 0.25rem;">${t('register_subtitle')}</p>
                     </div>
 
-                    <div id="theme-toggle" class="theme-toggle" style="position: absolute; top: 1.5rem; right: 1.5rem; background: var(--bg-surface); border: 1px solid var(--border); padding: 0.5rem 1rem; border-radius: 50px; cursor: pointer; display: flex; align-items: center; gap: 0.5rem; box-shadow: var(--shadow-sm); z-index: 100;">
-                        <i data-lucide="${this.app.currentTheme === 'dark' ? 'sun' : 'moon'}" size="18"></i>
-                        <span style="font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;">${this.app.currentTheme === 'dark' ? 'Modo Claro' : 'Modo Escuro'}</span>
+                    <div style="position: absolute; top: 1.5rem; right: 1.5rem; z-index: 100;">
+                        ${this.app.renderLanguageAndThemeControls()}
                     </div>
 
                     <form id="register-form">
                         <div class="mb-4">
-                            <label class="font-heading" style="font-size: 0.7rem; text-transform: uppercase; color: var(--text-dim); letter-spacing: 0.05em;">Nome Completo</label>
+                            <label class="font-heading" style="font-size: 0.7rem; text-transform: uppercase; color: var(--text-dim); letter-spacing: 0.05em;">${t('full_name')}</label>
                             <input type="text" id="full-name" class="input" placeholder="Seu nome" required>
                         </div>
 
@@ -28,7 +28,7 @@ export class RegisterPage {
                                 <label class="font-heading" style="font-size: 0.7rem; text-transform: uppercase; color: var(--text-dim); letter-spacing: 0.05em;">E-mail</label>
                                 <div style="display: flex; align-items: center; gap: 0.5rem;">
                                     <input type="checkbox" id="no-email" style="width: 14px; height: 14px; accent-color: var(--primary);">
-                                    <label for="no-email" style="font-size: 0.65rem; color: var(--text-dim); cursor: pointer;">Não possui e-mail</label>
+                                    <label for="no-email" style="font-size: 0.65rem; color: var(--text-dim); cursor: pointer;">${t('no_email')}</label>
                                 </div>
                             </div>
                             <input type="email" id="email" class="input" placeholder="exemplo@email.com" required>
@@ -40,23 +40,23 @@ export class RegisterPage {
                                 <input type="text" id="cpf" class="input" placeholder="000.000.000-00" required>
                             </div>
                             <div class="mb-4">
-                                <label class="font-heading" style="font-size: 0.7rem; text-transform: uppercase; color: var(--text-dim); letter-spacing: 0.05em;">Telefone</label>
+                                <label class="font-heading" style="font-size: 0.7rem; text-transform: uppercase; color: var(--text-dim); letter-spacing: 0.05em;">${t('phone')}</label>
                                 <input type="tel" id="phone" class="input" placeholder="(00) 00000-0000" required>
                             </div>
                         </div>
 
                         <div class="mb-4">
-                            <label class="font-heading" style="font-size: 0.7rem; text-transform: uppercase; color: var(--text-dim); letter-spacing: 0.05em;">Senha</label>
+                            <label class="font-heading" style="font-size: 0.7rem; text-transform: uppercase; color: var(--text-dim); letter-spacing: 0.05em;">${t('password')}</label>
                             <input type="password" id="password" class="input" placeholder="••••••••" required>
                         </div>
 
                         <button type="submit" class="btn btn-primary btn-full mt-4" id="register-btn">
-                            Cadastrar
+                            ${t('register_btn')}
                         </button>
                     </form>
 
                     <p style="text-align: center; margin-top: 2rem; font-size: 0.875rem; color: var(--text-secondary);">
-                        Já tem uma conta? <a href="#login" style="color: var(--text-primary); font-weight: 600; text-decoration: none;">Entrar</a>
+                        ${t('has_account')} <a href="#login" style="color: var(--text-primary); font-weight: 600; text-decoration: none;">${t('login_link')}</a>
                     </p>
                 </div>
             </div>
@@ -68,14 +68,16 @@ export class RegisterPage {
         const registerBtn = document.getElementById('register-btn');
         const noEmailCheck = document.getElementById('no-email');
         const emailInput = document.getElementById('email');
-        const themeToggle = document.getElementById('theme-toggle');
+        const themeToggle = document.getElementById('theme-toggle-global');
 
         if (window.lucide) window.lucide.createIcons();
 
-        themeToggle.onclick = () => {
-            this.app.toggleTheme();
-            this.app.router.handleRouteChange(window.location.hash);
-        };
+        if (themeToggle) {
+            themeToggle.onclick = () => {
+                this.app.toggleTheme();
+                this.app.router.handleRouteChange(window.location.hash);
+            };
+        }
 
         noEmailCheck.addEventListener('change', (e) => {
             if (e.target.checked) {

@@ -82,10 +82,7 @@ export class MembersPage {
                         </a>
                     </nav>
 
-                    <div id="theme-toggle" class="theme-toggle">
-                        <i data-lucide="${this.app.currentTheme === 'dark' ? 'sun' : 'moon'}"></i>
-                        <span>${this.app.currentTheme === 'dark' ? 'Modo Claro' : 'Modo Escuro'}</span>
-                    </div>
+                    </nav>
 
                     <div style="border-top: 1px solid var(--border); padding-top: 1.5rem; margin-top: 1.5rem;">
                         <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.5rem; padding: 0 0.5rem;">
@@ -102,14 +99,19 @@ export class MembersPage {
                 </aside>
 
                 <main class="main-content" style="max-width: 100%;">
-                    <header class="flex-between mb-8 animate-in">
+                    <header class="flex-between mb-8 animate-in" style="align-items: flex-start;">
                         <div>
                             <h1 class="font-heading font-xl" style="font-weight: 800; font-size: 2.25rem; margin-bottom: 0.5rem;">Membros</h1>
                             <p class="text-graphite hide-mobile" style="font-size: 1.1rem; opacity: 0.8;">Gestão de membros da sua academia.</p>
                         </div>
-                        <button class="btn btn-primary" id="btn-add-member" style="height: 48px; gap: 0.75rem; background: var(--inverse-bg); color: var(--inverse-text); border: none; font-weight: 700; border-radius: 8px; min-width: auto; padding: 0 1.5rem;">
-                            <i data-lucide="user-plus" size="20"></i> <span class="hide-mobile">NOVO MEMBRO</span>
-                        </button>
+                        <div style="display: flex; align-items: center; gap: 1.5rem;">
+                            <div class="hide-mobile">
+                                ${this.app.renderLanguageAndThemeControls()}
+                            </div>
+                            <button class="btn btn-primary" id="btn-add-member" style="height: 48px; gap: 0.75rem; background: var(--inverse-bg); color: var(--inverse-text); border: none; font-weight: 700; border-radius: 8px; min-width: auto; padding: 0 1.5rem;">
+                                <i data-lucide="user-plus" size="20"></i> <span class="hide-mobile">NOVO MEMBRO</span>
+                            </button>
+                        </div>
                     </header>
 
                     <div class="card animate-in stagger-2" style="padding: 0; overflow-x: auto; border-radius: 12px; border: 1px solid var(--border); background: var(--bg-surface); box-shadow: 0 4px 20px rgba(0,0,0,0.05); -webkit-overflow-scrolling: touch;">
@@ -862,11 +864,14 @@ export class MembersPage {
         });
 
         // Theme Toggle
-        document.getElementById('theme-toggle').onclick = () => {
-            this.app.toggleTheme();
-            this.app.router.handleRouteChange(window.location.hash);
-        };
-
+        const themeToggle = document.getElementById('theme-toggle-global');
+        if (themeToggle) {
+            themeToggle.onclick = () => {
+                this.app.toggleTheme();
+                this.app.router.handleRouteChange(window.location.hash);
+            };
+        }
+        
         // Logout
         document.getElementById('logout-btn').onclick = () => this.app.auth.logout();
 

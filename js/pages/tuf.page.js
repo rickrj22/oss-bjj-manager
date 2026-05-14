@@ -76,10 +76,7 @@ export class TUFPage {
                         </a>
                     </nav>
 
-                    <div id="theme-toggle" class="theme-toggle">
-                        <i data-lucide="${theme === 'dark' ? 'sun' : 'moon'}"></i>
-                        <span>${theme === 'dark' ? 'Modo Claro' : 'Modo Escuro'}</span>
-                    </div>
+                    </nav>
 
                     <div style="border-top: 1px solid var(--border); padding-top: 1.5rem; margin-top: 1.5rem;">
                         <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.5rem; padding: 0 0.5rem;">
@@ -97,16 +94,21 @@ export class TUFPage {
                 </aside>
 
                 <main class="main-content">
-                    <header class="flex-between mb-12 animate-in">
+                    <header class="flex-between mb-12 animate-in" style="align-items: flex-start;">
                         <div>
                             <h1 class="font-heading font-xl">TUF Tournament</h1>
                             <p class="text-graphite">Chaveamento de lutas e gestão de competições internas.</p>
                         </div>
-                        ${this.user.is_admin || this.user.role === 'professor' ? `
-                            <button class="btn btn-primary" id="btn-new-tuf" style="height: 48px; gap: 0.75rem; background: var(--inverse-bg); color: var(--inverse-text); border: none; font-weight: 700; border-radius: 8px;">
-                                <i data-lucide="plus-circle" size="20"></i> NOVO EVENTO
-                            </button>
-                        ` : ''}
+                        <div style="display: flex; align-items: center; gap: 1.5rem;">
+                            <div class="hide-mobile">
+                                ${this.app.renderLanguageAndThemeControls()}
+                            </div>
+                            ${this.user.is_admin || this.user.role === 'professor' ? `
+                                <button class="btn btn-primary" id="btn-new-tuf" style="height: 48px; gap: 0.75rem; background: var(--inverse-bg); color: var(--inverse-text); border: none; font-weight: 700; border-radius: 8px;">
+                                    <i data-lucide="plus-circle" size="20"></i> NOVO EVENTO
+                                </button>
+                            ` : ''}
+                        </div>
                     </header>
 
                     <div id="tuf-container" class="animate-in stagger-2">
@@ -203,10 +205,14 @@ export class TUFPage {
         }
 
         document.getElementById('logout-btn').onclick = () => this.app.auth.logout();
-        document.getElementById('theme-toggle').onclick = () => {
-            this.app.toggleTheme();
-            this.app.router.handleRouteChange(window.location.hash);
-        };
+        
+        const themeToggle = document.getElementById('theme-toggle-global');
+        if (themeToggle) {
+            themeToggle.onclick = () => {
+                this.app.toggleTheme();
+                this.app.router.handleRouteChange(window.location.hash);
+            };
+        }
 
         await this.loadActiveTournament();
     }

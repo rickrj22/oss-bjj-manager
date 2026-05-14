@@ -101,10 +101,7 @@ export class ProfilePage {
                         </a>
                     </nav>
 
-                    <div id="theme-toggle" class="theme-toggle">
-                        <i data-lucide="${theme === 'dark' ? 'sun' : 'moon'}"></i>
-                        <span>${theme === 'dark' ? 'Modo Claro' : 'Modo Escuro'}</span>
-                    </div>
+                    </nav>
 
                     <div style="border-top: 1px solid var(--border); padding-top: 1.5rem; margin-top: 1.5rem;">
                         <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.5rem; padding: 0 0.5rem;">
@@ -142,6 +139,15 @@ export class ProfilePage {
                     }
                 </style>
                 <main class="main-content" style="padding: 2rem;">
+                    <header class="flex-between mb-8 animate-in" style="align-items: flex-start; max-width: 1200px; margin: 0 auto 2rem;">
+                        <div>
+                            <h1 class="font-heading font-xl">Meu Perfil</h1>
+                            <p class="text-graphite hide-mobile">Gerencie seus dados e acompanhe sua evolução.</p>
+                        </div>
+                        <div class="hide-mobile">
+                            ${this.app.renderLanguageAndThemeControls()}
+                        </div>
+                    </header>
                     <div class="grid" style="grid-template-columns: var(--grid-main, 1.8fr 1fr); gap: 2rem; max-width: 1200px; margin: 0 auto;">
                         
                         <!-- Coluna Esquerda: Formulários e Timeline -->
@@ -494,12 +500,14 @@ export class ProfilePage {
 
         // Logout
         document.getElementById('logout-btn').onclick = () => this.app.auth.logout();
-
-        // Theme Toggle
-        document.getElementById('theme-toggle').onclick = () => {
-            this.app.toggleTheme();
-            this.app.router.handleRouteChange(window.location.hash);
-        };
+        
+        const themeToggle = document.getElementById('theme-toggle-global');
+        if (themeToggle) {
+            themeToggle.onclick = () => {
+                this.app.toggleTheme();
+                this.app.router.handleRouteChange(window.location.hash);
+            };
+        }
 
         // Profile Form Behavior
         const form = document.getElementById('profile-form');

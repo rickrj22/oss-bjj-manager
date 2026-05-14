@@ -74,10 +74,7 @@ export class SettingsPage {
                         </a>
                     </nav>
 
-                    <div id="theme-toggle" class="theme-toggle">
-                        <i data-lucide="${theme === 'dark' ? 'sun' : 'moon'}"></i>
-                        <span>${theme === 'dark' ? 'Modo Claro' : 'Modo Escuro'}</span>
-                    </div>
+                    </nav>
 
                     <div style="border-top: 1px solid var(--border); padding-top: 1.5rem; margin-top: 1.5rem;">
                         <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.5rem; padding: 0 0.5rem;">
@@ -97,10 +94,13 @@ export class SettingsPage {
                 </aside>
 
                 <main class="main-content" style="max-width: 100%;">
-                    <header class="flex-between mb-8 animate-in">
+                    <header class="flex-between mb-8 animate-in" style="align-items: flex-start;">
                         <div>
                             <h1 class="font-heading font-xl">Configurações</h1>
                             <p class="text-graphite hide-mobile">Gerencie as informações principais da sua unidade.</p>
+                        </div>
+                        <div class="hide-mobile">
+                            ${this.app.renderLanguageAndThemeControls()}
                         </div>
                     </header>
 
@@ -337,10 +337,14 @@ export class SettingsPage {
         if (window.lucide) window.lucide.createIcons();
 
         document.getElementById('logout-btn').onclick = () => this.app.auth.logout();
-        document.getElementById('theme-toggle').onclick = () => {
-            this.app.toggleTheme();
-            this.app.router.handleRouteChange(window.location.hash);
-        };
+        
+        const themeToggle = document.getElementById('theme-toggle-global');
+        if (themeToggle) {
+            themeToggle.onclick = () => {
+                this.app.toggleTheme();
+                this.app.router.handleRouteChange(window.location.hash);
+            };
+        }
 
         // Manage Plans
         document.getElementById('btn-manage-plans').onclick = () => {
