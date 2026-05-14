@@ -50,6 +50,7 @@ export class LoginPage {
     }
 
     afterRender() {
+        const t = (key) => this.app.i18n.t(key);
         const form = document.getElementById('login-form');
         const loginBtn = document.getElementById('login-btn');
         const forgotPasswordLink = document.getElementById('forgot-password-link');
@@ -65,41 +66,68 @@ export class LoginPage {
             };
         }
 
-        // Adiciona máscara de CPF se o usuário digitar apenas números
-        identifierInput.addEventListener('input', (e) => {
-            let val = e.target.value;
-            // Se começar com número, aplicamos a máscara
-            if (/^\d/.test(val)) {
-                val = val.replace(/\D/g, '').slice(0, 11);
-                if (val.length > 9) val = val.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
-                else if (val.length > 6) val = val.replace(/(\d{3})(\d{3})(\d{1,3})/, '$1.$2.$3');
-                else if (val.length > 3) val = val.replace(/(\d{3})(\d{1,3})/, '$1.$2');
-                e.target.value = val;
-            }
-        });
+        if (identifierInput) {
+            // Adiciona máscara de CPF se o usuário digitar apenas números
+            identifierInput.addEventListener('input', (e) => {
+                let val = e.target.value;
+                // Se começar com número, aplicamos a máscara
+                if (/^\d/.test(val)) {
+                    val = val.replace(/\D/g, '').slice(0, 11);
+                    if (val.length > 9) val = val.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+                    else if (val.length > 6) val = val.replace(/(\d{3})(\d{3})(\d{1,3})/, '$1.$2.$3');
+                    else if (val.length > 3) val = val.replace(/(\d{3})(\d{1,3})/, '$1.$2');
+                    e.target.value = val;
+                }
+            });
+        }
 
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const identifier = identifierInput.value;
-            const password = document.getElementById('password').value;
-            
-            loginBtn.disabled = true;
-            loginBtn.innerText = t('authenticating');
+        if (loginBtn) {
+            loginBtn.addEventListener('click', async (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                const identifier = identifierInput?.value;
+                const password = document.getElementById('password')?.value;
+                
+                if (!identifier || !password) {
+                    alert('Por favor, preencha todos os campos.');
+                    return;
+                }
+                
+                loginBtn.disabled = true;
+                loginBtn.innerText = t('authenticating');
 
-            const result = await this.app.auth.login(identifier, password);
-            if (result.success) {
-                window.location.hash = '#dashboard';
-            } else {
-                alert('Erro na autenticação: ' + result.error);
-                loginBtn.disabled = false;
-                loginBtn.innerText = t('login_btn');
-            }
-        });
+                try {
+                    const result = await this.app.auth.login(identifier, password);
+                    if (result.success) {
+                        window.location.hash = '#dashboard';
+                    } else {
+                        alert('Erro na autenticação: ' + result.error);
+                        loginBtn.disabled = false;
+                        loginBtn.innerText = t('login_btn');
+                    }
+                } catch (err) {
+                    console.error('Erro no login:', err);
+                    alert('Erro ao fazer login. Tente novamente.');
+                    loginBtn.disabled = false;
+                    loginBtn.innerText = t('login_btn');
+                }
+            });
+        }
 
-        forgotPasswordLink.addEventListener('click', (e) => {
-            e.preventDefault();
-            this.showForgotPasswordModal();
-        });
+        if (form) {
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                loginBtn?.click();
+            });
+        }
+
+        if (forgotPasswordLink) {
+            forgotPasswordLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                this.showForgotPasswordModal();
+            });
+        }
     }
 
     showForgotPasswordModal() {

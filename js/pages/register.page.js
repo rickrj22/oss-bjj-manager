@@ -69,6 +69,7 @@ export class RegisterPage {
     }
 
     afterRender() {
+        const t = (key) => this.app.i18n.t(key);
         const form = document.getElementById('register-form');
         const registerBtn = document.getElementById('register-btn');
         const noEmailCheck = document.getElementById('no-email');
@@ -84,18 +85,20 @@ export class RegisterPage {
             };
         }
 
-        noEmailCheck.addEventListener('change', (e) => {
-            if (e.target.checked) {
-                emailInput.value = '';
-                emailInput.required = false;
-                emailInput.disabled = true;
-                emailInput.placeholder = t('internal_email_notice');
-            } else {
-                emailInput.required = true;
-                emailInput.disabled = false;
-                emailInput.placeholder = t('email_placeholder');
-            }
-        });
+        if (noEmailCheck && emailInput) {
+            noEmailCheck.addEventListener('change', (e) => {
+                if (e.target.checked) {
+                    emailInput.value = '';
+                    emailInput.required = false;
+                    emailInput.disabled = true;
+                    emailInput.placeholder = t('internal_email_notice');
+                } else {
+                    emailInput.required = true;
+                    emailInput.disabled = false;
+                    emailInput.placeholder = t('email_placeholder');
+                }
+            });
+        }
 
         // --- CPF Utilities ---
         const maskCPF = (value) => {
