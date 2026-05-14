@@ -120,9 +120,11 @@ export const translations = {
         name_placeholder: "Seu nome",
         email_placeholder: "exemplo@email.com",
         cpf_label_required: "CPF (Obrigatório)",
-        phone_placeholder: "(00) 00000-0000",
+phone_placeholder: "(00) 00000-0000",
         internal_email_notice: "E-mail interno será gerado via CPF",
-
+        responsible_name_label: "Nome do Responsável",
+        responsible_name_placeholder: "Nome completo do responsável",
+        
         // Profile
         profile_title: "Meu Perfil",
         profile_subtitle: "Gerencie seus dados e acompanhe sua evolução.",
@@ -320,6 +322,8 @@ export const translations = {
         cpf_label_required: "Tax ID (Required)",
         phone_placeholder: "(00) 00000-0000",
         internal_email_notice: "Internal email will be generated via Tax ID",
+        responsible_name_label: "Parent/Guardian Name",
+        responsible_name_placeholder: "Full name of parent/guardian",
 
         // Profile
         profile_title: "My Profile",
@@ -478,6 +482,8 @@ export const translations = {
         cpf_label_required: "CPF (Obligatorio)",
         phone_placeholder: "(00) 00000-0000",
         internal_email_notice: "El correo interno se generará vía CPF",
+        responsible_name_label: "Nombre del Responsable",
+        responsible_name_placeholder: "Nombre completo del responsable",
 
         // Profile
         profile_title: "Mi Perfil",

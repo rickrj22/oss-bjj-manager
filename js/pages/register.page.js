@@ -50,6 +50,11 @@ export class RegisterPage {
                             <input type="date" id="birth-date" class="input" required>
                         </div>
 
+                        <div id="responsible-field" class="mb-4" style="display: none;">
+                            <label class="font-heading" style="font-size: 0.7rem; text-transform: uppercase; color: var(--text-dim); letter-spacing: 0.05em;">${t('responsible_name_label')}</label>
+                            <input type="text" id="responsible-name" class="input" placeholder="${t('responsible_name_placeholder')}">
+                        </div>
+
                         <div class="mb-4">
                             <label class="font-heading" style="font-size: 0.7rem; text-transform: uppercase; color: var(--text-dim); letter-spacing: 0.05em;">${t('password')}</label>
                             <input type="password" id="password" class="input" placeholder="••••••••" required>
@@ -99,6 +104,65 @@ export class RegisterPage {
                 }
             });
         }
+
+        // --- Menor de Idade ---
+        const birthDateInput = document.getElementById('birth-date');
+        const responsibleField = document.getElementById('responsible-field');
+        const responsibleNameInput = document.getElementById('responsible-name');
+
+        const checkMinor = (birthDate) => {
+            if (!birthDate) {
+                if (responsibleField) responsibleField.style.display = 'none';
+                return;
+            }
+            const today = new Date();
+            const birth = new Date(birthDate);
+            let age = today.getFullYear() - birth.getFullYear();
+            const monthDiff = today.getMonth() - birth.getMonth();
+            if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
+                age--;
+            }
+            if (age < 18) {
+                if (responsibleField) responsibleField.style.display = 'block';
+            } else {
+                if (responsibleField) responsibleField.style.display = 'none';
+                if (responsibleNameInput) responsibleNameInput.value = '';
+            }
+        };
+
+        if (birthDateInput) {
+            birthDateInput.addEventListener('change', (e) => checkMinor(e.target.value));
+        }
+
+        // --- Verificar Duplicados ---
+        const checkDuplicates = async (cpf, email) => {
+            const cleanCpf = cpf.replace(/\D/g, '');
+            const client = window.supabase;
+
+            const { data: existingCpf, error: cpfError } = await client
+                .from('profiles')
+                .select('id')
+                .eq('cpf', cleanCpf)
+                .maybeSingle();
+
+            if (existingCpf) {
+                return { duplicate: true, field: 'cpf' };
+            }
+
+            if (email && !email.includes('@ossbjj.com.br')) {
+                const { data: existingEmail, error: emailError } = await client
+                    .from('profiles')
+                    .select('id')
+                    .eq('email', email)
+                    .maybeSingle();
+
+                if (existingEmail) {
+                    return { duplicate: true, field: 'email' };
+                }
+            }
+
+            return { duplicate: false };
+        };
 
         // --- CPF Utilities ---
         const maskCPF = (value) => {
@@ -161,6 +225,19 @@ export class RegisterPage {
                 const phone = document.getElementById('phone').value;
                 const birthDate = document.getElementById('birth-date').value;
                 const password = document.getElementById('password').value;
+                const responsibleName = document.getElementById('responsible-name')?.value || null;
+
+                const dupCheck = await checkDuplicates(cpf, email);
+                if (dupCheck.duplicate) {
+                    if (dupCheck.field === 'cpf') {
+                        alert('CPF já cadastrado no sistema. Não é possível criar uma nova conta com este CPF.');
+                    } else {
+                        alert('E-mail já cadastrado no sistema. Por favor, utilize outro e-mail ou faça login.');
+                    }
+                    registerBtn.disabled = false;
+                    registerBtn.innerText = 'Cadastrar';
+                    return;
+                }
 
                 if (noEmailCheck.checked) {
                     // Gera um e-mail dummy baseado no CPF (limpo de pontos e traços)
@@ -196,7 +273,8 @@ export class RegisterPage {
                     phone,
                     birth_date: birthDate,
                     current_belt: 'white belt',
-                    current_stripes: 0
+                    current_stripes: 0,
+                    responsible_name: responsibleName
                 });
 
                 if (result.success) {
