@@ -574,7 +574,7 @@ export class MembersPage {
                     </div>
                     <div class="info-item">
                         <span class="info-label">${this.app.i18n.t('member_drawer_birth_date')}</span>
-                        <span class="info-value">${member.birth_date ? new Date(member.birth_date).toLocaleDateString(this.app.i18n.currentLang) : '-'}</span>
+                        <span class="info-value">${member.birth_date ? this.formatDate(member.birth_date) : '-'}</span>
                     </div>
                     ${this.isMinor(member.birth_date) ? `
                     <div class="info-item">
@@ -656,6 +656,15 @@ export class MembersPage {
             age--;
         }
         return age < 18;
+    }
+
+    formatDate(dateString) {
+        if (!dateString) return '-';
+        const parts = dateString.split('-');
+        if (parts.length === 3) {
+            return `${parts[2]}/${parts[1]}/${parts[0]}`;
+        }
+        return new Date(dateString).toLocaleDateString(this.app.i18n.currentLang);
     }
 
     async showEditMemberModal(memberId) {

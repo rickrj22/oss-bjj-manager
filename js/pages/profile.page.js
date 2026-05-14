@@ -176,7 +176,7 @@ export class ProfilePage {
                                         </div>
                                         <div class="form-group" style="grid-column: span var(--span-all, 1);">
                                             <label style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700; color: var(--text-dim); margin-bottom: 0.25rem; display: block;">${this.app.i18n.t('member_drawer_birth_date')}</label>
-                                            <input type="date" class="input editable-field" id="prof-birth" value="${user.birth_date || ''}" style="height: 42px; font-size: 0.85rem;">
+                                            <input type="date" class="input editable-field" id="prof-birth" value="${user.birth_date ? user.birth_date.split('T')[0] : ''}" style="height: 42px; font-size: 0.85rem;">
                                         </div>
                                         <div class="form-group" id="prof-responsible-group" style="grid-column: span var(--span-all, 1); display: none;">
                                             <label style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700; color: var(--text-dim); margin-bottom: 0.25rem; display: block;">${this.app.i18n.t('responsible_name_label')}</label>
