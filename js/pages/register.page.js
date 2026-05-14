@@ -12,6 +12,11 @@ export class RegisterPage {
                         <p class="text-graphite" style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 500; margin-top: 0.25rem;">Junte-se ao Tatame</p>
                     </div>
 
+                    <div id="theme-toggle" class="theme-toggle" style="position: absolute; top: 1.5rem; right: 1.5rem; background: var(--bg-surface); border: 1px solid var(--border); padding: 0.5rem 1rem; border-radius: 50px; cursor: pointer; display: flex; align-items: center; gap: 0.5rem; box-shadow: var(--shadow-sm); z-index: 100;">
+                        <i data-lucide="${this.app.currentTheme === 'dark' ? 'sun' : 'moon'}" size="18"></i>
+                        <span style="font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;">${this.app.currentTheme === 'dark' ? 'Modo Claro' : 'Modo Escuro'}</span>
+                    </div>
+
                     <form id="register-form">
                         <div class="mb-4">
                             <label class="font-heading" style="font-size: 0.7rem; text-transform: uppercase; color: var(--text-dim); letter-spacing: 0.05em;">Nome Completo</label>
@@ -63,6 +68,14 @@ export class RegisterPage {
         const registerBtn = document.getElementById('register-btn');
         const noEmailCheck = document.getElementById('no-email');
         const emailInput = document.getElementById('email');
+        const themeToggle = document.getElementById('theme-toggle');
+
+        if (window.lucide) window.lucide.createIcons();
+
+        themeToggle.onclick = () => {
+            this.app.toggleTheme();
+            this.app.router.handleRouteChange(window.location.hash);
+        };
 
         noEmailCheck.addEventListener('change', (e) => {
             if (e.target.checked) {
