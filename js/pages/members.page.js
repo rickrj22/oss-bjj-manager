@@ -576,6 +576,12 @@ export class MembersPage {
                         <span class="info-label">${this.app.i18n.t('member_drawer_birth_date')}</span>
                         <span class="info-value">${member.birth_date ? new Date(member.birth_date).toLocaleDateString(this.app.i18n.currentLang) : '-'}</span>
                     </div>
+                    ${this.isMinor(member.birth_date) ? `
+                    <div class="info-item">
+                        <span class="info-label">${this.app.i18n.t('responsible_name_label')}</span>
+                        <span class="info-value">${member.responsible_name || '-'}</span>
+                    </div>
+                    ` : ''}
                 </div>
             </div>
 
@@ -640,6 +646,18 @@ export class MembersPage {
         if (drawer) drawer.classList.remove('active');
     }
 
+    isMinor(birthDate) {
+        if (!birthDate) return false;
+        const today = new Date();
+        const birth = new Date(birthDate);
+        let age = today.getFullYear() - birth.getFullYear();
+        const monthDiff = today.getMonth() - birth.getMonth();
+        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
+            age--;
+        }
+        return age < 18;
+    }
+
     async showEditMemberModal(memberId) {
         const member = this.members.find(m => m.id === memberId);
         if (!member) return;
@@ -679,6 +697,10 @@ export class MembersPage {
                     <div>
                         <label style="${lbl}">Data de Nascimento</label>
                         <input type="date" id="edit-birth-date" class="input" style="${inp}" value="${member.birth_date || ''}">
+                    </div>
+                    <div id="edit-responsible-container" style="display: ${this.isMinor(member.birth_date) ? 'block' : 'none'};">
+                        <label style="${lbl}">${this.app.i18n.t('responsible_name_label')}</label>
+                        <input type="text" id="edit-responsible" class="input" style="${inp}" value="${member.responsible_name || ''}">
                     </div>
                     <div>
                         <label style="${lbl}">Telefone</label>
@@ -776,6 +798,32 @@ export class MembersPage {
             }
         });
 
+        // Logic for Responsible field based on age
+        const editBirthDate = document.getElementById('edit-birth-date');
+        const editResponsibleContainer = document.getElementById('edit-responsible-container');
+        if (editBirthDate && editResponsibleContainer) {
+            const checkMinor = (birthDate) => {
+                if (!birthDate) {
+                    editResponsibleContainer.style.display = 'none';
+                    return;
+                }
+                const today = new Date();
+                const birth = new Date(birthDate);
+                let age = today.getFullYear() - birth.getFullYear();
+                const monthDiff = today.getMonth() - birth.getMonth();
+                if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
+                    age--;
+                }
+                if (age < 18) {
+                    editResponsibleContainer.style.display = 'block';
+                } else {
+                    editResponsibleContainer.style.display = 'none';
+                    document.getElementById('edit-responsible').value = '';
+                }
+            };
+            editBirthDate.addEventListener('change', (e) => checkMinor(e.target.value));
+        }
+
         document.getElementById('edit-member-form').onsubmit = async (e) => {
             e.preventDefault();
 
@@ -803,7 +851,8 @@ export class MembersPage {
                 is_admin: document.getElementById('edit-admin').checked,
                 plan_id: document.getElementById('edit-plan').value || null,
                 payment_due_date: parseInt(document.getElementById('edit-due-date').value) || null,
-                birth_date: document.getElementById('edit-birth-date').value || null
+                birth_date: document.getElementById('edit-birth-date').value || null,
+                responsible_name: document.getElementById('edit-responsible')?.value || null
             };
 
             const res = await this.app.academy.updateMember(memberId, updates);
